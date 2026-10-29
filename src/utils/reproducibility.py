@@ -61,11 +61,13 @@ def save_csv(path: str | Path, columns: dict[str, np.ndarray]) -> None:
 
 
 def git_info(repo_root: str | Path) -> dict:
-    """Current commit and whether tracked files have uncommitted changes.
+    """Current commit and whether tracked files outside results/ have uncommitted changes.
 
-    Untracked files (such as freshly generated results) do not count as changes.
-    Both values are None if repo_root is not the top level of a git repository,
-    if the repository has no commits yet, or if git is not installed.
+    Generated results (inside results/, tracked or not) and untracked files do
+    not count as changes: "dirty" means the code or configuration differed from
+    the recorded commit. Both values are None if repo_root is not the top level
+    of a git repository, if the repository has no commits yet, or if git is not
+    installed.
     """
     repo_root = Path(repo_root).resolve()
 
@@ -78,7 +80,7 @@ def git_info(repo_root: str | Path) -> dict:
             return {"commit": None, "dirty": None}
         return {
             "commit": git("rev-parse", "HEAD"),
-            "dirty": bool(git("status", "--porcelain", "--untracked-files=no")),
+            "dirty": bool(git("status", "--porcelain", "--untracked-files=no", "--", ".", ":(exclude)results")),
         }
     except (OSError, subprocess.CalledProcessError):
         return {"commit": None, "dirty": None}
