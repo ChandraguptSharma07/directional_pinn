@@ -1,11 +1,11 @@
 {
-  "created_utc": "2026-10-29T06:52:36+00:00",
+  "created_utc": "2026-10-29T06:59:06+00:00",
   "command": [
     "experiments/01_linear_sanity.py"
   ],
-  "runtime_seconds": 6.848,
+  "runtime_seconds": 7.673,
   "git": {
-    "commit": "69fdf0414dc28f25903ccc2913e087b2a60d3301",
+    "commit": "81295b9c1633e3c87f737a92947a1662f289411a",
     "dirty": false
   },
   "environment": {
@@ -17,7 +17,7 @@
       "matplotlib": "3.11.2",
       "PyYAML": "6.0.3",
       "pytest": "9.2.0",
-      "torch": null
+      "torch": "2.15.0+cpu"
     }
   }
 }
