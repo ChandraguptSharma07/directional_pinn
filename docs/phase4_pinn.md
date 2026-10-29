@@ -80,5 +80,38 @@ arrays are not tracked in git; the summaries are in the run directories).
 
 Candidates $T \in \{1, 2, 3, 4\}$ and $\lambda_{IC} \in \{10, 100\}$ (the first pilot showed
 initial-condition errors of about 2 for $\lambda_{IC} = 1$, so that value was
-dropped); same selection rule. Results and the chosen values are in
-`results/pinn_pilot/metrics.json` and in the results document.
+dropped); same selection rule. (This pilot was restarted once after the
+machine rebooted; the restart reran it from scratch.)
+
+| $T$ | $\lambda_{IC}$ | median error | max error | share of window with error < 1 | median $\lVert r\rVert$ |
+|---:|---:|---:|---:|---:|---:|
+| 1 | 10  | 0.83  | 1.7  | 65 % | 0.57 |
+| 1 | 100 | 0.086 | 0.20 | 100 % | 0.11 |
+| 2 | 10  | 6.1   | 35.7 | 10 % | 0.69 |
+| 2 | 100 | 17.5  | 40.6 | 3 % | 0.083 |
+| 3 | 10  | 12.6  | 32.4 | 4 % | 3.7 |
+| 3 | 100 | 22.0  | 45.9 | 2 % | 0.12 |
+| 4 | 10  | 15.1  | 33.9 | 3 % | 1.5 |
+| 4 | 100 | 22.5  | 45.9 | 2 % | 0.12 |
+
+Even with the curriculum, the standard PINN follows the trajectory only over
+$T = 1$, roughly one Lyapunov time. For $T \geq 2$ it either collapses again onto
+the $z$-axis solution ($\lambda_{IC} = 100$: tiny residual, huge error) or fails
+less cleanly ($\lambda_{IC} = 10$).
+
+**Deviation from the pre-set rule.** Applied literally, the rule first picks
+$\lambda_{IC} = 10$, because its error averaged over all four window lengths is
+smaller. That average is dominated by the long windows, where every PINN fails.
+The rule then finds no window in which that PINN stays accurate and falls
+back to the shortest, $T = 1$, where $\lambda_{IC} = 10$ is ten times less accurate
+than $\lambda_{IC} = 100$. This contradicts the rule's purpose of picking the most
+accurate setting. The main runs therefore use $T = 1$ and $\lambda_{IC} = 100$,
+the most accurate setting at the only workable window length. The rule's
+literal choice ($T = 1$, $\lambda_{IC} = 10$) is run as a complete second set and
+analysed the same way, so the conclusion can be checked against it. Both
+choices were made from PINN accuracy alone, before any residual direction was
+examined.
+
+**Consequence for the analysis.** With $T = 1$, the horizon $\Delta t = 1$ has no usable
+time points ($t + \Delta t \leq T$ leaves only $t = 0$), so the decision rule is applied
+to the four horizons $0.05, 0.1, 0.25, 0.5$, still requiring 3 that pass.

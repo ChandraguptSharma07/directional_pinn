@@ -76,6 +76,8 @@ pinn:                          # Phase 4: baseline PINN training settings (src/p
   log_every: 100
   curriculum_start: 0.25       # time curriculum: collocation interval grows from [0, 0.25] to [0, T] ...
   curriculum_fraction: 0.6     # ... during the first 60 % of the iterations (see src/pinn/train.py)
+  t_final: 1.0                 # window length chosen by the pilot (docs/phase4_pinn.md)
+  lambda_ic: 100.0             # initial-condition weight chosen by the pilot (see the deviation noted there)
 
 pinn_pilot:                    # Phase 4 pilot: experiments/05_pinn_pilot.py, on window 0 only
   window: 0                    # (second attempt; see docs/phase4_pinn.md for the first)
@@ -86,6 +88,11 @@ pinn_pilot:                    # Phase 4 pilot: experiments/05_pinn_pilot.py, on
 pinn_runs:                     # Phases 4-7 main runs: experiments/06_pinn_runs.py
   windows: [1, 2, 3, 4, 5, 6, 7, 8]
   seeds: [0, 1, 2, 3, 4]
+
+pinn_runs_lambda10:            # sensitivity: the pilot rule's literal choice, lambda_IC = 10
+  windows: [1, 2, 3, 4, 5, 6, 7, 8]
+  seeds: [0, 1, 2, 3, 4]
+  overrides: {lambda_ic: 10.0}
 
 float64_check:                 # precision check: experiments/06_pinn_runs.py --set float64_check
   windows: [1, 2, 3, 4, 5, 6, 7, 8]
