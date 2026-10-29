@@ -1,0 +1,8 @@
+# Phase 0 dependencies. Kaggle images already include all of these.
+numpy>=1.24
+scipy>=1.10
+matplotlib>=3.7
+pyyaml>=6.0
+pytest>=7.0
+# Added in Phase 4 (PINN training); preinstalled on Kaggle:
+# torch>=2.0
