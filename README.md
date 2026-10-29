@@ -1,8 +1,14 @@
 # Directional residuals as error indicators for PINN solutions of chaotic ODEs
 
-Research code for an ongoing investigation. Nothing here claims that the approach
-works, or that it is new; the experiments are built so that the hypothesis can
-fail.
+Research code for an investigation. Nothing here claims that the approach works,
+or that it is new; the experiments were built so that the hypothesis could fail.
+
+**Outcome:** under a decision rule fixed before the main runs, the hypothesis is
+**not supported** for standard PINNs on Lorenz-63. The residual's alignment with
+a locally expanding direction (either the backward Lyapunov vector $b_1$ or the
+finite-time singular vector $s_1$) did not predict future error better than the
+residual's size on held-out trajectories. The directional training loss
+(Phase 9) was therefore not attempted. See [docs/results.md](docs/results.md).
 
 ## Research question
 
@@ -25,12 +31,12 @@ test system and a linear saddle as a sanity check.
 | 1 | Lorenz-63 right-hand side and analytic Jacobian, checked numerically ([notes](docs/phase1_lorenz_jacobian.md)) | done |
 | 2 | High-accuracy reference trajectories; tolerance study ([notes](docs/phase2_lorenz_reference.md)) | done |
 | 3 | Tangent dynamics; QR Lyapunov exponents; directions $b_1$ and $s_1$ ([notes](docs/phase3_lyapunov.md)) | done |
-| 4 | Minimal PINN (Adam) with the standard residual loss | next |
-| 5 | Trajectory error $E(t)$ and future error $E_\Delta(t)$ | planned |
-| 6 | Central experiment: $R$ vs $R_u$ vs $R_\perp$, alignment at fixed $R$, held-out regression | planned |
-| 7 | Multiple seeds, initial conditions and trajectories | planned |
-| 8 | Negative controls (random, shuffled and stable directions) | planned |
-| 9 | Directional loss: only if Phases 6–8 support the hypothesis | conditional |
+| 4 | Baseline PINN; pilot for window length and initial-condition weight ([notes](docs/phase4_pinn.md)) | done |
+| 5 | Trajectory error $E(t)$, future error $E_\Delta(t)$, linear (Duhamel) error reconstruction | done |
+| 6 | Central experiment, following the [analysis plan](docs/analysis_plan.md) ([results](docs/results.md)) | done |
+| 7 | 8 initial conditions × 5 seeds; sensitivity sets | done |
+| 8 | Negative controls: random, time-shuffled, least-expanding and flow directions | done |
+| 9 | Directional loss: only if Phases 6–8 support the hypothesis | not run: not supported |
 
 ## Background in plain language
 
@@ -103,27 +109,25 @@ supported if, for example, random or time-shuffled directions predict as well as
 $u_1$, if $R$ alone explains the error, or if the effect is confined to a single
 seed or trajectory.
 
-## Methodology (planned)
+## Methodology
 
-* **Reference.** SciPy `solve_ivp` (DOP853, float64, tight tolerances), checked by
-  re-solving with stricter tolerances. The experiment horizon is limited to the
-  window in which the reference is trustworthy; Lorenz is chaotic, so two numerical
-  solutions eventually separate.
+* **Reference.** SciPy `solve_ivp` (DOP853, rtol $10^{-12}$, float64), checked against a
+  stricter DOP853 run and against LSODA. Each initial condition comes from a long
+  run on the attractor, so it has a 30-unit past.
 * **Directions.** Oracle (post-hoc) directions computed from the reference
-  trajectory, labelled as such. Two are computed and compared as separate
-  predictors: the backward (QR) Lyapunov vector $b_1(t)$ and the finite-time
-  singular vector $s_1(t;\Delta t)$ of $\Phi(t+\Delta t, t)$. Directions estimated from
-  the PINN's own trajectory are a separate, later question (deployability).
-* **PINN.** Small fully connected network (4 × 64, tanh), Adam, loss
-  $L = L_{\text{ODE}} + \lambda_{\text{IC}} L_{\text{IC}}$, float32 on GPU; representative runs
+  trajectory, labelled as such: the backward (QR) Lyapunov vector $b_1(t)$ and the
+  finite-time singular vector $s_1(t;\Delta t)$ of $\Phi(t+\Delta t, t)$, compared as separate
+  predictors.
+* **PINN.** 4 × 64 tanh network, Adam, loss $L = L_{\text{ODE}} + \lambda_{\text{IC}} L_{\text{IC}}$ on a
+  window of length 1 with a time curriculum, float32; one seed per window
   repeated in float64.
-* **Statistics.** Pearson and Spearman correlations on log-transformed quantities,
-  log–log scatter plots, binned analysis, bootstrap confidence intervals, and
-  regressions $\log E_\Delta = a + b\log R$ versus $a + b\log R + cA$ evaluated on
-  held-out data, for several horizons $\Delta t$.
-* **Replication and controls.** At least 5 seeds (all reported, including failures);
-  several initial conditions; random-direction, shuffled-direction and
-  stable-direction controls.
+* **Statistics** ([analysis plan](docs/analysis_plan.md), fixed before the main runs).
+  Pearson and Spearman correlations on logarithms, log–log scatter plots,
+  binned analysis at fixed residual size, and the decisive test: regressions
+  $\log E_\Delta = a + b\log R$ versus $a + b\log R + cA$, evaluated on held-out initial
+  conditions, with cluster-bootstrap intervals over runs.
+* **Replication and controls.** 8 initial conditions × 5 seeds, all runs reported;
+  random-direction, time-shuffled, least-expanding and flow-direction controls.
 
 ## Repository layout
 
@@ -182,8 +186,20 @@ python -m pytest                   # unit tests
 python experiments/01_linear_sanity.py
 python experiments/02_lorenz_jacobian.py
 python experiments/03_lorenz_reference.py
-python experiments/04_lorenz_lyapunov.py
+python experiments/04_lorenz_lyapunov.py        # about 3 minutes
+python experiments/05_pinn_pilot.py             # pilot on window 0 (8 trainings in parallel)
+python experiments/06_pinn_runs.py --device cuda                     # 40 main runs as one stack on a GPU
+python experiments/06_pinn_runs.py --device cuda --set pinn_runs_lambda10
+python experiments/06_pinn_runs.py --set float64_check               # 8 float64 runs on the CPU
+python experiments/07_directional_analysis.py   # the planned analysis and decision
+python experiments/07_directional_analysis.py --runs results/pinn_runs_lambda10 --out results/analysis_lambda10
+python experiments/07_directional_analysis.py --runs results/float64_check --out results/analysis_float64
+python experiments/08_alignment_effect_controls.py   # exploratory controls (not in the plan)
 ```
+
+Without a GPU, drop `--device cuda`: the runs of each window are then trained
+in parallel CPU processes (about 1.5 hours for 40 runs on 6 cores). On a GTX
+1650 the 40 runs take about 15 minutes. Times above are for that machine.
 
 On Kaggle (files under `/kaggle/input` are read-only, so work in `/kaggle/working`):
 
@@ -196,9 +212,12 @@ On Kaggle (files under `/kaggle/input` are read-only, so work in `/kaggle/workin
 !python experiments/02_lorenz_jacobian.py
 !python experiments/03_lorenz_reference.py
 !python experiments/04_lorenz_lyapunov.py
+!python experiments/05_pinn_pilot.py
+!python experiments/06_pinn_runs.py --device cuda
+!python experiments/07_directional_analysis.py
 ```
 
-## Results so far
+## Results
 
 Phase 0 (linear saddle, ε = 10⁻³): two approximate solutions whose residual size is
 identical at every time differ in true error by a factor $e^{t}$ (148 at $t = 5$),
@@ -217,20 +236,50 @@ sign error is rejected (relative error 1.3). The Jacobian's eigenvalues at the
 fixed points and the Hopf threshold $\rho_H \approx 24.74$ match closed forms. Details:
 [docs/phase1_lorenz_jacobian.md](docs/phase1_lorenz_jacobian.md).
 
+Phases 2–3: references stay within $10^{-8}$ of a stricter solution for at least 5.8
+time units; Lyapunov exponents $0.924, -0.025, -14.566$ over 180 time units; $b_1$
+and $s_1$ are typically 50°–75° apart. Details:
+[docs/phase2_lorenz_reference.md](docs/phase2_lorenz_reference.md),
+[docs/phase3_lyapunov.md](docs/phase3_lyapunov.md).
+
+Phase 4: plain PINN training collapses onto the invariant solution $x = y = 0$;
+with a time curriculum the standard PINN follows Lorenz trajectories over one
+time unit (about one Lyapunov time) but not over two or more. Details:
+[docs/phase4_pinn.md](docs/phase4_pinn.md).
+
+Phases 5–8 (40 runs, 8 initial conditions; [docs/results.md](docs/results.md)):
+
+* Held-out gain in $R^2$ from adding alignment to $\log R$: $-0.008$ to $+0.020$ for $b_1$
+  and $+0.017$ to $+0.046$ for $s_1$, never both $\ge 0.02$ and significant; time-shuffled
+  $s_1$ and the flow direction do about as well. Verdict: not supported, also with
+  initial-condition weight 10 and with float64 training.
+* Inside single runs, at fixed residual size, alignment with $b_1$ or $s_1$ goes with
+  larger future error, but so does alignment with the neutral flow direction.
+* Trained PINN residuals already point almost entirely along $s_1$ (median
+  alignment 0.87–0.96), so orientation varies too little to carry information.
+* Weighting the whole residual by the dynamics, $\lVert\Phi(t+\Delta t, t)\,r(t)\rVert$, does
+  add held-out information (+0.06 in $R^2$ at $\Delta t$ = 0.25 and 0.5).
+
 ## Limitations
 
-* Expanding directions come from the reference trajectory (oracle analysis); they
-  are not available to a PINN in practice without further work.
-* The error-propagation picture is linear; it is only accurate while the PINN error
-  is small, and PINNs on chaotic systems often fail badly.
-* Chaos limits the time window over which a trustworthy reference exists.
-* Only Lorenz-63 with classical parameters is planned.
-* Correlation is not causation: the residual and the local expanding direction both
-  depend on where the trajectory is on the attractor, which can confound the
-  comparison. Multiple trajectories and controls are meant to address this.
-* Results may depend on which direction is used (backward, forward, covariant or
-  finite-time vectors) and on whether the target is the total future error or only
-  the part created after time $t$.
+* **Short windows.** The standard PINN could only learn Lorenz windows of about one
+  Lyapunov time (Phase 4). Orientation may matter more over longer horizons, but
+  accurate PINNs for those could not be obtained, so that case is untested.
+* **Oracle directions.** $b_1$ and $s_1$ come from the reference trajectory, which a
+  deployed PINN does not have. Since even these did not help, directions
+  estimated from the PINN itself were not studied.
+* **Pointwise predictors.** As in the original question, the residual is taken at
+  a single time. The positive result for $\lVert\Phi r\rVert$ suggests that predictors
+  integrating the residual over time are more promising; they were not tested
+  as a pre-registered hypothesis.
+* **Scope.** One system (Lorenz-63, classical parameters), one architecture
+  (4 × 64 tanh), one optimiser (Adam with a time curriculum), 8 initial
+  conditions. Small effects (held-out $R^2$ gains below about 0.02) could have been
+  missed by design.
+* **Deviations from the plan,** all documented: the PINN pilot's rule was not
+  followed literally (its literal choice gives the same conclusion), one
+  verification threshold of Phase 2 was re-specified, and one analysis
+  (`experiments/08`) is exploratory.
 
 ## Related work
 
