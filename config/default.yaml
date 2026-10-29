@@ -51,3 +51,13 @@ lorenz_reference:              # Phase 2: experiments/03_lorenz_reference.py (re
   acceptance: 1.0e-8           # largest allowed |reference - strictest| inside a PINN window
   cross_check_acceptance: 1.0e-6   # LSODA is less accurate than DOP853 at equal rtol, so a looser bound
   required_horizon: 5.0        # the reference must be trustworthy at least this long in every window
+
+lorenz_lyapunov:               # Phase 3: experiments/04_lorenz_lyapunov.py
+  length: 6.0                  # analysed part of each window, [0, length]; covers every PINN window
+  dt: 0.002                    # grid inside the window (same as the reference output)
+  spinup_dt: 0.005             # grid on the past [-spinup, 0], used only to converge b1
+  horizons: [0.05, 0.1, 0.25, 0.5, 1.0]   # Δt for the finite-time singular vectors s_i(t; Δt)
+  long_run_time: 180.0         # stretch of the long run used to estimate the Lyapunov exponents
+  long_run_dt: 0.01
+  tangent_rtol: 1.0e-11        # tolerances for integrating the tangent equation
+  tangent_atol: 1.0e-13

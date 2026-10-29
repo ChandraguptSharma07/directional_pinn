@@ -24,8 +24,8 @@ test system and a linear saddle as a sanity check.
 | 0 | Linear saddle: equal-size perturbations and residuals ([notes](docs/phase0_linear_saddle.md)) | done |
 | 1 | Lorenz-63 right-hand side and analytic Jacobian, checked numerically ([notes](docs/phase1_lorenz_jacobian.md)) | done |
 | 2 | High-accuracy reference trajectories; tolerance study ([notes](docs/phase2_lorenz_reference.md)) | done |
-| 3 | Tangent dynamics; QR Lyapunov exponents; directions $b_1$ and $s_1$ | next |
-| 4 | Minimal PINN (Adam) with the standard residual loss | planned |
+| 3 | Tangent dynamics; QR Lyapunov exponents; directions $b_1$ and $s_1$ ([notes](docs/phase3_lyapunov.md)) | done |
+| 4 | Minimal PINN (Adam) with the standard residual loss | next |
 | 5 | Trajectory error $E(t)$ and future error $E_\Delta(t)$ | planned |
 | 6 | Central experiment: $R$ vs $R_u$ vs $R_\perp$, alignment at fixed $R$, held-out regression | planned |
 | 7 | Multiple seeds, initial conditions and trajectories | planned |
@@ -132,6 +132,8 @@ config/default.yaml              settings for every experiment (one section each
 src/systems/linear_saddle.py     Phase 0 linear systems, exact solutions, direction utilities
 src/systems/lorenz63.py          Lorenz-63 right-hand side, analytic Jacobian, fixed points, Jacobian gate
 src/dynamics/jacobian.py         complex-step and central-difference Jacobians, Jacobian checks
+src/dynamics/tangent_dynamics.py step propagators of the tangent equation and their products
+src/dynamics/lyapunov.py         QR method (backward vectors, exponents), finite-time singular vectors
 src/solvers/reference_solver.py  solve_ivp wrapper that records solver settings; tolerance study
 src/solvers/lorenz_reference.py  initial conditions with a past, and reference trajectories (Phase 2)
 src/analysis/projections.py      R, R_u, R_perp and alignment
@@ -142,16 +144,18 @@ src/pinn/                        Phase 4 (empty for now)
 experiments/01_linear_sanity.py  Phase 0 experiment
 experiments/02_lorenz_jacobian.py  Phase 1 checks
 experiments/03_lorenz_reference.py Phase 2 reference trajectories
+experiments/04_lorenz_lyapunov.py  Phase 3 exponents and expanding directions
 docs/phase0_linear_saddle.md     Phase 0 explanation and results
 docs/phase1_lorenz_jacobian.md   Phase 1 explanation and results
 docs/phase2_lorenz_reference.md  Phase 2 explanation and results
+docs/phase3_lyapunov.md          Phase 3 explanation and results
 tests/                           unit tests (pytest)
 results/                         generated outputs, one directory per run
 notebooks/                       exploration notebooks (none yet)
 ```
 
 Modules from the original outline that are not there yet
-(`dynamics/{tangent_dynamics,lyapunov}.py`, `pinn/{model,residual,train}.py`,
+(`pinn/{model,residual,train}.py`,
 `analysis/{future_error,metrics}.py`, `utils/seed.py`) are added in the phase that
 needs them. Experiments are numbered in the order they are built, so the PINN
 experiments will follow the reference (03) and Lyapunov (04) scripts.
@@ -175,6 +179,7 @@ python -m pytest                   # unit tests
 python experiments/01_linear_sanity.py
 python experiments/02_lorenz_jacobian.py
 python experiments/03_lorenz_reference.py
+python experiments/04_lorenz_lyapunov.py
 ```
 
 On Kaggle (files under `/kaggle/input` are read-only, so work in `/kaggle/working`):
@@ -187,6 +192,7 @@ On Kaggle (files under `/kaggle/input` are read-only, so work in `/kaggle/workin
 !python experiments/01_linear_sanity.py
 !python experiments/02_lorenz_jacobian.py
 !python experiments/03_lorenz_reference.py
+!python experiments/04_lorenz_lyapunov.py
 ```
 
 ## Results so far
