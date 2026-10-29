@@ -23,8 +23,8 @@ test system and a linear saddle as a sanity check.
 |---|---|---|
 | 0 | Linear saddle: equal-size perturbations and residuals ([notes](docs/phase0_linear_saddle.md)) | done |
 | 1 | Lorenz-63 right-hand side and analytic Jacobian, checked numerically ([notes](docs/phase1_lorenz_jacobian.md)) | done |
-| 2 | High-accuracy reference trajectory; tolerance-convergence study | next |
-| 3 | Tangent dynamics; QR Lyapunov exponents; directions $b_1$ and $s_1$ | planned |
+| 2 | High-accuracy reference trajectories; tolerance study ([notes](docs/phase2_lorenz_reference.md)) | done |
+| 3 | Tangent dynamics; QR Lyapunov exponents; directions $b_1$ and $s_1$ | next |
 | 4 | Minimal PINN (Adam) with the standard residual loss | planned |
 | 5 | Trajectory error $E(t)$ and future error $E_\Delta(t)$ | planned |
 | 6 | Central experiment: $R$ vs $R_u$ vs $R_\perp$, alignment at fixed $R$, held-out regression | planned |
@@ -132,7 +132,8 @@ config/default.yaml              settings for every experiment (one section each
 src/systems/linear_saddle.py     Phase 0 linear systems, exact solutions, direction utilities
 src/systems/lorenz63.py          Lorenz-63 right-hand side, analytic Jacobian, fixed points, Jacobian gate
 src/dynamics/jacobian.py         complex-step and central-difference Jacobians, Jacobian checks
-src/solvers/reference_solver.py  solve_ivp wrapper that records solver settings
+src/solvers/reference_solver.py  solve_ivp wrapper that records solver settings; tolerance study
+src/solvers/lorenz_reference.py  initial conditions with a past, and reference trajectories (Phase 2)
 src/analysis/projections.py      R, R_u, R_perp and alignment
 src/analysis/plots.py            shared figure style
 src/utils/checks.py              pass/fail record of numerical checks
@@ -140,8 +141,10 @@ src/utils/reproducibility.py     config loading, CSV/JSON output, environment an
 src/pinn/                        Phase 4 (empty for now)
 experiments/01_linear_sanity.py  Phase 0 experiment
 experiments/02_lorenz_jacobian.py  Phase 1 checks
+experiments/03_lorenz_reference.py Phase 2 reference trajectories
 docs/phase0_linear_saddle.md     Phase 0 explanation and results
 docs/phase1_lorenz_jacobian.md   Phase 1 explanation and results
+docs/phase2_lorenz_reference.md  Phase 2 explanation and results
 tests/                           unit tests (pytest)
 results/                         generated outputs, one directory per run
 notebooks/                       exploration notebooks (none yet)
@@ -171,6 +174,7 @@ pip install -r requirements.txt
 python -m pytest                   # unit tests
 python experiments/01_linear_sanity.py
 python experiments/02_lorenz_jacobian.py
+python experiments/03_lorenz_reference.py
 ```
 
 On Kaggle (files under `/kaggle/input` are read-only, so work in `/kaggle/working`):
@@ -182,6 +186,7 @@ On Kaggle (files under `/kaggle/input` are read-only, so work in `/kaggle/workin
 !python -m pytest -q
 !python experiments/01_linear_sanity.py
 !python experiments/02_lorenz_jacobian.py
+!python experiments/03_lorenz_reference.py
 ```
 
 ## Results so far

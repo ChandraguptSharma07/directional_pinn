@@ -30,3 +30,24 @@ lorenz_jacobian_check:         # Phase 1: experiments/02_lorenz_jacobian.py
   seed: 0
   box: [[-30.0, 30.0], [-30.0, 30.0], [-5.0, 60.0]]   # sampling box for (x, y, z); contains the attractor
   rho_range: [1.5, 40.0]       # rho values for the stability-of-C± panel
+
+lorenz_reference:              # Phase 2: experiments/03_lorenz_reference.py (reused by later phases)
+  seed_state: [1.0, 1.0, 1.0]  # arbitrary start of the long run
+  transient: 100.0             # discarded, so that recorded states lie on the attractor
+  spinup: 30.0                 # past of each window, needed by the backward Lyapunov vector b1
+  gap: 20.0                    # time between window starts along the long run (about 18 Lyapunov times)
+  n_windows: 9                 # window 0: pilot, only for choosing PINN settings; windows 1-8: analysis
+  length: 12.0                 # reference length per window; each PINN window is a prefix of it
+  dt: 0.002                    # output spacing of the reference
+  solver: {method: DOP853, rtol: 1.0e-12, atol: 1.0e-14}       # the reference used everywhere
+  strictest: {method: DOP853, rtol: 1.0e-13, atol: 1.0e-15}    # stands in for the exact solution
+  ladder:                      # settings compared with the strictest one
+    - {method: DOP853, rtol: 1.0e-6, atol: 1.0e-8}
+    - {method: DOP853, rtol: 1.0e-8, atol: 1.0e-10}
+    - {method: DOP853, rtol: 1.0e-10, atol: 1.0e-12}
+    - {method: DOP853, rtol: 1.0e-12, atol: 1.0e-14}
+    - {method: LSODA, rtol: 1.0e-10, atol: 1.0e-12}             # a different method family as a cross-check;
+    - {method: LSODA, rtol: 1.0e-12, atol: 1.0e-14}             # it must approach the DOP853 solution as rtol tightens
+  acceptance: 1.0e-8           # largest allowed |reference - strictest| inside a PINN window
+  cross_check_acceptance: 1.0e-6   # LSODA is less accurate than DOP853 at equal rtol, so a looser bound
+  required_horizon: 5.0        # the reference must be trustworthy at least this long in every window
