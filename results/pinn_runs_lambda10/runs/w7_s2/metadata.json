@@ -1,0 +1,27 @@
+{
+  "created_utc": "2026-10-29T10:03:58+00:00",
+  "command": [
+    "experiments/06_pinn_runs.py",
+    "--set",
+    "pinn_runs_lambda10",
+    "--device",
+    "cuda"
+  ],
+  "runtime_seconds": 22.91,
+  "git": {
+    "commit": "6326e4638f6c32f5977a4bfec140bc4b3110dd0d",
+    "dirty": false
+  },
+  "environment": {
+    "python": "3.12.11",
+    "platform": "Linux-7.2.8-1-cachyos-x86_64-with-glibc2.44",
+    "packages": {
+      "numpy": "2.5.4",
+      "scipy": "1.18.1",
+      "matplotlib": "3.11.2",
+      "PyYAML": "6.0.3",
+      "pytest": "9.2.0",
+      "torch": "2.14.1+cu130"
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "window": 5,
+  "seed": 4,
+  "t_final": 1.0,
+  "lambda_ic": 10.0,
+  "dtype": "float32",
+  "final_loss": 5.286354064941406,
+  "final_loss_ode": 4.236821174621582,
+  "final_loss_ic": 0.10495328903198242,
+  "finite": true,
+  "initial_error": 0.3237994304108522,
+  "median_error": 6.351377767478444,
+  "max_error": 37.578096193914334,
+  "final_error": 22.25622752785004,
+  "fraction_error_below_1": 0.2055888223552894,
+  "median_residual": 0.7673692012031083,
+  "runtime_seconds": 22.910175778525
+}

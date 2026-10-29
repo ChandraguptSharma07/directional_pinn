@@ -1,12 +1,12 @@
 {
-  "created_utc": "2026-10-29T09:56:43+00:00",
+  "created_utc": "2026-10-29T10:05:32+00:00",
   "command": [
     "experiments/07_directional_analysis.py"
   ],
-  "runtime_seconds": 66.168,
+  "runtime_seconds": 14.966,
   "git": {
-    "commit": "c9c837fb721d6bb6ff2e82d5cf217ca2a09dedeb",
-    "dirty": true
+    "commit": "6326e4638f6c32f5977a4bfec140bc4b3110dd0d",
+    "dirty": false
   },
   "environment": {
     "python": "3.12.11",

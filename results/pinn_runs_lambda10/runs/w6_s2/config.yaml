@@ -1,0 +1,39 @@
+run_dir: /home/shin/Projects/directional_pinn/results/pinn_runs_lambda10/runs/w6_s2
+window: 6
+reference_file: /home/shin/Projects/directional_pinn/results/lorenz_reference/data/window_6.npz
+params:
+  sigma: 10.0
+  rho: 28.0
+  beta: 2.6666666666666665
+train:
+  hidden:
+  - 64
+  - 64
+  - 64
+  - 64
+  activation: tanh
+  out_mean:
+  - 0.0
+  - 0.0
+  - 25.0
+  out_scale:
+  - 10.0
+  - 10.0
+  - 10.0
+  iterations: 20000
+  lr: 0.001
+  lr_final: 1.0e-05
+  n_collocation: 1024
+  dtype: float32
+  threads: 1
+  log_every: 100
+  curriculum_start: 0.25
+  curriculum_fraction: 0.6
+  t_final: 1.0
+  lambda_ic: 10.0
+  x0:
+  - 2.5109902021551758
+  - 2.089113097941634
+  - 20.956301726945274
+  seed: 2
+  device: cuda

@@ -1,0 +1,39 @@
+run_dir: /home/shin/Projects/directional_pinn/results/float64_check/runs/w1_s0
+window: 1
+reference_file: /home/shin/Projects/directional_pinn/results/lorenz_reference/data/window_1.npz
+params:
+  sigma: 10.0
+  rho: 28.0
+  beta: 2.6666666666666665
+train:
+  hidden:
+  - 64
+  - 64
+  - 64
+  - 64
+  activation: tanh
+  out_mean:
+  - 0.0
+  - 0.0
+  - 25.0
+  out_scale:
+  - 10.0
+  - 10.0
+  - 10.0
+  iterations: 20000
+  lr: 0.001
+  lr_final: 1.0e-05
+  n_collocation: 1024
+  dtype: float64
+  threads: 1
+  log_every: 100
+  curriculum_start: 0.25
+  curriculum_fraction: 0.6
+  t_final: 1.0
+  lambda_ic: 100.0
+  x0:
+  - -6.696775572337375
+  - -12.019772560360504
+  - 12.64308831498483
+  seed: 0
+  device: cpu
