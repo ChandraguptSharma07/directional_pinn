@@ -9,3 +9,4 @@ results/**/data/
 *.npz
 *.pt
 .venv-cuda/
+logs/

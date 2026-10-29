@@ -128,44 +128,47 @@ seed or trajectory.
 ## Repository layout
 
 ```text
-config/default.yaml              settings for every experiment (one section each)
-src/systems/linear_saddle.py     Phase 0 linear systems, exact solutions, direction utilities
-src/systems/lorenz63.py          Lorenz-63 right-hand side, analytic Jacobian, fixed points, Jacobian gate
-src/dynamics/jacobian.py         complex-step and central-difference Jacobians, Jacobian checks
-src/dynamics/tangent_dynamics.py step propagators of the tangent equation and their products
-src/dynamics/lyapunov.py         QR method (backward vectors, exponents), finite-time singular vectors
-src/solvers/reference_solver.py  solve_ivp wrapper that records solver settings; tolerance study
-src/solvers/lorenz_reference.py  initial conditions with a past, and reference trajectories (Phase 2)
-src/analysis/projections.py      R, R_u, R_perp and alignment
-src/analysis/plots.py            shared figure style
-src/utils/checks.py              pass/fail record of numerical checks
-src/utils/reproducibility.py     config loading, CSV/JSON output, environment and git info
-src/pinn/                        Phase 4 (empty for now)
-experiments/01_linear_sanity.py  Phase 0 experiment
-experiments/02_lorenz_jacobian.py  Phase 1 checks
-experiments/03_lorenz_reference.py Phase 2 reference trajectories
-experiments/04_lorenz_lyapunov.py  Phase 3 exponents and expanding directions
-docs/phase0_linear_saddle.md     Phase 0 explanation and results
-docs/phase1_lorenz_jacobian.md   Phase 1 explanation and results
-docs/phase2_lorenz_reference.md  Phase 2 explanation and results
-docs/phase3_lyapunov.md          Phase 3 explanation and results
-tests/                           unit tests (pytest)
-results/                         generated outputs, one directory per run
-notebooks/                       exploration notebooks (none yet)
+config/default.yaml                 settings for every experiment (one section each)
+src/systems/linear_saddle.py        Phase 0 linear systems, exact solutions, direction utilities
+src/systems/lorenz63.py             Lorenz-63 right-hand side, analytic Jacobian, fixed points, Jacobian gate
+src/solvers/reference_solver.py     solve_ivp wrapper that records solver settings; tolerance study
+src/solvers/lorenz_reference.py     initial conditions with a past, and reference trajectories
+src/dynamics/jacobian.py            complex-step and central-difference Jacobians, Jacobian checks
+src/dynamics/tangent_dynamics.py    step propagators of the tangent equation and their products
+src/dynamics/lyapunov.py            QR method (backward vectors, exponents), finite-time singular vectors
+src/pinn/model.py                   the network: rescaled time in, rescaled state out
+src/pinn/residual.py                residual by automatic differentiation
+src/pinn/train.py                   standard PINN loss, Adam, time curriculum, stacked training of many runs
+src/pinn/runs.py                    train, evaluate against the reference, and save one run
+src/analysis/projections.py         R, R_u, R_perp and alignment
+src/analysis/future_error.py        future error, error created within a horizon, linear reconstruction
+src/analysis/metrics.py             correlations, fixed-size alignment effect, held-out regression, bootstrap
+src/analysis/plots.py               shared figure style
+src/utils/                          checks, reproducibility records, seeding
+experiments/01_linear_sanity.py     Phase 0: linear saddle
+experiments/02_lorenz_jacobian.py   Phase 1: Lorenz-63 and its Jacobian
+experiments/03_lorenz_reference.py  Phase 2: reference trajectories and tolerance study
+experiments/04_lorenz_lyapunov.py   Phase 3: exponents, b1 and s1
+experiments/05_pinn_pilot.py        Phase 4: choice of window length and initial-condition weight
+experiments/06_pinn_runs.py         Phases 4-7: all PINN runs (8 windows x 5 seeds; float64 check)
+experiments/07_directional_analysis.py  Phases 5-8: the central experiment and its controls
+docs/                               one note per phase, the analysis plan, and the results
+tests/                              unit tests (pytest)
+results/                            generated outputs, one directory per experiment
 ```
 
-Modules from the original outline that are not there yet
-(`pinn/{model,residual,train}.py`,
-`analysis/{future_error,metrics}.py`, `utils/seed.py`) are added in the phase that
-needs them. Experiments are numbered in the order they are built, so the PINN
-experiments will follow the reference (03) and Lyapunov (04) scripts.
-`utils/logging.py` became `utils/reproducibility.py` to avoid confusion with
-Python's `logging` module.
+Experiments are numbered in the order they run. `utils/logging.py` from the
+original outline became `utils/reproducibility.py`, to avoid confusion with
+Python's `logging` module. No notebook was needed.
 
-Each run writes `config.yaml` (settings used), `metadata.json` (time, command,
-runtime, Python and package versions, platform, git commit when available),
-`metrics.json` (results and pass/fail checks), `data/*.csv` (the data behind every
-figure) and `figures/*.png|pdf`.
+Each experiment writes `config.yaml` (settings used), `metadata.json` (time,
+command, runtime, Python and package versions, platform, git commit and
+whether the code had uncommitted changes), `metrics.json` (results and
+pass/fail checks) and `figures/`. Bulky arrays (`data/`, `*.npz`, `*.pt`) are
+not tracked in git; the scripts regenerate them. Each PINN run directory holds
+`config.yaml`, `model.pt`, `history.json`, `trajectory.npz`, `residuals.npz` and
+`metrics.json`; the Lyapunov data shared by all runs of a window are in
+`results/lorenz_lyapunov/data/`.
 
 ## Reproducing
 
