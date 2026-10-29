@@ -1,0 +1,18 @@
+lorenz:
+  params:
+    sigma: 10.0
+    rho: 28.0
+    beta: 2.6666666666666665
+lorenz_jacobian_check:
+  n_states: 1000
+  seed: 0
+  box:
+  - - -30.0
+    - 30.0
+  - - -30.0
+    - 30.0
+  - - -5.0
+    - 60.0
+  rho_range:
+  - 1.5
+  - 40.0

@@ -1,0 +1,177 @@
+{
+  "experiment": "02_lorenz_jacobian",
+  "params": {
+    "sigma": 10.0,
+    "rho": 28.0,
+    "beta": 2.6666666666666665
+  },
+  "jacobian_check": {
+    "n_states": 1003,
+    "passed": true,
+    "methods": {
+      "complex_step": {
+        "max_relative_error": 1.3077900255168825e-16,
+        "median_relative_error": 0.0,
+        "tolerance": 1e-12,
+        "passed": true
+      },
+      "central_difference": {
+        "max_relative_error": 2.0532023130959686e-10,
+        "median_relative_error": 1.2406685261544504e-11,
+        "tolerance": 1e-07,
+        "passed": true
+      }
+    }
+  },
+  "control_sign_error": {
+    "n_states": 1003,
+    "passed": false,
+    "methods": {
+      "complex_step": {
+        "max_relative_error": 1.3245506849922664,
+        "median_relative_error": 0.8692154159718374,
+        "tolerance": 1e-12,
+        "passed": false
+      },
+      "central_difference": {
+        "max_relative_error": 1.3245506849915318,
+        "median_relative_error": 0.8692154159727516,
+        "tolerance": 1e-07,
+        "passed": false
+      }
+    }
+  },
+  "divergence": -13.666666666666666,
+  "fixed_points": {
+    "origin": {
+      "state": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "eigenvalues": [
+        {
+          "real": -22.827723451163457,
+          "imag": 0.0
+        },
+        {
+          "real": -2.6666666666666665,
+          "imag": 0.0
+        },
+        {
+          "real": 11.827723451163456,
+          "imag": 0.0
+        }
+      ]
+    },
+    "C+": {
+      "state": [
+        8.48528137423857,
+        8.48528137423857,
+        27.0
+      ],
+      "eigenvalues": [
+        {
+          "real": 0.09395562396468593,
+          "imag": -10.19450522092785
+        },
+        {
+          "real": -13.854577914596042,
+          "imag": 0.0
+        },
+        {
+          "real": 0.09395562396468593,
+          "imag": 10.19450522092785
+        }
+      ]
+    },
+    "C-": {
+      "state": [
+        -8.48528137423857,
+        -8.48528137423857,
+        27.0
+      ],
+      "eigenvalues": [
+        {
+          "real": 0.09395562396468593,
+          "imag": -10.19450522092785
+        },
+        {
+          "real": -13.854577914596042,
+          "imag": 0.0
+        },
+        {
+          "real": 0.09395562396468593,
+          "imag": 10.19450522092785
+        }
+      ]
+    }
+  },
+  "hopf_rho": {
+    "root_of_growth_rate": 24.73684210526312,
+    "closed_form": 24.736842105263154
+  },
+  "checks": [
+    {
+      "name": "Jacobian vs complex_step, max relative error",
+      "value": 1.3077900255168825e-16,
+      "tolerance": 1e-12,
+      "passed": true
+    },
+    {
+      "name": "Jacobian vs central_difference, max relative error",
+      "value": 2.0532023130959686e-10,
+      "tolerance": 1e-07,
+      "passed": true
+    },
+    {
+      "name": "control: Jacobian with a sign error is rejected (0 = rejected)",
+      "value": 0.0,
+      "tolerance": 0.0,
+      "passed": true
+    },
+    {
+      "name": "origin: max |f| at the fixed point",
+      "value": 0.0,
+      "tolerance": 1e-12,
+      "passed": true
+    },
+    {
+      "name": "origin: eigenvalues vs closed form, max |difference|",
+      "value": 1.7763568394002505e-15,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "name": "C+: max |f| at the fixed point",
+      "value": 1.4210854715202004e-14,
+      "tolerance": 1e-12,
+      "passed": true
+    },
+    {
+      "name": "C+: eigenvalues vs closed form, max |difference|",
+      "value": 1.0658141036401503e-14,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "name": "C-: max |f| at the fixed point",
+      "value": 1.4210854715202004e-14,
+      "tolerance": 1e-12,
+      "passed": true
+    },
+    {
+      "name": "C-: eigenvalues vs closed form, max |difference|",
+      "value": 1.0658141036401503e-14,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "name": "Hopf threshold: root of growth rate vs closed form",
+      "value": 3.552713678800501e-14,
+      "tolerance": 1e-08,
+      "passed": true
+    }
+  ],
+  "all_checks_passed": true
+}

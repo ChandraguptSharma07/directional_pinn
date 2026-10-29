@@ -1,0 +1,493 @@
+{
+  "experiment": "01_linear_sanity",
+  "solver": {
+    "method": "DOP853",
+    "rtol": 1e-10,
+    "atol": 1e-12
+  },
+  "part1_reference": {
+    "max_relative_error": 1.971407712258282e-10,
+    "solver_stats": {
+      "nfev": 257,
+      "njev": 0,
+      "nlu": 0,
+      "status": 0,
+      "message": "The solver successfully reached the end of the integration interval."
+    }
+  },
+  "part2_state_perturbations": {
+    "epsilon": 0.001,
+    "final_size": {
+      "unstable": 0.14841315909742336,
+      "stable": 6.737946999349313e-06
+    },
+    "final_size_exact": {
+      "unstable": 0.1484131591025766,
+      "stable": 6.7379469990854676e-06
+    },
+    "final_ratio": 22026.46579317939,
+    "final_ratio_exact": 22026.465794806718
+  },
+  "part3_constant_residuals": {
+    "residual_over_eps": {
+      "unstable": {
+        "R": {
+          "min": 0.9994562265752419,
+          "max": 1.0002718190779902
+        },
+        "R_u": {
+          "min": 0.9994562265727147,
+          "max": 1.0002718190773585
+        },
+        "R_perp": {
+          "min": 1.1241138506146164e-06,
+          "max": 0.00033308361935269204
+        }
+      },
+      "stable": {
+        "R": {
+          "min": 0.9998336663679704,
+          "max": 1.000332750726207
+        },
+        "R_u": {
+          "min": 1.6683346527185394e-06,
+          "max": 0.0004943393470124846
+        },
+        "R_perp": {
+          "min": 0.9998336663665786,
+          "max": 1.000332750720645
+        }
+      }
+    },
+    "error_after_horizon_from_t0": [
+      {
+        "horizon": 0.05,
+        "unstable": 5.127109637930935e-05,
+        "stable": 4.877057549934616e-05,
+        "ratio": 1.0512710964420897,
+        "ratio_exact": 1.0512710963760241
+      },
+      {
+        "horizon": 0.1,
+        "unstable": 0.00010517091807477584,
+        "stable": 9.516258196262672e-05,
+        "ratio": 1.1051709180829046,
+        "ratio_exact": 1.1051709180756477
+      },
+      {
+        "horizon": 0.25,
+        "unstable": 0.0002840254166445993,
+        "stable": 0.00022119921706398316,
+        "ratio": 1.2840254157067983,
+        "ratio_exact": 1.2840254166877414
+      },
+      {
+        "horizon": 0.5,
+        "unstable": 0.0006487212708267028,
+        "stable": 0.000393469340222774,
+        "ratio": 1.6487212712924735,
+        "ratio_exact": 1.6487212707001282
+      },
+      {
+        "horizon": 1.0,
+        "unstable": 0.0017182818284827185,
+        "stable": 0.0006321205586988787,
+        "ratio": 2.7182818290541486,
+        "ratio_exact": 2.718281828459045
+      }
+    ],
+    "final_error": {
+      "unstable": 0.14741315909757136,
+      "stable": 0.0009932620530038088
+    },
+    "final_ratio": 148.41315909710494,
+    "final_ratio_exact": 148.4131591025766
+  },
+  "part4_alignment_sweep": {
+    "ratio_table": [
+      {
+        "horizon": 0.05,
+        "state_ratio": 1.1051709180756477,
+        "state_ratio_exact": 1.1051709180756477,
+        "residual_ratio": 1.0512710963760257,
+        "residual_ratio_exact": 1.0512710963760241,
+        "isotropic_state_ratio": 1.0000000000000004,
+        "isotropic_residual_ratio": 1.0000000000000002
+      },
+      {
+        "horizon": 0.1,
+        "state_ratio": 1.22140275816017,
+        "state_ratio_exact": 1.2214027581601699,
+        "residual_ratio": 1.105170918075648,
+        "residual_ratio_exact": 1.1051709180756477,
+        "isotropic_state_ratio": 1.0000000000000004,
+        "isotropic_residual_ratio": 1.0000000000000002
+      },
+      {
+        "horizon": 0.25,
+        "state_ratio": 1.648721270700128,
+        "state_ratio_exact": 1.6487212707001282,
+        "residual_ratio": 1.2840254166877412,
+        "residual_ratio_exact": 1.2840254166877414,
+        "isotropic_state_ratio": 1.0000000000000004,
+        "isotropic_residual_ratio": 1.0000000000000004
+      },
+      {
+        "horizon": 0.5,
+        "state_ratio": 2.718281828459045,
+        "state_ratio_exact": 2.718281828459045,
+        "residual_ratio": 1.6487212707001282,
+        "residual_ratio_exact": 1.6487212707001282,
+        "isotropic_state_ratio": 1.0000000000000002,
+        "isotropic_residual_ratio": 1.0000000000000004
+      },
+      {
+        "horizon": 1.0,
+        "state_ratio": 7.3890560989306495,
+        "state_ratio_exact": 7.38905609893065,
+        "residual_ratio": 2.718281828459045,
+        "residual_ratio_exact": 2.718281828459045,
+        "isotropic_state_ratio": 1.0000000000000002,
+        "isotropic_residual_ratio": 1.0000000000000002
+      }
+    ]
+  },
+  "part5_sheared_saddle": {
+    "shear": 2.0,
+    "direction_angles_deg": {
+      "clv1": 0.0,
+      "clv2": 135.0,
+      "b1": 0.0,
+      "b2": 90.0,
+      "f1": 45.0,
+      "f2": 135.0
+    },
+    "instantaneous_most_amplified_direction_deg": 22.5,
+    "asymptotic_growth_coefficient": {
+      "b1": 1.0,
+      "b2": 1.0,
+      "f1": 1.414213562373095,
+      "f2": 1.1102230246251565e-16
+    },
+    "per_horizon": [
+      {
+        "horizon": 0.25,
+        "most_amplified_direction_deg": 29.380952098075674,
+        "max_growth": 1.419145106574889,
+        "growth": {
+          "b1": 1.2840254166877414,
+          "b2": 0.9283224602073328,
+          "f1": 1.379845354057073,
+          "f2": 0.7788007830714049
+        },
+        "growth_over_exp_dt": {
+          "b1": 1.0,
+          "b2": 0.7229782589522439,
+          "f1": 1.0746246422570884,
+          "f2": 0.6065306597126334
+        }
+      },
+      {
+        "horizon": 1.0,
+        "most_amplified_direction_deg": 41.146343298242094,
+        "max_growth": 3.601623497511937,
+        "growth": {
+          "b1": 2.7182818284590455,
+          "b2": 2.379018004430373,
+          "f1": 3.593528555764921,
+          "f2": 0.3678794411714424
+        },
+        "growth_over_exp_dt": {
+          "b1": 1.0000000000000002,
+          "b2": 0.8751918140066455,
+          "f1": 1.3219852769284193,
+          "f2": 0.13533528323661273
+        }
+      },
+      {
+        "horizon": 4.0,
+        "most_amplified_direction_deg": 44.990389703978906,
+        "max_growth": 77.20049531724047,
+        "growth": {
+          "b1": 54.59815003317238,
+          "b2": 54.579837467420646,
+          "f1": 77.20049423126919,
+          "f2": 0.018315638888739817
+        },
+        "growth_over_exp_dt": {
+          "b1": 1.0000000000005156,
+          "b2": 0.9996645936590806,
+          "f1": 1.4139763743717328,
+          "f2": 0.00033546262790261507
+        }
+      }
+    ]
+  },
+  "checks": [
+    {
+      "name": "part1: numerical vs exact trajectory, max relative error",
+      "value": 1.971407712258282e-10,
+      "tolerance": 1e-08,
+      "passed": true
+    },
+    {
+      "name": "part1: matrix-exponential solution vs closed form, max relative error",
+      "value": 0.0,
+      "tolerance": 1e-12,
+      "passed": true
+    },
+    {
+      "name": "part2: unstable perturbation, numerical vs exact, max relative error",
+      "value": 1.431884604299836e-09,
+      "tolerance": 0.001,
+      "passed": true
+    },
+    {
+      "name": "part2: stable perturbation, numerical vs exact, max relative error",
+      "value": 5.126735219579559e-08,
+      "tolerance": 0.001,
+      "passed": true
+    },
+    {
+      "name": "part2: size ratio unstable/stable vs exp(2t), max relative error",
+      "value": 4.1389858207452335e-10,
+      "tolerance": 0.001,
+      "passed": true
+    },
+    {
+      "name": "part3: unstable residual, error numerical vs exact (t > 0), max relative error",
+      "value": 1.1552499930948311e-08,
+      "tolerance": 0.001,
+      "passed": true
+    },
+    {
+      "name": "part3: unstable residual, measured vs prescribed, max |difference| / eps",
+      "value": 0.0005437780725914905,
+      "tolerance": 0.005,
+      "passed": true
+    },
+    {
+      "name": "part3: stable residual, error numerical vs exact (t > 0), max relative error",
+      "value": 3.2586579873367705e-08,
+      "tolerance": 0.001,
+      "passed": true
+    },
+    {
+      "name": "part3: stable residual, measured vs prescribed, max |difference| / eps",
+      "value": 0.0004943444466355252,
+      "tolerance": 0.005,
+      "passed": true
+    },
+    {
+      "name": "part4: saddle, dt=0.05, closed forms vs numerical integration, max relative error",
+      "value": 1.353373419795265e-15,
+      "tolerance": 1e-08,
+      "passed": true
+    },
+    {
+      "name": "part4: saddle, dt=0.1, closed forms vs numerical integration, max relative error",
+      "value": 1.4515007444943718e-15,
+      "tolerance": 1e-08,
+      "passed": true
+    },
+    {
+      "name": "part4: saddle, dt=0.25, closed forms vs numerical integration, max relative error",
+      "value": 7.370117187960473e-14,
+      "tolerance": 1e-08,
+      "passed": true
+    },
+    {
+      "name": "part4: saddle, dt=0.5, closed forms vs numerical integration, max relative error",
+      "value": 3.29608828246723e-12,
+      "tolerance": 1e-08,
+      "passed": true
+    },
+    {
+      "name": "part4: saddle, dt=1, closed forms vs numerical integration, max relative error",
+      "value": 8.172923375494799e-12,
+      "tolerance": 1e-08,
+      "passed": true
+    },
+    {
+      "name": "part4: isotropic, dt=0.05, closed forms vs numerical integration, max relative error",
+      "value": 1.353373419795265e-15,
+      "tolerance": 1e-08,
+      "passed": true
+    },
+    {
+      "name": "part4: isotropic, dt=0.1, closed forms vs numerical integration, max relative error",
+      "value": 1.4515007444943718e-15,
+      "tolerance": 1e-08,
+      "passed": true
+    },
+    {
+      "name": "part4: isotropic, dt=0.25, closed forms vs numerical integration, max relative error",
+      "value": 6.67031808610328e-14,
+      "tolerance": 1e-08,
+      "passed": true
+    },
+    {
+      "name": "part4: isotropic, dt=0.5, closed forms vs numerical integration, max relative error",
+      "value": 2.6780493752416344e-12,
+      "tolerance": 1e-08,
+      "passed": true
+    },
+    {
+      "name": "part4: isotropic, dt=1, closed forms vs numerical integration, max relative error",
+      "value": 7.942948765585288e-12,
+      "tolerance": 1e-08,
+      "passed": true
+    },
+    {
+      "name": "part4: saddle, dt=0.05, state ratio vs exp(2 dt), relative error",
+      "value": 0.0,
+      "tolerance": 1e-12,
+      "passed": true
+    },
+    {
+      "name": "part4: saddle, dt=0.05, residual ratio vs exp(dt), relative error",
+      "value": 1.5543122344752192e-15,
+      "tolerance": 1e-12,
+      "passed": true
+    },
+    {
+      "name": "part4: isotropic, dt=0.05, max/min ratio - 1",
+      "value": 4.440892098500626e-16,
+      "tolerance": 1e-12,
+      "passed": true
+    },
+    {
+      "name": "part4: saddle, dt=0.1, state ratio vs exp(2 dt), relative error",
+      "value": 2.220446049250313e-16,
+      "tolerance": 1e-12,
+      "passed": true
+    },
+    {
+      "name": "part4: saddle, dt=0.1, residual ratio vs exp(dt), relative error",
+      "value": 2.220446049250313e-16,
+      "tolerance": 1e-12,
+      "passed": true
+    },
+    {
+      "name": "part4: isotropic, dt=0.1, max/min ratio - 1",
+      "value": 4.440892098500626e-16,
+      "tolerance": 1e-12,
+      "passed": true
+    },
+    {
+      "name": "part4: saddle, dt=0.25, state ratio vs exp(2 dt), relative error",
+      "value": 1.1102230246251565e-16,
+      "tolerance": 1e-12,
+      "passed": true
+    },
+    {
+      "name": "part4: saddle, dt=0.25, residual ratio vs exp(dt), relative error",
+      "value": 2.220446049250313e-16,
+      "tolerance": 1e-12,
+      "passed": true
+    },
+    {
+      "name": "part4: isotropic, dt=0.25, max/min ratio - 1",
+      "value": 4.440892098500626e-16,
+      "tolerance": 1e-12,
+      "passed": true
+    },
+    {
+      "name": "part4: saddle, dt=0.5, state ratio vs exp(2 dt), relative error",
+      "value": 0.0,
+      "tolerance": 1e-12,
+      "passed": true
+    },
+    {
+      "name": "part4: saddle, dt=0.5, residual ratio vs exp(dt), relative error",
+      "value": 0.0,
+      "tolerance": 1e-12,
+      "passed": true
+    },
+    {
+      "name": "part4: isotropic, dt=0.5, max/min ratio - 1",
+      "value": 4.440892098500626e-16,
+      "tolerance": 1e-12,
+      "passed": true
+    },
+    {
+      "name": "part4: saddle, dt=1, state ratio vs exp(2 dt), relative error",
+      "value": 1.1102230246251565e-16,
+      "tolerance": 1e-12,
+      "passed": true
+    },
+    {
+      "name": "part4: saddle, dt=1, residual ratio vs exp(dt), relative error",
+      "value": 0.0,
+      "tolerance": 1e-12,
+      "passed": true
+    },
+    {
+      "name": "part4: isotropic, dt=1, max/min ratio - 1",
+      "value": 2.220446049250313e-16,
+      "tolerance": 1e-12,
+      "passed": true
+    },
+    {
+      "name": "part5: clv1 vs closed form, sin(angle)",
+      "value": 0.0,
+      "tolerance": 1e-12,
+      "passed": true
+    },
+    {
+      "name": "part5: b2 vs closed form, sin(angle)",
+      "value": 6.123233995736766e-17,
+      "tolerance": 1e-12,
+      "passed": true
+    },
+    {
+      "name": "part5: clv2 vs closed form, sin(angle)",
+      "value": 1.1102230246251565e-16,
+      "tolerance": 1e-12,
+      "passed": true
+    },
+    {
+      "name": "part5: f1 vs closed form, sin(angle)",
+      "value": 1.1102230246251565e-16,
+      "tolerance": 1e-12,
+      "passed": true
+    },
+    {
+      "name": "part5: b1 from repeated QR vs clv1, sin(angle)",
+      "value": 1.5009265797914575e-18,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "name": "part5: f1 from SVD of Phi(20) vs closed form, sin(angle)",
+      "value": 1.1102230246251565e-16,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "name": "part5: f2 from SVD of Phi(20) vs clv2, sin(angle)",
+      "value": 1.1102230246251565e-16,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "name": "part5: dt=0.25, growth vs singular-vector formula, max relative error",
+      "value": 4.440892098500626e-16,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "name": "part5: dt=1, growth vs singular-vector formula, max relative error",
+      "value": 9.992007221626409e-16,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "name": "part5: dt=4, growth vs singular-vector formula, max relative error",
+      "value": 7.571721027943568e-14,
+      "tolerance": 1e-10,
+      "passed": true
+    }
+  ],
+  "all_checks_passed": true
+}

@@ -1,0 +1,23 @@
+{
+  "created_utc": "2026-10-29T06:52:36+00:00",
+  "command": [
+    "experiments/01_linear_sanity.py"
+  ],
+  "runtime_seconds": 6.848,
+  "git": {
+    "commit": "69fdf0414dc28f25903ccc2913e087b2a60d3301",
+    "dirty": false
+  },
+  "environment": {
+    "python": "3.12.11",
+    "platform": "Linux-7.2.8-1-cachyos-x86_64-with-glibc2.44",
+    "packages": {
+      "numpy": "2.5.4",
+      "scipy": "1.18.1",
+      "matplotlib": "3.11.2",
+      "PyYAML": "6.0.3",
+      "pytest": "9.2.0",
+      "torch": null
+    }
+  }
+}
