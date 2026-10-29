@@ -21,22 +21,22 @@ from src.systems.lorenz63 import LorenzParams
 
 
 def lorenz_rhs_torch(x: torch.Tensor, params: LorenzParams) -> torch.Tensor:
-    """Lorenz right-hand side for a batch of states, shape (N, 3) -> (N, 3)."""
-    X, Y, Z = x[:, 0], x[:, 1], x[:, 2]
+    """Lorenz right-hand side for a batch of states, shape (..., 3) -> (..., 3)."""
+    X, Y, Z = x[..., 0], x[..., 1], x[..., 2]
     return torch.stack(
         [
             params.sigma * (Y - X),
             X * (params.rho - Z) - Y,
             X * Y - params.beta * Z,
         ],
-        dim=1,
+        dim=-1,
     )
 
 
 def state_and_time_derivative(
     model: Callable[[torch.Tensor], torch.Tensor], t: torch.Tensor, create_graph: bool = True
 ) -> tuple[torch.Tensor, torch.Tensor]:
-    """x_hat(t) and d x_hat/dt at times t (shape (N, 1)); both have shape (N, d).
+    """x_hat(t) and d x_hat/dt at times t (shape (..., N, 1)); both have shape (..., N, d).
 
     Each output component is differentiated with respect to t separately. Every
     x_hat(t_n) depends only on its own t_n, so the gradient of the sum over n
@@ -46,10 +46,10 @@ def state_and_time_derivative(
     t = t.detach().requires_grad_(True)
     x = model(t)
     columns = [
-        torch.autograd.grad(x[:, i].sum(), t, create_graph=create_graph, retain_graph=True)[0]
-        for i in range(x.shape[1])
+        torch.autograd.grad(x[..., i].sum(), t, create_graph=create_graph, retain_graph=True)[0]
+        for i in range(x.shape[-1])
     ]
-    return x, torch.cat(columns, dim=1)
+    return x, torch.cat(columns, dim=-1)
 
 
 def ode_residual(

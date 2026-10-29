@@ -24,7 +24,7 @@ from pathlib import Path
 import numpy as np
 import torch
 
-from src.pinn.train import TrainConfig, evaluate, train_pinn
+from src.pinn.train import PINN, TrainConfig, evaluate, train_pinn, train_pinns
 from src.systems.lorenz63 import LorenzParams
 from src.utils.reproducibility import save_json, write_run_record
 
@@ -32,12 +32,29 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 
 
 def run_job(job: dict) -> dict:
-    """Train, evaluate on the reference grid inside [0, T], save, and return the summary."""
+    """Train one PINN, evaluate it on the reference grid inside [0, T], save, and return the summary."""
+    cfg = TrainConfig.from_dict(job["train"])
+    model, history = train_pinn(cfg, LorenzParams.from_dict(job["params"]))
+    return finish_run(job, model, history)
+
+
+def run_jobs_together(jobs: list[dict]) -> list[dict]:
+    """Train several jobs that differ only in their seed as one stacked model (see train_pinns)."""
+    settings = [{**job["train"], "seed": None} for job in jobs]
+    if any(s != settings[0] for s in settings) or len({job["reference_file"] for job in jobs}) != 1:
+        raise ValueError("jobs trained together must differ only in their seed")
+    cfg = TrainConfig.from_dict(jobs[0]["train"])
+    seeds = [int(job["train"]["seed"]) for job in jobs]
+    models, histories = train_pinns(cfg, seeds, LorenzParams.from_dict(jobs[0]["params"]))
+    return [finish_run(job, model, history) for job, model, history in zip(jobs, models, histories)]
+
+
+def finish_run(job: dict, model: PINN, history: dict) -> dict:
+    """Evaluate a trained PINN against the reference, save the run directory, return the summary."""
     run_dir = Path(job["run_dir"])
     run_dir.mkdir(parents=True, exist_ok=True)
     cfg = TrainConfig.from_dict(job["train"])
     params = LorenzParams.from_dict(job["params"])
-    model, history = train_pinn(cfg, params)
 
     reference = np.load(job["reference_file"])
     inside = reference["t"] <= cfg.t_final + 1e-9

@@ -6,7 +6,9 @@ Run from the repository root (after experiments/03 and 05):
     python experiments/06_pinn_runs.py --set float64_check   # float64 precision check
 
 Every (window, seed) pair is one run, saved under results/<set>/runs/w<k>_s<seed>/
-(see src/pinn/runs.py for the files). Finished runs are skipped, so an
+(see src/pinn/runs.py for the files). The seeds of a window are trained
+together as one stacked model, which gives the same networks as separate
+training up to floating-point rounding but runs several times faster. Finished runs are skipped, so an
 interrupted call can simply be repeated. No run is dropped from the summary,
 whatever its outcome.
 """
@@ -26,7 +28,7 @@ import json
 
 import numpy as np
 
-from src.pinn.runs import run_job
+from src.pinn.runs import run_jobs_together
 from src.utils.reproducibility import load_config, save_json, write_run_record
 
 
@@ -36,7 +38,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--reference", type=Path, default=REPO_ROOT / "results" / "lorenz_reference")
     parser.add_argument("--set", default="pinn_runs", help="config section describing the set of runs")
     parser.add_argument("--out", type=Path, default=None, help="default: results/<set>")
-    parser.add_argument("--workers", type=int, default=6)
+    parser.add_argument("--workers", type=int, default=8)
     args = parser.parse_args(argv)
 
     start = time.perf_counter()
@@ -54,11 +56,17 @@ def main(argv: list[str] | None = None) -> int:
             train = {**config["pinn"], **run_set.get("overrides", {}), "x0": x0, "seed": int(seed)}
             jobs.append({"run_dir": str(run_dir), "window": int(window), "reference_file": str(reference_file),
                          "params": config["lorenz"]["params"], "train": train})
-    print(f"{len(jobs)} runs to train")
+    # The seeds of one window are trained together as one stacked model (identical to separate
+    # training up to rounding, see src/pinn/train.py), one window per worker process.
+    groups = {}
+    for job in jobs:
+        groups.setdefault(job["window"], []).append(job)
+    print(f"{len(jobs)} runs to train in {len(groups)} groups")
     with ProcessPoolExecutor(max_workers=args.workers) as pool:
-        for summary in pool.map(run_job, jobs):
-            print(f"window {summary['window']} seed {summary['seed']}: median error {summary['median_error']:.3g},"
-                  f" max {summary['max_error']:.3g}, {summary['runtime_seconds']:.0f}s", flush=True)
+        for summaries in pool.map(run_jobs_together, groups.values()):
+            for summary in summaries:
+                print(f"window {summary['window']} seed {summary['seed']}: median error {summary['median_error']:.3g},"
+                      f" max {summary['max_error']:.3g}", flush=True)
 
     summaries = [json.loads((d / "metrics.json").read_text()) for d in sorted((out / "runs").iterdir())]
     save_json({"set": args.set, "runs": summaries}, out / "summary.json")

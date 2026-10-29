@@ -6,7 +6,15 @@ import torch
 
 from src.pinn.model import PINN
 from src.pinn.residual import lorenz_residual, lorenz_rhs_torch, ode_residual, state_and_time_derivative
-from src.pinn.train import TrainConfig, collocation_times, evaluate, train_pinn
+from src.pinn.train import (
+    StackedPINN,
+    TrainConfig,
+    collocation_times,
+    evaluate,
+    train_pinn,
+    train_pinns,
+    training_interval,
+)
 from src.systems.lorenz63 import LorenzParams, lorenz_fixed_points, lorenz_rhs
 
 PARAMS = LorenzParams()
@@ -108,3 +116,43 @@ def test_evaluate_returns_float64_and_leaves_model_unchanged():
     assert next(model.parameters()).dtype == first_dtype
     np.testing.assert_allclose(out["residual"], out["derivative"] - lorenz_rhs(0.0, out["state"], PARAMS),
                                rtol=1e-10, atol=1e-10)
+
+
+def test_stacked_training_matches_separate_training():
+    """Training seeds together gives the same models as training them one by one (float64)."""
+    cfg = TrainConfig(seed=0, dtype="float64", **SMALL)
+    stacked_models, stacked_histories = train_pinns(cfg, [5, 6], PARAMS)
+    for seed, model, history in zip([5, 6], stacked_models, stacked_histories):
+        single_model, single_history = train_pinn(TrainConfig(seed=seed, dtype="float64", **SMALL), PARAMS)
+        np.testing.assert_allclose(history["loss"], single_history["loss"], rtol=1e-9)
+        for p, q in zip(model.parameters(), single_model.parameters()):
+            torch.testing.assert_close(p, q, rtol=1e-9, atol=1e-11)
+        assert history["config"]["seed"] == seed
+
+
+def test_stacked_model_evaluates_each_member():
+    torch.manual_seed(0)
+    models = [PINN(2.0, [0.0, 0.0, 25.0], [10.0, 10.0, 10.0], hidden=[8, 8]) for _ in range(3)]
+    stack = StackedPINN(models)
+    t = torch.rand(3, 5, 1) * 2.0
+    out = stack(t)
+    for m, model in enumerate(models):
+        torch.testing.assert_close(out[m], model(t[m]))
+        for p, q in zip(stack.unstack(m).parameters(), model.parameters()):
+            assert torch.equal(p, q)
+
+
+def test_time_curriculum_grows_the_interval_linearly():
+    cfg = TrainConfig(t_final=3.0, x0=[0.0, 0.0, 0.0], iterations=1000, curriculum_start=0.5, curriculum_fraction=0.5)
+    assert training_interval(cfg, 0) == pytest.approx(0.5)
+    assert training_interval(cfg, 250) == pytest.approx(1.75)
+    assert training_interval(cfg, 500) == pytest.approx(3.0)
+    assert training_interval(cfg, 900) == pytest.approx(3.0)
+    assert training_interval(TrainConfig(t_final=3.0, x0=[0.0, 0.0, 0.0]), 10) == 3.0
+
+
+def test_stacked_training_matches_separate_training_with_curriculum():
+    cfg = TrainConfig(seed=0, dtype="float64", curriculum_start=0.1, **SMALL)
+    models, histories = train_pinns(cfg, [2], PARAMS)
+    single, history = train_pinn(TrainConfig(seed=2, dtype="float64", curriculum_start=0.1, **SMALL), PARAMS)
+    np.testing.assert_allclose(histories[0]["loss"], history["loss"], rtol=1e-9)
