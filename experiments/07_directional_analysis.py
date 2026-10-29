@@ -218,12 +218,14 @@ def analyse_target(samples: pd.DataFrame, horizons: list[float], target: str, wi
 
 
 def decide(primary: dict, horizons: list[float]) -> dict:
-    """Apply the decision rule of docs/analysis_plan.md."""
+    """Apply the decision rule of docs/analysis_plan.md (horizons without data count as not passing)."""
     verdicts = {}
     for name in DIRECTIONS:
         conditions = {}
         for dt in horizons:
             entry = primary["horizons"][f"{dt:g}"]
+            if "skipped" in entry:
+                continue
             model = entry["held_out"][f"M1_{name}"]
             controls = entry["controls"]
             c1 = model["delta"] >= MIN_DELTA_R2 and model["ci_low"] > 0
@@ -476,14 +478,16 @@ def main(argv: list[str] | None = None) -> int:
 
     primary["per_run"].to_csv(data_dir / "per_run_primary.csv", index=False)
     linearity.to_csv(data_dir / "linearity.csv", index=False)
+    available = [dt for dt in horizons if "skipped" not in primary["horizons"][f"{dt:g}"]]
     representative = next(run for run in runs if run["summary"]["finite"])
     plot_single_run(representative, lyapunov[representative["summary"]["window"]], figures_dir)
-    for dt in (horizons[0], 0.25, horizons[-1]):
+    shown = sorted({available[0], 0.25 if 0.25 in available else available[0], available[-1]})
+    for dt in shown:
         plot_scatter(samples, dt, figures_dir)
-    plot_alignment_at_fixed_size(samples, [horizons[0], 0.25, horizons[-1]], figures_dir)
+    plot_alignment_at_fixed_size(samples, shown, figures_dir)
     if with_controls:
-        plot_horizon_summary(primary, horizons, figures_dir)
-    plot_runs(primary["per_run"], horizons, figures_dir)
+        plot_horizon_summary(primary, available, figures_dir)
+    plot_runs(primary["per_run"], available, figures_dir)
 
     metrics = {
         "experiment": "07_directional_analysis",
@@ -507,7 +511,7 @@ def main(argv: list[str] | None = None) -> int:
                      time.perf_counter() - start)
 
     print(f"Results written to {args.out}")
-    for dt in horizons:
+    for dt in available:
         entry = primary["horizons"][f"{dt:g}"]["held_out"]
         line = "  ".join(f"{name}: {entry[name]['delta']:+.4f} [{entry[name]['ci_low']:+.4f}, {entry[name]['ci_high']:+.4f}]"
                          for name in ("M1_b1", "M1_s1", "M3_amp"))
