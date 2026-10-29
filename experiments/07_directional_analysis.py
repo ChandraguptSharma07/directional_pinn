@@ -17,7 +17,6 @@ test (4), and "not supported" otherwise.
 from __future__ import annotations
 
 import argparse
-import json
 import sys
 import time
 from pathlib import Path
@@ -33,7 +32,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from src.analysis.future_error import created_error, future_error, horizon_steps, linearized_error
+from src.analysis.future_error import linearized_error
 from src.analysis.metrics import (
     alignment_effect,
     bootstrap_delta_r_squared,
@@ -46,85 +45,12 @@ from src.analysis.metrics import (
 )
 from src.analysis.plots import COLORS, apply_style, ordinal_colors, save_figure
 from src.analysis.projections import decompose_residual
-from src.dynamics.tangent_dynamics import propagators_over
+from src.analysis.samples import DIRECTIONS, N_RANDOM, N_SHUFFLE, build_samples, load_runs
 from src.utils.reproducibility import load_config, save_csv, save_json, write_run_record
 
-STRIDE = 5  # statistics use every 5th grid point (spacing 0.01)
-N_RANDOM, N_SHUFFLE, N_BOOT = 20, 20, 2000
+N_BOOT = 2000
 MIN_DELTA_R2 = 0.02
-DIRECTIONS = ("b1", "s1")
 CONTROL_DIRECTIONS = ("b3", "s3", "flow")
-
-
-# --- assembling the samples ---------------------------------------------------------
-
-
-def load_runs(runs_dir: Path) -> list[dict]:
-    runs = []
-    for run_dir in sorted((runs_dir / "runs").iterdir()):
-        summary = json.loads((run_dir / "metrics.json").read_text())
-        trajectory = np.load(run_dir / "trajectory.npz")
-        residuals = np.load(run_dir / "residuals.npz")
-        runs.append({"name": run_dir.name, "summary": summary, "t": trajectory["t"], "error": trajectory["error"],
-                     "pinn": trajectory["pinn"], "reference": trajectory["reference"],
-                     "residual": residuals["residual"]})
-    return runs
-
-
-def unit_rows(v: np.ndarray) -> np.ndarray:
-    return v / np.linalg.norm(v, axis=1, keepdims=True)
-
-
-def build_samples(runs: list[dict], lyapunov: dict, horizons: list[float]) -> pd.DataFrame:
-    """One row per (run, horizon, sampled time) with targets, predictors and control alignments."""
-    tables = []
-    for run_number, run in enumerate(runs):
-        if not run["summary"]["finite"]:
-            continue
-        lyap = lyapunov[run["summary"]["window"]]
-        t, error, residual = run["t"], run["error"], run["residual"]
-        n, h = len(t), t[1] - t[0]
-        if not np.allclose(lyap["t"][:n], t, atol=1e-12):
-            raise ValueError(f"{run['name']}: time grids of run and Lyapunov data differ")
-        step_props = lyap["step_propagators"][: n - 1]
-        for k, dt in enumerate(horizons):
-            m = horizon_steps(dt, h)
-            if m >= n:
-                continue
-            j = np.arange(0, n - m, STRIDE)
-            phi = propagators_over(step_props, m)[j]
-            r = residual[j]
-            V = lyap[f"V_{dt:g}"][j]
-            directions = {
-                "b1": lyap["Q"][j, :, 0], "b3": lyap["Q"][j, :, 2],
-                "s1": V[:, :, 0], "s3": V[:, :, 2], "flow": lyap["flow_direction"][j],
-            }
-            R = np.linalg.norm(r, axis=1)
-            floor = 1e-6 * np.median(np.linalg.norm(residual, axis=1))
-            row = {
-                "run": run["name"], "window": run["summary"]["window"], "seed": run["summary"]["seed"],
-                "horizon": dt, "t": t[j],
-                "log_E_future": np.log(future_error(error, m)[j]),
-                "log_N": np.log(created_error(error, propagators_over(step_props, m), m)[j]),
-                "log_E_now": np.log(np.linalg.norm(error[j], axis=1)),
-                "log_R": np.log(R),
-                "log_amp": np.log(np.linalg.norm(np.einsum("jab,jb->ja", phi, r), axis=1) / R),
-            }
-            for name, u in directions.items():
-                parts = decompose_residual(r, u)
-                row[f"A_{name}"] = parts.alignment
-                row[f"log_Ru_{name}"] = np.log(parts.R_u + floor)
-                row[f"log_Rperp_{name}"] = np.log(parts.R_perp + floor)
-            for d in range(N_RANDOM):
-                rng = np.random.default_rng([d, run_number, k])
-                row[f"A_random_{d}"] = decompose_residual(r, unit_rows(rng.normal(size=r.shape))).alignment
-            for d in range(N_SHUFFLE):
-                rng = np.random.default_rng([1000 + d, run_number, k])
-                permutation = rng.permutation(len(j))
-                for name in DIRECTIONS:
-                    row[f"A_shuffled_{name}_{d}"] = decompose_residual(r, directions[name][permutation]).alignment
-            tables.append(pd.DataFrame(row))
-    return pd.concat(tables, ignore_index=True)
 
 
 # --- analyses ------------------------------------------------------------------------
@@ -184,7 +110,7 @@ def analyse_target(samples: pd.DataFrame, horizons: list[float], target: str, wi
     per_run = per_run_correlations(samples, target)
     for k, dt in enumerate(horizons):
         subset = samples[samples["horizon"] == dt]
-        if subset["window"].nunique() < 2 or len(per_run) == 0:
+        if subset["window"].nunique() < 2 or len(per_run) == 0 or dt not in set(per_run["horizon"]):
             out[f"{dt:g}"] = {"n_samples": int(len(subset)), "skipped": "fewer than two windows with data"}
             continue
         runs_dt = per_run[per_run["horizon"] == dt]

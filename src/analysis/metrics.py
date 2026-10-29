@@ -110,6 +110,8 @@ def bootstrap_mean(values: np.ndarray, n_boot: int = 2000, seed: int = 0) -> dic
     """Mean of per-cluster values with a 95 % bootstrap interval (NaNs ignored)."""
     values = np.asarray(values, dtype=float)
     values = values[np.isfinite(values)]
+    if len(values) == 0:
+        return {"mean": float("nan"), "ci_low": float("nan"), "ci_high": float("nan"), "n": 0}
     rng = np.random.default_rng(seed)
     draws = np.array([rng.choice(values, size=len(values)).mean() for _ in range(n_boot)])
     low, high = np.quantile(draws, [0.025, 0.975])
