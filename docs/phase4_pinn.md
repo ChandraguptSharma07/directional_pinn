@@ -40,6 +40,15 @@ $$
 * float32, one CPU thread per run (runs execute in parallel processes). A run
   is deterministic for a given seed: the unit tests train twice with the same
   seed and get identical losses and weights.
+* **Time curriculum** (added after the first pilot, see below): during the first
+  60 % of the iterations the collocation times are drawn from $[0, T_i]$, with
+  $T_i$ growing linearly from 0.25 to $T$; afterwards from $[0, T]$. The loss is
+  the standard loss at every iteration (only on a growing interval), and at
+  the end of training it is exactly $L$ on $[0, T]$.
+* The seeds of a window are trained together as one stacked model (batched
+  matrix products). The models share nothing, and Adam updates every
+  parameter from its own gradient history, so this is the same as training
+  them one by one; a unit test confirms agreement to $10^{-9}$ in float64.
 * No directional term: this is the standard PINN loss. L-BFGS was not added.
 
 ## Choosing the window length and the initial-condition weight (pilot)
@@ -54,5 +63,22 @@ residual directions:
    1 (about 5 % of the attractor's size) for at least 90 % of the window, so that
    most of the data stay where the linear error picture of Phase 0 applies.
 
-Pilot results and the chosen values are recorded in
-`results/pinn_pilot/metrics.json` and summarised in the results document.
+### First pilot: plain training fails
+
+Without a curriculum, every PINN on windows of length 2 and 3 (all
+$\lambda_{IC} \in \{1, 10, 100\}$) converged to the same wrong answer:
+$\hat x \approx \hat y \approx 0$ with $\hat z$ decaying, which is the exact Lorenz
+solution on the invariant $z$ axis. Its residual is nearly zero except for a
+short jump right after $t = 0$, so it is a cheap minimum of the loss; the error
+is the size of the attractor (median 17.5 for $T = 2$, 22.0 for $T = 3$). The
+windows of length 4 were stopped before finishing. Such a PINN cannot test the
+hypothesis, because its error does not come from small residuals being
+amplified. These runs are kept in `results/pinn_pilot_attempt1/` (weights and
+arrays are not tracked in git; the summaries are in the run directories).
+
+### Second pilot: with the time curriculum
+
+Candidates $T \in \{1, 2, 3, 4\}$ and $\lambda_{IC} \in \{10, 100\}$ (the first pilot showed
+initial-condition errors of about 2 for $\lambda_{IC} = 1$, so that value was
+dropped); same selection rule. Results and the chosen values are in
+`results/pinn_pilot/metrics.json` and in the results document.

@@ -54,6 +54,7 @@ class TrainConfig:
     log_every: int = 100
     curriculum_start: float | None = None  # None: no curriculum
     curriculum_fraction: float = 0.6
+    device: str = "cpu"  # "cuda" to train on a GPU (stacked training only)
 
     @classmethod
     def from_dict(cls, values: dict) -> TrainConfig:
@@ -159,23 +160,27 @@ class StackedPINN(nn.Module):
         return self.out_mean + self.out_scale * h
 
     def unstack(self, m: int) -> PINN:
-        """Model m as an ordinary PINN."""
-        model = copy.deepcopy(self.template)
+        """Model m as an ordinary PINN on the CPU."""
+        model = copy.deepcopy(self.template).cpu()
         linears = [layer for layer in model.net if isinstance(layer, nn.Linear)]
         with torch.no_grad():
             for layer, W, b in zip(linears, self.weights, self.biases):
-                layer.weight.copy_(W[m])
-                layer.bias.copy_(b[m])
+                layer.weight.copy_(W[m].cpu())
+                layer.bias.copy_(b[m].cpu())
         return model
 
 
-def train_pinns(cfg: TrainConfig, seeds: list[int], params: LorenzParams) -> tuple[list[PINN], list[dict]]:
+def train_pinns(
+    cfg: TrainConfig, seeds: list[int], params: LorenzParams, x0s: list[list[float]] | None = None
+) -> tuple[list[PINN], list[dict]]:
     """Train one PINN per seed with the settings of cfg (cfg.seed is ignored), all at once.
 
     Each model gets exactly what ``train_pinn`` would give it: the same
-    initialisation (seeded by its seed), its own stream of collocation times,
-    and its own loss; only the floating-point rounding of batched products
-    differs.
+    initialisation (seeded by its seed), its own stream of collocation times
+    (generated on the CPU, so they do not depend on the device), and its own
+    loss; only the floating-point rounding of batched products differs.
+    Models may have different initial conditions (`x0s`, one per seed;
+    default: cfg.x0 for all), so that runs from several windows can share one stack.
     """
     if cfg.dtype not in DTYPES:
         raise ValueError(f"dtype must be one of {sorted(DTYPES)}")
@@ -191,9 +196,11 @@ def train_pinns(cfg: TrainConfig, seeds: list[int], params: LorenzParams) -> tup
         stack = StackedPINN(models)
     finally:
         torch.set_default_dtype(previous_dtype)
+    device = torch.device(cfg.device)
+    stack = stack.to(device)
     generators = [torch.Generator().manual_seed(seed) for seed in seeds]
-    x0 = torch.tensor(cfg.x0, dtype=dtype).view(1, 1, -1)
-    t0 = torch.zeros(len(seeds), 1, 1, dtype=dtype)
+    x0 = torch.tensor(x0s if x0s is not None else [cfg.x0] * len(seeds), dtype=dtype, device=device).unsqueeze(1)
+    t0 = torch.zeros(len(seeds), 1, 1, dtype=dtype, device=device)
     optimizer = torch.optim.Adam(stack.parameters(), lr=cfg.lr)
     gamma = (cfg.lr_final / cfg.lr) ** (1.0 / max(cfg.iterations, 1))
     scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer, gamma=gamma)
@@ -202,7 +209,7 @@ def train_pinns(cfg: TrainConfig, seeds: list[int], params: LorenzParams) -> tup
     start = time.perf_counter()
     for iteration in range(1, cfg.iterations + 1):
         interval = training_interval(cfg, iteration)
-        t = torch.stack([collocation_times(cfg.n_collocation, interval, g, dtype) for g in generators])
+        t = torch.stack([collocation_times(cfg.n_collocation, interval, g, dtype) for g in generators]).to(device)
         _, _, residual = lorenz_residual(stack, t, params)
         loss_ode = residual.pow(2).sum(dim=-1).mean(dim=-1)
         loss_ic = (stack(t0) - x0).pow(2).sum(dim=-1).squeeze(-1)
@@ -219,10 +226,12 @@ def train_pinns(cfg: TrainConfig, seeds: list[int], params: LorenzParams) -> tup
                 history["loss_ic"].append(loss_ic[m].item())
                 history["lr"].append(scheduler.get_last_lr()[0])
     runtime = time.perf_counter() - start
-    for seed, history in zip(seeds, histories):
+    for m, (seed, history) in enumerate(zip(seeds, histories)):
         history["runtime_seconds"] = runtime / len(seeds)  # share of the joint run time
-        history["config"] = {**asdict(cfg), "seed": seed}
+        history["config"] = {**asdict(cfg), "seed": seed, "x0": x0[m, 0].tolist()}
         history["trained_jointly_with_seeds"] = list(seeds)
+        if device.type == "cuda":
+            history["device_name"] = torch.cuda.get_device_name(device)
     return [stack.unstack(m) for m in range(len(seeds))], histories
 
 

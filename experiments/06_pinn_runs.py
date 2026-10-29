@@ -39,6 +39,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--set", default="pinn_runs", help="config section describing the set of runs")
     parser.add_argument("--out", type=Path, default=None, help="default: results/<set>")
     parser.add_argument("--workers", type=int, default=8)
+    parser.add_argument("--device", default="cpu", help="cpu, or cuda to train all runs as one stack on a GPU")
     args = parser.parse_args(argv)
 
     start = time.perf_counter()
@@ -53,20 +54,34 @@ def main(argv: list[str] | None = None) -> int:
             run_dir = out / "runs" / f"w{window}_s{seed}"
             if (run_dir / "metrics.json").exists():
                 continue
-            train = {**config["pinn"], **run_set.get("overrides", {}), "x0": x0, "seed": int(seed)}
+            train = {**config["pinn"], **run_set.get("overrides", {}), "x0": x0, "seed": int(seed),
+                     "device": args.device}
             jobs.append({"run_dir": str(run_dir), "window": int(window), "reference_file": str(reference_file),
                          "params": config["lorenz"]["params"], "train": train})
-    # The seeds of one window are trained together as one stacked model (identical to separate
-    # training up to rounding, see src/pinn/train.py), one window per worker process.
-    groups = {}
-    for job in jobs:
-        groups.setdefault(job["window"], []).append(job)
-    print(f"{len(jobs)} runs to train in {len(groups)} groups")
-    with ProcessPoolExecutor(max_workers=args.workers) as pool:
-        for summaries in pool.map(run_jobs_together, groups.values()):
-            for summary in summaries:
-                print(f"window {summary['window']} seed {summary['seed']}: median error {summary['median_error']:.3g},"
-                      f" max {summary['max_error']:.3g}", flush=True)
+    # Runs are trained as stacked models (identical to separate training up to rounding, see
+    # src/pinn/train.py): on a GPU all runs form one stack; on the CPU, one stack per window and
+    # one window per worker process.
+    if args.device == "cpu":
+        groups = {}
+        for job in jobs:
+            groups.setdefault(job["window"], []).append(job)
+        group_list = list(groups.values())
+    else:
+        group_list = [jobs] if jobs else []
+    print(f"{len(jobs)} runs to train in {len(group_list)} stacks on {args.device}", flush=True)
+
+    def report(summaries):
+        for summary in summaries:
+            print(f"window {summary['window']} seed {summary['seed']}: median error {summary['median_error']:.3g},"
+                  f" max {summary['max_error']:.3g}", flush=True)
+
+    if args.device == "cpu":
+        with ProcessPoolExecutor(max_workers=args.workers) as pool:
+            for summaries in pool.map(run_jobs_together, group_list):
+                report(summaries)
+    else:
+        for group in group_list:
+            report(run_jobs_together(group))
 
     summaries = [json.loads((d / "metrics.json").read_text()) for d in sorted((out / "runs").iterdir())]
     save_json({"set": args.set, "runs": summaries}, out / "summary.json")

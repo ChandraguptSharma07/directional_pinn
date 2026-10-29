@@ -156,3 +156,14 @@ def test_stacked_training_matches_separate_training_with_curriculum():
     models, histories = train_pinns(cfg, [2], PARAMS)
     single, history = train_pinn(TrainConfig(seed=2, dtype="float64", curriculum_start=0.1, **SMALL), PARAMS)
     np.testing.assert_allclose(histories[0]["loss"], history["loss"], rtol=1e-9)
+
+
+def test_stacked_training_with_different_initial_conditions():
+    """Runs from different windows can share a stack; each still matches its separate training."""
+    x0s = [[1.0, 2.0, 20.0], [-3.0, -1.0, 25.0]]
+    base = {key: value for key, value in SMALL.items() if key != "x0"}
+    models, histories = train_pinns(TrainConfig(x0=x0s[0], dtype="float64", **base), [7, 8], PARAMS, x0s=x0s)
+    for seed, x0, history in zip([7, 8], x0s, histories):
+        _, single = train_pinn(TrainConfig(seed=seed, x0=x0, dtype="float64", **base), PARAMS)
+        np.testing.assert_allclose(history["loss"], single["loss"], rtol=1e-9)
+        assert history["config"]["x0"] == x0
