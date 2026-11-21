@@ -330,5 +330,7 @@
         }
       }
     }
-  }
+  },
+  "status": "diagnostic_only",
+  "reason": "Only two initial-condition windows; used to check pipeline execution. Do not interpret predictive intervals."
 }

@@ -78,6 +78,7 @@ def finish_run(job: dict, model: PINN, history: dict) -> dict:
         "seed": cfg.seed,
         "t_final": cfg.t_final,
         "lambda_ic": cfg.lambda_ic,
+        "hard_ic": cfg.hard_ic,
         "dtype": cfg.dtype,
         "final_loss": history["loss"][-1],
         "final_loss_ode": history["loss_ode"][-1],

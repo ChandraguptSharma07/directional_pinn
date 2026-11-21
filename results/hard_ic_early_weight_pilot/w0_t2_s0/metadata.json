@@ -1,0 +1,27 @@
+{
+  "created_utc": "2026-11-21T18:32:49+00:00",
+  "command": [
+    "experiments/11_hard_ic_pilot.py",
+    "--early-weight",
+    "9",
+    "--out",
+    "results/hard_ic_early_weight_pilot/w0_t2_s0"
+  ],
+  "runtime_seconds": 131.534,
+  "git": {
+    "commit": "b97e68c63add543ff4a52fead31885819f1d7967",
+    "dirty": true
+  },
+  "environment": {
+    "python": "3.13.15",
+    "platform": "Linux-6.18.53-x86_64-with-glibc2.42",
+    "packages": {
+      "numpy": "2.5.5",
+      "scipy": "1.18.1",
+      "matplotlib": "3.11.2",
+      "PyYAML": "6.0.4",
+      "pytest": "9.2.0",
+      "torch": "2.15.0+cpu"
+    }
+  }
+}

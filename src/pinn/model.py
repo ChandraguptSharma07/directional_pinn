@@ -36,10 +36,14 @@ class PINN(nn.Module):
         out_scale: Sequence[float],
         hidden: Sequence[int] = (64, 64, 64, 64),
         activation: str = "tanh",
+        x0: Sequence[float] | None = None,
+        hard_ic: bool = False,
     ) -> None:
         super().__init__()
         if activation not in ACTIVATIONS:
             raise ValueError(f"unknown activation {activation!r}; choose from {sorted(ACTIVATIONS)}")
+        if hard_ic and (x0 is None or len(x0) != len(out_mean)):
+            raise ValueError("hard_ic requires x0 with one value per state component")
         layers: list[nn.Module] = []
         width_in = 1
         for width in hidden:
@@ -54,10 +58,15 @@ class PINN(nn.Module):
         layers.append(last)
         self.net = nn.Sequential(*layers)
         self.t_final = float(t_final)
+        self.hard_ic = hard_ic
         self.register_buffer("out_mean", torch.tensor(out_mean, dtype=torch.get_default_dtype()))
         self.register_buffer("out_scale", torch.tensor(out_scale, dtype=torch.get_default_dtype()))
+        # Keep state_dict keys of existing soft-IC checkpoints unchanged.
+        self.register_buffer("x0", torch.tensor(x0 if x0 is not None else out_mean,
+                                                 dtype=torch.get_default_dtype()), persistent=hard_ic)
 
     def forward(self, t: torch.Tensor) -> torch.Tensor:
         """t has shape (N, 1); returns x_hat with shape (N, d)."""
         tau = 2.0 * t / self.t_final - 1.0
-        return self.out_mean + self.out_scale * self.net(tau)
+        raw = self.out_mean + self.out_scale * self.net(tau)
+        return self.x0 + (t / self.t_final) * (raw - self.x0) if self.hard_ic else raw

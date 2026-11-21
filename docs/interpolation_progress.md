@@ -52,6 +52,43 @@ The table shows the gain in held-out `R²` over a baseline with pointwise log re
 
 The original 40-run directional study and this follow-up use different prediction-time subsets, a different baseline (time is included here), and models rebuilt with a newer CPU PyTorch version. Their `R²` values should not be compared directly. The dense-residual trailing average sometimes predicts worse than the sparse linear reconstruction; smoothing could be one explanation, but that mechanism was not isolated experimentally.
 
-### Current result
+## Session 2 — 21 November 2026, approximately 23:36 IST
 
-There is **no empirical Lorenz interpolation result yet**. The original negative conclusion remains the only tested project conclusion. The next work is to recover or regenerate reference and PINN arrays, then run experiment 09. If regeneration occurs, use a separate result directory and document the commands, settings, run counts, outputs, and comparison against the baseline here.
+The user committed and pushed the session-1 files as commit `b97e68c` while the work was ongoing. This session adds a post-result control and corrects the status of retained intermediate outputs. The raw `.npz` arrays remain ignored by git, so the committed metrics require rerunning the recorded experiments for independent reproduction.
+
+### Post-result sampled-knot-average control
+
+Sample-and-hold gives the current residual knot zero weight in a continuous trailing integral. To check whether its disadvantage was merely this endpoint convention, added `box`: the arithmetic mean of residual magnitudes at **all** sampled knots in `[t-w,t]`, including the current knot. It is computed from the same sparse samples and uses no future information. Added direct paired linear-versus-box held-out comparisons and a unit test of endpoint inclusion. Reran all 40 runs without retraining into `results/interpolation_rebuild/interpolation_box_control/metrics.json`; the command exited **0**. The interpolation and analysis tests now report **12 passed**.
+
+| Future horizon | Trailing width | Box gain over pointwise baseline | Linear − box gain (95% window bootstrap) | Windows favoring linear |
+|---:|---:|---:|---:|---:|
+| 0.05 | 0.10 | +0.187 | +0.102 (−0.017, +0.211) | 5/8 |
+| 0.05 | 0.25 | +0.411 | +0.062 (+0.001, +0.123) | 4/8 |
+| 0.10 | 0.10 | +0.201 | +0.094 (+0.006, +0.189) | 5/8 |
+| 0.10 | 0.25 | +0.412 | +0.060 (+0.022, +0.110) | 6/8 |
+| 0.25 | 0.10 | +0.156 | +0.061 (+0.036, +0.134) | 8/8 |
+| 0.25 | 0.25 | +0.261 | +0.052 (+0.032, +0.117) | 7/8 |
+| 0.50 | 0.10 | +0.002 | +0.047 (+0.029, +0.185) | 7/8 |
+| 0.50 | 0.25 | approximately 0 | +0.043 (+0.024, +0.179) | 7/8 |
+
+The box control agrees with the main finding: recent residual magnitude helps predict future total error at horizons 0.05–0.25, and linear interpolation adds a smaller gain for several comparisons. The shortest-horizon, width-0.1 linear-versus-box interval includes zero, and the width-0.25 advantage at horizon 0.05 occurs in only four windows; neither should be called robust. At horizon 0.5, no trailing-average candidate reliably improves over the pointwise baseline, despite the positive paired difference. The box control was chosen after seeing the first full result, and there are only eight independent windows. Treat all interval claims as exploratory.
+
+### Output status and final decision for today
+
+- `results/interpolation_rebuild/interpolation/metrics.json`: tagged `invalid_for_prediction` because its fine-grid evaluation leaked a future residual knot into interpolation.
+- `results/interpolation_rebuild/smoke_2_windows/metrics.json`: tagged `diagnostic_only` because it used two windows.
+- `results/interpolation_rebuild/interpolation_sampled_knots/metrics.json`: tagged `superseded` by the box-control analysis.
+- `results/interpolation_rebuild/interpolation_box_control/metrics.json`: latest exploratory result, tagged `exploratory_result`.
+
+**Conclusion:** Temporal aggregation is a useful signal for short-horizon error prediction in this 40-run Lorenz experiment. Linear interpolation adds modest value beyond simple knot averaging at horizons 0.1 and 0.25, but the evidence is exploratory, not a general method guarantee. The original negative finding about pointwise residual direction remains unchanged. The next distinct question, if work continues, is whether a dynamics-weighted residual integral predicts *new error created within the horizon* better than these simple trailing averages; that has not been tested.
+
+## Session 3 — 21 November 2026, approximately 23:41 IST
+
+The user asked how to make the work paper-worthy. Reviewed the existing analysis plan and interpolation evidence against primary literature on time-weighted PINN training, causal PINN training, and residual-based ODE error bounds. No new experiment was run. Added `docs/paper_roadmap.md`, which identifies the present claim, its limitations, a prospective new-window validation, a created-error mechanism check, a second-system replication, reproducibility requirements, and a manuscript outline. The present interpolation result remains exploratory; this writing plan does not promote it to a confirmatory finding. The uncommitted control and documentation changes from Session 2 remain in the working tree.
+
+## Session 4 — 21 November 2026, approximately 23:50 IST
+
+The user needed a concrete result to present and considered comparing every method proposed in the submitted report. The methods have different roles: interpolation, Gaussian-process smoothing, and a Duhamel-weighted integral are post-training diagnostics; Turinici's time weighting changes PINN training. We therefore compared only **tested diagnostics on the same held-out task**, and listed the remaining methods as proposed work.
+
+Added `docs/interim_research_update.md` and a reproducible two-page PDF renderer, `experiments/10_interim_brief.py`. Ran it against the latest 40-run box-control metrics to create `docs/interim_research_update.pdf`. Verified that the PDF has two A4 pages, extracted its text, rendered both pages, and corrected an overlap on page two. The brief shows the held-out `R²` comparison at all four horizons, the narrower gain attributable to interpolation, the negative preset directional result, the method-status table, and the next decisive test. It is an **interim research update** with exploratory wording, not a publication claim.
+The final PDF render also explicitly states that the horizon-0.5 gain over the pointwise baseline is uncertain. The PDF and Markdown brief are presentation artifacts; no new experiment was added in this session.

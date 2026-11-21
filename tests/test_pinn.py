@@ -14,6 +14,7 @@ from src.pinn.train import (
     train_pinn,
     train_pinns,
     training_interval,
+    weighted_residual_loss,
 )
 from src.systems.lorenz63 import LorenzParams, lorenz_fixed_points, lorenz_rhs
 
@@ -82,10 +83,36 @@ def test_model_scaling_and_shapes():
         PINN(1.0, [0.0], [1.0], activation="relu6")
 
 
+def test_hard_initial_condition_is_exact_and_differentiable():
+    x0 = [1.0, -2.0, 3.0]
+    model = PINN(2.0, [0.0, 0.0, 25.0], [10.0] * 3, hidden=[8, 8], x0=x0, hard_ic=True)
+    t = torch.tensor([[0.0], [0.5], [2.0]])
+    torch.testing.assert_close(model(t)[0], torch.tensor(x0), rtol=0, atol=0)
+    _, dxdt = state_and_time_derivative(model, t, create_graph=False)
+    h = 1e-6
+    torch.testing.assert_close(dxdt[1], ((model(t[1:2] + h) - model(t[1:2] - h)) / (2 * h))[0],
+                               rtol=1e-6, atol=1e-6)
+    with pytest.raises(ValueError):
+        PINN(2.0, [0.0] * 3, [1.0] * 3, hard_ic=True)
+    assert "x0" in model.state_dict()
+    assert "x0" not in PINN(2.0, [0.0] * 3, [1.0] * 3).state_dict()
+
+
 def test_collocation_times_are_stratified():
     times = collocation_times(10, 2.0, torch.Generator().manual_seed(0), torch.float64).squeeze(1)
     bins = torch.floor(times / 0.2).long()
     assert torch.equal(bins, torch.arange(10))
+
+
+def test_early_residual_weighting_emphasizes_start_without_changing_default():
+    t = torch.tensor([[0.0], [1.0]])
+    residual = torch.tensor([[2.0, 0.0, 0.0], [1.0, 0.0, 0.0]])
+    base = TrainConfig(t_final=1.0, x0=[0.0] * 3)
+    assert weighted_residual_loss(residual, t, base) == pytest.approx(2.5)
+    weighted = TrainConfig(t_final=1.0, x0=[0.0] * 3, early_weight=9.0)
+    assert weighted_residual_loss(residual, t, weighted) == pytest.approx(41 / 11)
+    with pytest.raises(ValueError):
+        weighted_residual_loss(residual, t, TrainConfig(t_final=1.0, x0=[0.0] * 3, early_weight=-1))
 
 
 SMALL = dict(t_final=0.5, x0=[1.0, 2.0, 20.0], hidden=[16, 16], iterations=30, n_collocation=64, log_every=10)
@@ -142,6 +169,17 @@ def test_stacked_model_evaluates_each_member():
             assert torch.equal(p, q)
 
 
+def test_stacked_hard_ic_with_different_initial_conditions():
+    x0s = [[1.0, 2.0, 20.0], [-3.0, -1.0, 25.0]]
+    models = [PINN(2.0, [0.0, 0.0, 25.0], [10.0] * 3, hidden=[8, 8], x0=x0, hard_ic=True)
+              for x0 in x0s]
+    stack = StackedPINN(models)
+    t = torch.rand(2, 5, 1) * 2.0
+    for m, model in enumerate(models):
+        torch.testing.assert_close(stack(t)[m], model(t[m]))
+        torch.testing.assert_close(stack.unstack(m)(torch.zeros(1, 1))[0], torch.tensor(x0s[m]), rtol=0, atol=0)
+
+
 def test_time_curriculum_grows_the_interval_linearly():
     cfg = TrainConfig(t_final=3.0, x0=[0.0, 0.0, 0.0], iterations=1000, curriculum_start=0.5, curriculum_fraction=0.5)
     assert training_interval(cfg, 0) == pytest.approx(0.5)
@@ -167,3 +205,16 @@ def test_stacked_training_with_different_initial_conditions():
         _, single = train_pinn(TrainConfig(seed=seed, x0=x0, dtype="float64", **base), PARAMS)
         np.testing.assert_allclose(history["loss"], single["loss"], rtol=1e-9)
         assert history["config"]["x0"] == x0
+
+
+def test_stacked_hard_ic_training_matches_separate_training():
+    x0s = [[1.0, 2.0, 20.0], [-3.0, -1.0, 25.0]]
+    base = {key: value for key, value in SMALL.items() if key != "x0"}
+    shared = dict(dtype="float64", hard_ic=True, early_weight=9.0, **base)
+    models, histories = train_pinns(TrainConfig(x0=x0s[0], **shared), [7, 8], PARAMS, x0s=x0s)
+    for seed, x0, model, history in zip([7, 8], x0s, models, histories):
+        single, single_history = train_pinn(TrainConfig(seed=seed, x0=x0, **shared), PARAMS)
+        np.testing.assert_allclose(history["loss"], single_history["loss"], rtol=1e-9)
+        torch.testing.assert_close(model(torch.zeros(1, 1))[0], torch.tensor(x0), rtol=0, atol=0)
+        for p, q in zip(model.parameters(), single.parameters()):
+            torch.testing.assert_close(p, q, rtol=1e-9, atol=1e-11)

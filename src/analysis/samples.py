@@ -39,7 +39,19 @@ def unit_rows(v: np.ndarray) -> np.ndarray:
     return v / np.linalg.norm(v, axis=1, keepdims=True)
 
 
-def build_samples(runs: list[dict], lyapunov: dict, horizons: list[float]) -> pd.DataFrame:
+def join_free_indices(t: np.ndarray, indices: np.ndarray, segment_length: float | None) -> np.ndarray:
+    """Drop exact internal joins, where a piecewise derivative is two-sided."""
+    if segment_length is None:
+        return indices
+    if segment_length <= 0:
+        raise ValueError("segment_length must be positive")
+    ratio = t[indices] / segment_length
+    is_join = (t[indices] > 0) & np.isclose(ratio, np.round(ratio), atol=1e-8, rtol=0)
+    return indices[~is_join]
+
+
+def build_samples(runs: list[dict], lyapunov: dict, horizons: list[float],
+                  exclude_joins: float | None = None) -> pd.DataFrame:
     """One row per (run, horizon, sampled time) with targets, predictors and control alignments."""
     tables = []
     for run_number, run in enumerate(runs):
@@ -54,6 +66,7 @@ def build_samples(runs: list[dict], lyapunov: dict, horizons: list[float]) -> pd
         for k, dt in enumerate(horizons):
             m = horizon_steps(dt, h)
             j = np.arange(0, n - m, STRIDE)
+            j = join_free_indices(t, j, exclude_joins)
             if len(j) < MIN_POINTS_PER_RUN:  # horizon too long for the PINN window
                 continue
             phi = propagators_over(step_props, m)[j]

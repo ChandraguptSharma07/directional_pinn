@@ -1,0 +1,15 @@
+lorenz_lyapunov:
+  length: 6.0
+  dt: 0.002
+  spinup_dt: 0.005
+  horizons:
+  - 0.05
+  - 0.1
+  - 0.25
+  - 0.5
+  - 1.0
+  long_run_time: 180.0
+  long_run_dt: 0.01
+  tangent_rtol: 1.0e-11
+  tangent_atol: 1.0e-13
+runs: results/piecewise_40runs_analysis_runs

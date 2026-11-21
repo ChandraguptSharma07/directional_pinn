@@ -1,0 +1,29 @@
+{
+  "created_utc": "2026-11-21T18:53:36+00:00",
+  "command": [
+    "/mnt/d_drive/programs/directional_pinn/experiments/13_piecewise_pinn_pilot.py",
+    "--window",
+    "7",
+    "--seed",
+    "4",
+    "--out",
+    "/mnt/d_drive/programs/directional_pinn/results/piecewise_pinn_pilot/w7_t2_s4"
+  ],
+  "runtime_seconds": 155.601,
+  "git": {
+    "commit": "b97e68c63add543ff4a52fead31885819f1d7967",
+    "dirty": true
+  },
+  "environment": {
+    "python": "3.13.15",
+    "platform": "Linux-6.18.53-x86_64-with-glibc2.42",
+    "packages": {
+      "numpy": "2.5.5",
+      "scipy": "1.18.1",
+      "matplotlib": "3.11.2",
+      "PyYAML": "6.0.4",
+      "pytest": "9.2.0",
+      "torch": "2.15.0+cpu"
+    }
+  }
+}

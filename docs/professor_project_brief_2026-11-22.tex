@@ -1,0 +1,125 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=2.1cm]{geometry}
+\usepackage{amsmath,amssymb,booktabs,graphicx,hyperref}
+\graphicspath{{docs/figures/}}
+\hypersetup{colorlinks=true,urlcolor=blue,linkcolor=blue}
+\title{Project Briefing: Lorenz PINNs and Residual Direction}
+\author{Supervisor-facing status note}
+\date{22 November 2026}
+\begin{document}
+\maketitle
+
+\noindent\textbf{One-minute account.} The project asked whether the
+\emph{direction} of a trained physics-informed neural network's differential-
+equation residual predicts later error on a chaotic Lorenz trajectory beyond
+the residual's magnitude. Its original planned test, using 40 PINNs, did not
+support that pointwise hypothesis. The team then improved the PINN solution
+itself: eight sequential short networks now track a two-unit trajectory with
+error below one throughout in 35 of 40 runs. Repeating the direction test
+on those better trajectories again found no reliable gain from one expanding
+direction. An oracle using the full tangent propagator did add held-out
+information at longer horizons. That is a clue about the mechanism, not yet
+a practical error indicator.
+
+\section*{Goal and original hypothesis}
+The goal was to find out whether residual orientation could provide a useful
+\emph{post-training} indicator of future PINN error, with a possible later
+application to training. For residual
+$r(t)=\dot{\widehat{x}}(t)-f(\widehat{x}(t))$, the hypothesis was that an
+equally large residual should cause more later error if it points along a
+locally expanding direction. The project tested alignment with the backward
+Lyapunov vector $b_1$ and the leading finite-time singular vector $s_1$.
+The observable prediction was a gain in held-out future-error prediction
+beyond $\|r(t)\|$. The analysis plan fixed the horizons, controls and
+decision rule before the original main test.
+
+The submitted project report used Turinici's \emph{Regime-Aware Time
+Weighting for Physics-Informed Neural Networks} as a reference. That paper
+changes \emph{when} equation violations are weighted during training;
+this project's main test asks whether residual \emph{orientation} is
+informative after training. The two questions are related but distinct.
+
+\section*{What was tested, and why the hypothesis was not supported}
+The original experiment used Lorenz-63, a high-accuracy DOP853 reference,
+analytic Jacobians and tangent dynamics, and 40 standard PINNs (eight
+initial-condition windows, five seeds). It predicted future error on an
+entirely held-out initial-condition window. Random, time-shuffled and
+other dynamical directions were controls. Neither $b_1$ nor $s_1$ passed
+the prespecified four-part rule at any usable horizon. Some within-run
+associations failed to transfer to held-out windows or to clearly beat
+controls. The proper conclusion is \emph{not supported for these tested
+pointwise predictors}, not that direction can never matter.
+
+Three observations help explain the result without proving a unique cause.
+First, residuals were already highly aligned with $s_1$ (median alignment
+about 0.96 at horizon 0.25), leaving little orientation variation. Second,
+total future error inherits error from residuals produced earlier, which a
+single current residual cannot summarize. Third, the original global PINNs
+lost trajectory accuracy beyond a one-unit window, restricting the test.
+An exploratory interpolation and trailing-average branch suggested that
+recent residual history deserves study, but it did not change the original
+verdict.
+
+\section*{What changed in the model}
+Exact initial-state enforcement improved the two-unit pilot but left median
+trajectory error near six. Extra early-residual weighting and L-BFGS
+refinement gave little additional improvement. The effective construction
+was a \emph{sequential time-domain decomposition PINN}: eight separate
+networks solve successive 0.25-unit intervals, each starting from the
+previous network's \emph{predicted} endpoint. No true interior reference
+state is used in training. Across the fixed 8-window by 5-seed evaluation,
+35 of 40 runs stayed below error one throughout two time units. All five
+failures occurred late on window 1. The median of run-level median errors
+was 0.0433. This is a strong model-quality gain, although the training
+setups have different network counts and budgets.
+
+\section*{Current scientific status}
+The original directional analysis was repeated on the 40 improved runs,
+excluding exact segment joins where derivatives are two-sided. Neither
+$b_1$ nor $s_1$ passed the original rule. The oracle quantity
+$\|\Phi(t+\Delta,t)r(t)\|$, which propagates the full residual vector
+along the \emph{known reference trajectory}, increased held-out $R^2$ by
+approximately $0.051$, $0.195$ and $0.307$ at horizons $0.25$, $0.5$ and
+$1.0$. The gains remained positive after controlling for elapsed time and
+after excluding window 1. The oracle cannot be used as a deployable
+predictor because it needs the true reference trajectory.
+
+\begin{center}
+\begin{tabular}{p{0.29\linewidth}p{0.62\linewidth}}
+\toprule
+Question & Current answer\\
+\midrule
+Original pointwise hypothesis & Not supported in the planned standard-PINN test;
+same pattern in the exploratory better-model repeat.\\
+Better Lorenz PINN & Two-unit accuracy below error one throughout in 35/40 runs;
+all five failures on one window.\\
+Practical new error indicator & Not yet established. Full-propagator result is
+oracle-only.\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section*{When can the project reach a conclusion?}
+\textbf{A project conclusion can be presented now:} the original pointwise
+one-vector hypothesis was not supported for the tested Lorenz PINNs; the
+sequential model provides a measurable trajectory improvement and a clearer
+test bed. The model was developed after the first result, so the repeat
+direction analysis is exploratory rather than a fresh preregistered test.
+
+\textbf{A stronger paper claim requires one frozen independent round:}
+new initial-condition windows that played no part in model design, the same
+settings and controls fixed in advance, all failures retained, and
+uncertainty assessed at the window level. A practical positive claim further
+requires a causal predictor built from past PINN residuals alone, tested
+against residual magnitude, time and simple trailing-history baselines.
+The piecewise Duhamel quadrature also needs correction at segment joins.
+Another 40-run computation is feasible on the current machine, but the
+date and wording of a stronger conclusion depend on what those new runs
+show. The current negative result can be reported honestly without waiting
+for a positive predictor.
+
+\noindent\textbf{Evidence.} The companion research update PDF contains
+full methods, figures and results. The chronological progress log, original
+analysis plan and original results document are also in \texttt{docs/}.
+
+\end{document}

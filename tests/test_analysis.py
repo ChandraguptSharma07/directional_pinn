@@ -5,6 +5,7 @@ import pytest
 from scipy.linalg import expm
 
 from src.analysis.future_error import created_error, future_error, horizon_steps, linearized_error
+from src.analysis.samples import join_free_indices
 from src.analysis.metrics import (
     alignment_effect,
     bootstrap_delta_r_squared,
@@ -25,6 +26,18 @@ def test_horizon_steps():
     assert horizon_steps(0.05, 0.002) == 25
     with pytest.raises(ValueError):
         horizon_steps(0.003, 0.002)
+
+
+def test_piecewise_join_times_are_excluded_from_predictor_samples():
+    t = np.arange(0.0, 1.0, 0.01)
+    indices = np.arange(len(t))
+    kept = join_free_indices(t, indices, 0.25)
+    assert 0 in kept
+    assert all(i not in kept for i in (25, 50, 75))
+    assert len(kept) == len(indices) - 3
+    np.testing.assert_array_equal(join_free_indices(t, indices, None), indices)
+    with pytest.raises(ValueError):
+        join_free_indices(t, indices, -0.25)
 
 
 def test_future_and_created_error_on_the_linear_saddle():

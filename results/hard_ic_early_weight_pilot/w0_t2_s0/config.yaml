@@ -1,0 +1,40 @@
+run_dir: results/hard_ic_early_weight_pilot/w0_t2_s0
+window: 0
+reference_file: /mnt/d_drive/programs/directional_pinn/results/interpolation_rebuild/reference/data/window_0.npz
+params:
+  sigma: 10.0
+  rho: 28.0
+  beta: 2.6666666666666665
+train:
+  hidden:
+  - 64
+  - 64
+  - 64
+  - 64
+  activation: tanh
+  out_mean:
+  - 0.0
+  - 0.0
+  - 25.0
+  out_scale:
+  - 10.0
+  - 10.0
+  - 10.0
+  iterations: 20000
+  lr: 0.001
+  lr_final: 1.0e-05
+  n_collocation: 1024
+  dtype: float32
+  threads: 1
+  log_every: 100
+  curriculum_start: 0.25
+  curriculum_fraction: 0.6
+  t_final: 2.0
+  lambda_ic: 100.0
+  x0:
+  - -7.32523005111821
+  - -2.371100000520215
+  - 31.333160072674012
+  seed: 0
+  hard_ic: true
+  early_weight: 9.0

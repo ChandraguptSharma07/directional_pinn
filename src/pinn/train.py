@@ -49,6 +49,8 @@ class TrainConfig:
     lr_final: float = 1e-5
     n_collocation: int = 2048
     lambda_ic: float = 10.0
+    hard_ic: bool = False
+    early_weight: float = 0.0  # normalized linear emphasis on earlier residuals
     dtype: str = "float32"
     threads: int = 1
     log_every: int = 100
@@ -75,6 +77,14 @@ def collocation_times(n: int, t_final: float, generator: torch.Generator, dtype:
     return (torch.arange(n, dtype=dtype).unsqueeze(1) + offsets) * (t_final / n)
 
 
+def weighted_residual_loss(residual: torch.Tensor, t: torch.Tensor, cfg: TrainConfig) -> torch.Tensor:
+    """Mean squared residual per model, with optional extra weight near t=0."""
+    if cfg.early_weight < 0:
+        raise ValueError("early_weight must be nonnegative")
+    weight = 1.0 + cfg.early_weight * (1.0 - t.squeeze(-1) / cfg.t_final)
+    return (residual.square().sum(dim=-1) * weight).sum(dim=-1) / weight.sum(dim=-1)
+
+
 def train_pinn(cfg: TrainConfig, params: LorenzParams) -> tuple[PINN, dict]:
     """Train a PINN; returns the model and a history (losses, learning rate, run time).
 
@@ -89,7 +99,8 @@ def train_pinn(cfg: TrainConfig, params: LorenzParams) -> tuple[PINN, dict]:
     previous_dtype = torch.get_default_dtype()
     torch.set_default_dtype(dtype)
     try:
-        model = PINN(cfg.t_final, cfg.out_mean, cfg.out_scale, cfg.hidden, cfg.activation)
+        model = PINN(cfg.t_final, cfg.out_mean, cfg.out_scale, cfg.hidden, cfg.activation,
+                     x0=cfg.x0, hard_ic=cfg.hard_ic)
     finally:
         torch.set_default_dtype(previous_dtype)
     generator = torch.Generator().manual_seed(cfg.seed)
@@ -104,7 +115,7 @@ def train_pinn(cfg: TrainConfig, params: LorenzParams) -> tuple[PINN, dict]:
     for iteration in range(1, cfg.iterations + 1):
         t = collocation_times(cfg.n_collocation, training_interval(cfg, iteration), generator, dtype)
         _, _, residual = lorenz_residual(model, t, params)
-        loss_ode = residual.pow(2).sum(dim=1).mean()
+        loss_ode = weighted_residual_loss(residual, t, cfg)
         loss_ic = (model(t0) - x0).pow(2).sum()
         loss = loss_ode + cfg.lambda_ic * loss_ic
         optimizer.zero_grad(set_to_none=True)
@@ -146,8 +157,10 @@ class StackedPINN(nn.Module):
         )
         self.activation = copy.deepcopy(next(layer for layer in models[0].net if not isinstance(layer, nn.Linear)))
         self.t_final = models[0].t_final
+        self.hard_ic = models[0].hard_ic
         self.register_buffer("out_mean", models[0].out_mean.clone())
         self.register_buffer("out_scale", models[0].out_scale.clone())
+        self.register_buffer("x0", torch.stack([model.x0.clone() for model in models]).unsqueeze(1))
         self.template = copy.deepcopy(models[0])
 
     def forward(self, t: torch.Tensor) -> torch.Tensor:
@@ -157,13 +170,15 @@ class StackedPINN(nn.Module):
             h = torch.baddbmm(b.unsqueeze(1), h, W.transpose(1, 2))
             if k < last:
                 h = self.activation(h)
-        return self.out_mean + self.out_scale * h
+        raw = self.out_mean + self.out_scale * h
+        return self.x0 + (t / self.t_final) * (raw - self.x0) if self.hard_ic else raw
 
     def unstack(self, m: int) -> PINN:
         """Model m as an ordinary PINN on the CPU."""
         model = copy.deepcopy(self.template).cpu()
         linears = [layer for layer in model.net if isinstance(layer, nn.Linear)]
         with torch.no_grad():
+            model.x0.copy_(self.x0[m, 0].cpu())
             for layer, W, b in zip(linears, self.weights, self.biases):
                 layer.weight.copy_(W[m].cpu())
                 layer.bias.copy_(b[m].cpu())
@@ -190,9 +205,11 @@ def train_pinns(
     torch.set_default_dtype(dtype)
     try:
         models = []
-        for seed in seeds:
+        initial_conditions = x0s if x0s is not None else [cfg.x0] * len(seeds)
+        for seed, initial_condition in zip(seeds, initial_conditions):
             set_seed(seed)
-            models.append(PINN(cfg.t_final, cfg.out_mean, cfg.out_scale, cfg.hidden, cfg.activation))
+            models.append(PINN(cfg.t_final, cfg.out_mean, cfg.out_scale, cfg.hidden, cfg.activation,
+                               x0=initial_condition, hard_ic=cfg.hard_ic))
         stack = StackedPINN(models)
     finally:
         torch.set_default_dtype(previous_dtype)
@@ -211,7 +228,7 @@ def train_pinns(
         interval = training_interval(cfg, iteration)
         t = torch.stack([collocation_times(cfg.n_collocation, interval, g, dtype) for g in generators]).to(device)
         _, _, residual = lorenz_residual(stack, t, params)
-        loss_ode = residual.pow(2).sum(dim=-1).mean(dim=-1)
+        loss_ode = weighted_residual_loss(residual, t, cfg)
         loss_ic = (stack(t0) - x0).pow(2).sum(dim=-1).squeeze(-1)
         losses = loss_ode + cfg.lambda_ic * loss_ic
         optimizer.zero_grad(set_to_none=True)

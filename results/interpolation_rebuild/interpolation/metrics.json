@@ -450,5 +450,8 @@
         }
       }
     }
-  }
+  },
+  "status": "invalid_for_prediction",
+  "reason": "Fine-grid prediction times let linear interpolation use residual samples after prediction time. Retained as audit trail; do not use predictive scores.",
+  "corrected_result": "results/interpolation_rebuild/interpolation_box_control/metrics.json"
 }

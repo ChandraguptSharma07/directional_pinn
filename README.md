@@ -14,9 +14,27 @@ For the conclusion in relation to the submitted report and reference paper, see
 The exploratory interpolation follow-up is documented in
 [docs/interpolation_study.md](docs/interpolation_study.md) and its running record
 in [docs/interpolation_progress.md](docs/interpolation_progress.md).
+The requirements for a paper-ready report are in
+[docs/paper_roadmap.md](docs/paper_roadmap.md).
+For a short presentation of the results to date, use
+[docs/interim_research_update.pdf](docs/interim_research_update.pdf)
+([source text](docs/interim_research_update.md)).
 In 40 rebuilt runs, a trailing residual average improved held-out prediction at
 short horizons, and linear interpolation added a smaller gain over sample-and-hold;
 this exploratory result does not change the original directional-alignment verdict.
+The current model-improvement work uses consecutive hard-initial-condition PINNs
+to extend trajectory accuracy to length 2: 35 of 40 fixed-setting runs stay
+below error 1 throughout. The original one-vector directional finding remains
+negative on these new runs, while an oracle full-propagator feature adds
+held-out information at longer horizons. See the
+[three-page research update](docs/piecewise_pinn_research_update.pdf)
+([text](docs/piecewise_pinn_research_update.md)) and the
+[chronological record](docs/model_improvement_progress.md). This follow-up is
+exploratory because the model was developed after the original analysis.
+For a short third-person explanation of the original goal, failed hypothesis,
+current result, and next conclusion milestone, use the
+[professor briefing](docs/professor_project_brief_2026-11-22.pdf)
+([text](docs/professor_project_brief_2026-11-22.md)).
 
 ## Research question
 

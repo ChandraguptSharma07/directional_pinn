@@ -1,5 +1,14 @@
 # Project conclusion and continuation decision (21 November 2026)
 
+> **22 November addendum:** We returned to the original model-quality and
+> residual-direction question. A consecutive hard-IC PINN now stays below
+> trajectory error 1 over a two-unit Lorenz window in 35/40 fixed-setting
+> runs. Repeating the direction analysis on those runs still does not support
+> either one-vector alignment; an oracle full-propagator feature adds held-out
+> information at longer horizons. This is post-hoc exploratory work. See the
+> [research update](piecewise_pinn_research_update.md) and
+> [run log](model_improvement_progress.md) for methods, failures, and limits.
+
 ## What this project actually tests
 
 The reference paper, Gabriel Turinici's *Regime-Aware Time Weighting for Physics-Informed Neural Networks* ([arXiv:2407.21642v2](https://arxiv.org/abs/2407.21642v2)), asks how to weight **when** a PINN violates a differential equation. It derives a scalar time weight from a worst-case final-error bound, then estimates the needed growth rate from the evolving PINN. Its Lorenz experiment changes the training loss.
@@ -23,11 +32,13 @@ The standard PINNs could only be studied over windows of length 1. The leading s
 
 ## Decision for the next study
 
-Close the original question with the negative conclusion above. The next question is whether **time-averaged residual information** improves held-out prediction. The implemented first study compares linearly interpolated trailing residual averages with a sample-and-hold control and the original dense residual, using a pointwise-residual-plus-time baseline. A later mechanistic study could test the error created inside the horizon and compare a Duhamel-weighted integral with the oracle propagator. Any outcome belongs to new exploratory work, separate from the preset decision rule.
+Close the original question with the negative conclusion above. The follow-up asks whether **time-averaged residual information** improves held-out prediction. The implemented study compares linearly interpolated trailing residual averages with sample-and-hold, plain sampled-knot averaging, and the original dense residual, using a pointwise-residual-plus-time baseline. A later mechanistic study could test the error created inside the horizon and compare a Duhamel-weighted integral with the oracle propagator. This follow-up is exploratory work, separate from the preset decision rule.
 
 The interpolation study is implemented in `experiments/09_residual_interpolation.py`. It compares piecewise linear reconstruction from residual samples 0.05 apart with sample-and-hold and the original dense residual, then tests trailing averages of widths 0.1 and 0.25. Predictive evaluation uses only sampled knots, so interpolation uses no residual from after the prediction time. All models use the same times, a pointwise-residual-plus-time baseline, and leave-one-initial-condition-window-out prediction. Window-level bootstrap intervals keep all seeds from one initial condition together. Results and design corrections are recorded in `docs/interpolation_progress.md`.
 
 With all 40 PINNs rebuilt, a width-0.25 linear trailing average improves held-out `R²` over that baseline by +0.474, +0.472, and +0.312 at future horizons 0.05, 0.1, and 0.25. Its direct gain over sample-and-hold is smaller, +0.058, +0.055, and +0.052. At horizon 0.5, improvement over baseline is uncertain. These are exploratory associations on a restricted subset of times, not a revision of the original preset decision.
+
+A post-result control that simply averages sampled residual magnitudes, including the current sample, gives similar gains to sample-and-hold. Linear interpolation improves held-out `R²` over this simpler control by about +0.05 to +0.06 at horizons 0.1 and 0.25 for a width-0.25 average. This is a modest exploratory interpolation effect; the stronger finding is that averaging recent residual magnitudes helps at short horizons. Details and the retained invalid look-ahead run are in `docs/interpolation_progress.md`.
 
 Running that study required regenerating the untracked `trajectory.npz` and `residuals.npz` arrays; the committed JSON summaries alone could not support a new time-series analysis. Retraining with Turinici's weights is a separate controlled experiment requiring the same seeds, compute budget, and accuracy metrics as the baseline. That experiment is not needed to state the original conclusion.
 

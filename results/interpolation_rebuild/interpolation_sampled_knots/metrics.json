@@ -1011,5 +1011,8 @@
         }
       }
     }
-  }
+  },
+  "status": "superseded",
+  "reason": "Valid sampled-knot analysis, but later post-result box control added.",
+  "latest_result": "results/interpolation_rebuild/interpolation_box_control/metrics.json"
 }

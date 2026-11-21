@@ -13,19 +13,19 @@ For each method, calculate the trapezoidal average of `||r||` on `[t-w,t]` with 
 1. **Reconstruction fidelity:** mean absolute difference between a coarse-reconstructed trailing average and the dense-residual trailing average, divided by the mean dense-residual average, reported per run and averaged over runs. Linear interpolation can win here even if it has no value for predicting error.
 2. **Predictive value:** predict `log ||e(t+Δ)||` for `Δ ∈ {0.05, 0.1, 0.25, 0.5}`. Baseline: `log ||r_linear(t)||` plus normalized time. Each candidate adds one log trailing average (linear, hold, or dense) to that same baseline. Fit ordinary least squares on seven initial-condition windows and predict the eighth; repeat for all eight. Report pooled out-of-fold `R²`, mean absolute log error, and the gain in `R²` relative to the baseline. Intervals resample the eight initial-condition windows and keep all five seeds and times from each selected window together.
 
-All candidates use exactly the same prediction times. The dense candidate indicates whether the trailing average contains useful information when sampling error is removed; it is not a deployable sparse-sampling method. The hold candidate tests whether any gain truly needs linear interpolation rather than simple temporal averaging.
-The decisive *interpolation-specific* comparison is the paired held-out `R²(linear) - R²(hold)` at each width, with a window-level bootstrap interval. Separate gains over the pointwise baseline cannot answer that comparison on their own.
+All candidates use exactly the same prediction times. The dense candidate indicates whether the trailing average contains useful information when sampling error is removed; it is not a deployable sparse-sampling method. The hold candidate tests a stepwise reconstruction. A further post-result control, `box`, simply averages the sparse knot magnitudes in the trailing interval **including the current knot**. That makes it a fairer simple-averaging comparator because sample-and-hold gives the current knot zero weight in the continuous integral.
+The decisive *interpolation-specific* comparisons are paired held-out `R²(linear) - R²(hold)` and `R²(linear) - R²(box)` at each width, with window-level bootstrap intervals. Separate gains over the pointwise baseline cannot answer those comparisons on their own. The `box` comparison was added after inspecting the first full results, so it is explicitly exploratory.
 The output also records the fraction of baseline squared error removed within each held-out window and the number of windows with a positive reduction, so a pooled gain can be checked for dependence on one initial condition.
 
 ## How to run and report it
 
-The raw `.npz` files are ignored by git and were absent from this checkout. The current rebuild uses `results/interpolation_rebuild/reference/` and `results/interpolation_rebuild/pinn_runs/`, leaving the published summaries untouched. Once all 40 runs have completed:
+The raw `.npz` files are ignored by git and were absent from the initial checkout. The completed rebuild uses `results/interpolation_rebuild/reference/` and `results/interpolation_rebuild/pinn_runs/`, leaving the published summaries untouched. To reproduce the latest analysis after rebuilding all 40 runs:
 
 ```bash
 python experiments/09_residual_interpolation.py \
   --runs results/interpolation_rebuild/pinn_runs \
-  --out results/interpolation_rebuild/interpolation_sampled_knots
+  --out results/interpolation_rebuild/interpolation_box_control
 ```
 
-The completed output is `results/interpolation_rebuild/interpolation_sampled_knots/metrics.json`. The 40-run completion check, fidelity values, baseline and candidate scores, intervals, design correction, and interpretation are recorded in `docs/interpolation_progress.md`. These widths and models were not part of the original preset decision rule. No directional training loss or Turinici time-weighted training is tested here.
+The latest output is `results/interpolation_rebuild/interpolation_box_control/metrics.json`. The 40-run completion check, fidelity values, baseline and candidate scores, intervals, design correction, post-result box control, and interpretation are recorded in `docs/interpolation_progress.md`. These widths and models were not part of the original preset decision rule. No directional training loss or Turinici time-weighted training is tested here.
 The bootstrap resamples the already computed out-of-fold predictions by initial-condition window; it does not refit the regression for every bootstrap draw. With eight windows and several explored comparisons, the intervals are descriptive rather than confirmatory.

@@ -3,7 +3,7 @@
 import numpy as np
 import pytest
 
-from src.analysis.interpolation import reconstruct_residual, trailing_mean_magnitude
+from src.analysis.interpolation import reconstruct_residual, sampled_knot_mean_magnitude, trailing_mean_magnitude
 
 
 def test_linear_reconstruction_is_exact_for_affine_vector_residual():
@@ -32,3 +32,13 @@ def test_invalid_sampling_or_width_is_rejected():
         reconstruct_residual(t, residual, 2, "cubic")
     with pytest.raises(ValueError):
         trailing_mean_magnitude(t, residual, 0.015)
+
+
+def test_plain_knot_average_includes_current_sample():
+    t = np.arange(0.0, 0.31, 0.01)
+    residual = (2.0 + 3.0 * t)[:, None]
+    indices = np.array([10, 15, 20, 25, 30])
+    average = sampled_knot_mean_magnitude(residual, indices, width_steps=10, stride=5)
+    np.testing.assert_allclose(average, 2.0 + 3.0 * (t[indices] - 0.05), atol=1e-14)
+    with pytest.raises(ValueError):
+        sampled_knot_mean_magnitude(residual, np.array([11]), width_steps=10, stride=5)

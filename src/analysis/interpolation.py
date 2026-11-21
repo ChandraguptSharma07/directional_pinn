@@ -60,3 +60,22 @@ def trailing_mean_magnitude(t: np.ndarray, residual: np.ndarray, width: float) -
     out = np.full(len(t), np.nan)
     out[m:] = (cumulative[m:] - cumulative[:-m]) / width
     return out
+
+
+def sampled_knot_mean_magnitude(
+    residual: np.ndarray, indices: np.ndarray, width_steps: int, stride: int
+) -> np.ndarray:
+    """Plain mean of sampled residual magnitudes on each trailing knot interval.
+
+    Includes both interval endpoints, so the current residual receives weight.
+    ``indices`` and ``width_steps`` must be multiples of the sampling stride.
+    """
+    residual = np.asarray(residual, dtype=float)
+    indices = np.asarray(indices, dtype=int)
+    if residual.ndim != 2 or indices.ndim != 1 or stride < 1 or width_steps < stride:
+        raise ValueError("invalid residual, indices, width, or stride")
+    if width_steps % stride or np.any(indices % stride) or np.any(indices < width_steps) or np.any(indices >= len(residual)):
+        raise ValueError("prediction times and width must align with sampled knots")
+    offsets = np.arange(0, width_steps + 1, stride)
+    knots = indices[:, None] - width_steps + offsets[None, :]
+    return np.linalg.norm(residual[knots], axis=2).mean(axis=1)

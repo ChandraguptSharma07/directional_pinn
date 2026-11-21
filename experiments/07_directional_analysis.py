@@ -377,6 +377,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--lyapunov", type=Path, default=REPO_ROOT / "results" / "lorenz_lyapunov")
     parser.add_argument("--out", type=Path, default=REPO_ROOT / "results" / "analysis")
     parser.add_argument("--no-controls", action="store_true", help="skip the random/shuffled controls (faster)")
+    parser.add_argument("--exclude-joins", type=float, default=None,
+                        help="exclude exact positive multiples of this segment length from predictor samples")
     args = parser.parse_args(argv)
 
     start = time.perf_counter()
@@ -391,7 +393,7 @@ def main(argv: list[str] | None = None) -> int:
     windows = sorted({run["summary"]["window"] for run in runs})
     lyapunov = {w: dict(np.load(args.lyapunov / "data" / f"lyapunov_window_{w}.npz")) for w in windows}
     failed = [run["name"] for run in runs if not run["summary"]["finite"]]
-    samples = build_samples(runs, lyapunov, horizons)
+    samples = build_samples(runs, lyapunov, horizons, exclude_joins=args.exclude_joins)
     print(f"{len(runs)} runs ({len(failed)} non-finite), {len(samples)} samples", flush=True)
 
     with_controls = not args.no_controls
@@ -421,6 +423,7 @@ def main(argv: list[str] | None = None) -> int:
         "n_runs": len(runs),
         "non_finite_runs": failed,
         "n_samples": int(len(samples)),
+        "excluded_join_interval": args.exclude_joins,
         "decision": decision,
         "primary_target_E_future": primary["horizons"],
         "secondary_target_created_error": secondary["horizons"],

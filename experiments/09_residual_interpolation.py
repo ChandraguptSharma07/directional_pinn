@@ -28,7 +28,7 @@ sys.path.insert(0, str(REPO_ROOT))
 
 import numpy as np
 
-from src.analysis.interpolation import reconstruct_residual, trailing_mean_magnitude
+from src.analysis.interpolation import reconstruct_residual, sampled_knot_mean_magnitude, trailing_mean_magnitude
 
 SAMPLE_SPACING = 0.05
 WIDTHS = (0.1, 0.25)
@@ -63,6 +63,7 @@ def build_data(runs: list[dict]) -> tuple[dict[float, dict], dict]:
     tables = {h: {"y": [], "group": [], "run": [], "point": [], "time": [],
                   **{f"linear_{w:g}": [] for w in WIDTHS},
                   **{f"hold_{w:g}": [] for w in WIDTHS},
+                  **{f"box_{w:g}": [] for w in WIDTHS},
                   **{f"dense_{w:g}": [] for w in WIDTHS}} for h in HORIZONS}
     fidelity = {f"{w:g}": {"linear": [], "hold": []} for w in WIDTHS}
     for run in runs:
@@ -101,6 +102,9 @@ def build_data(runs: list[dict]) -> tuple[dict[float, dict], dict]:
             for w in WIDTHS:
                 for method in averages:
                     table[f"{method}_{w:g}"].append(np.log(np.maximum(averages[method][w][j], EPS)))
+                width_steps = int(round(w / h))
+                sampled_box = sampled_knot_mean_magnitude(residual, j, width_steps, stride)
+                table[f"box_{w:g}"].append(np.log(np.maximum(sampled_box, EPS)))
     return ({h: {key: np.concatenate(chunks) for key, chunks in table.items()}
              for h, table in tables.items() if table["y"]}, fidelity)
 
@@ -158,14 +162,14 @@ def evaluate(tables: dict[float, dict], fidelity: dict, n_runs: int) -> dict:
                  "paired_comparisons": {}}
         predictions = {}
         for w in WIDTHS:
-            for method in ("linear", "hold", "dense"):
+            for method in ("linear", "hold", "box", "dense"):
                 name = f"{method}_{w:g}"
                 candidate = leave_one_window_out(np.column_stack([base_X, table[name]]), y, groups)
                 predictions[name] = candidate
                 entry["models"][name] = {**score(y, candidate),
                                          **window_bootstrap_gain(y, baseline, candidate, groups, seed=k)}
             linear = predictions[f"linear_{w:g}"]
-            for control in ("hold", "dense"):
+            for control in ("hold", "box", "dense"):
                 entry["paired_comparisons"][f"linear_minus_{control}_{w:g}"] = window_bootstrap_gain(
                     y, predictions[f"{control}_{w:g}"], linear, groups, seed=k + 100
                 )
