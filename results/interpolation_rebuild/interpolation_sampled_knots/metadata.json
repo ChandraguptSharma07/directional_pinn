@@ -1,0 +1,27 @@
+{
+  "created_utc": "2026-11-21T15:07:11+00:00",
+  "command": [
+    "experiments/09_residual_interpolation.py",
+    "--runs",
+    "results/interpolation_rebuild/pinn_runs",
+    "--out",
+    "results/interpolation_rebuild/interpolation_sampled_knots"
+  ],
+  "runtime_seconds": 3.434,
+  "git": {
+    "commit": "69c553a7d4d0e990bbeb3d120641df90f53b1118",
+    "dirty": true
+  },
+  "environment": {
+    "python": "3.13.15",
+    "platform": "Linux-6.18.53-x86_64-with-glibc2.42",
+    "packages": {
+      "numpy": "2.5.5",
+      "scipy": "1.18.1",
+      "matplotlib": "3.11.2",
+      "PyYAML": "6.0.4",
+      "pytest": "9.2.0",
+      "torch": "2.15.0+cpu"
+    }
+  }
+}

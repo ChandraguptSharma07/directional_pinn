@@ -9,6 +9,14 @@ a locally expanding direction (either the backward Lyapunov vector $b_1$ or the
 finite-time singular vector $s_1$) did not predict future error better than the
 residual's size on held-out trajectories. The directional training loss
 (Phase 9) was therefore not attempted. See [docs/results.md](docs/results.md).
+For the conclusion in relation to the submitted report and reference paper, see
+[docs/conclusion_2026-11-21.md](docs/conclusion_2026-11-21.md).
+The exploratory interpolation follow-up is documented in
+[docs/interpolation_study.md](docs/interpolation_study.md) and its running record
+in [docs/interpolation_progress.md](docs/interpolation_progress.md).
+In 40 rebuilt runs, a trailing residual average improved held-out prediction at
+short horizons, and linear interpolation added a smaller gain over sample-and-hold;
+this exploratory result does not change the original directional-alignment verdict.
 
 ## Research question
 
@@ -195,6 +203,7 @@ python experiments/07_directional_analysis.py   # the planned analysis and decis
 python experiments/07_directional_analysis.py --runs results/pinn_runs_lambda10 --out results/analysis_lambda10
 python experiments/07_directional_analysis.py --runs results/float64_check --out results/analysis_float64
 python experiments/08_alignment_effect_controls.py   # exploratory controls (not in the plan)
+python experiments/09_residual_interpolation.py        # exploratory interpolation after regenerating run arrays
 ```
 
 Without a GPU, drop `--device cuda`: the runs of each window are then trained

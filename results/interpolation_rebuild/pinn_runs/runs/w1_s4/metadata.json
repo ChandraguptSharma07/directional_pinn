@@ -1,0 +1,31 @@
+{
+  "created_utc": "2026-11-21T14:26:50+00:00",
+  "command": [
+    "experiments/06_pinn_runs.py",
+    "--reference",
+    "results/interpolation_rebuild/reference",
+    "--out",
+    "results/interpolation_rebuild/pinn_runs",
+    "--workers",
+    "2",
+    "--device",
+    "cpu"
+  ],
+  "runtime_seconds": 139.743,
+  "git": {
+    "commit": "69c553a7d4d0e990bbeb3d120641df90f53b1118",
+    "dirty": true
+  },
+  "environment": {
+    "python": "3.13.15",
+    "platform": "Linux-6.18.53-x86_64-with-glibc2.42",
+    "packages": {
+      "numpy": "2.5.5",
+      "scipy": "1.18.1",
+      "matplotlib": "3.11.2",
+      "PyYAML": "6.0.4",
+      "pytest": "9.2.0",
+      "torch": "2.15.0+cpu"
+    }
+  }
+}
