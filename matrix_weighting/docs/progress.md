@@ -314,3 +314,29 @@ is still wrong there.
 This is exploratory. The planned H2 decision on Lorenz-63 comes from the
 nixxa Gate 1 runs. If `S-self` matches `M-self` there too, H2 will be
 "partial", and that is what will be reported.
+
+### Gate 0 complete: H1 partial
+
+`hy1069/mw-gate0-dial-b` finished all 40 jobs (24 networks each, T4 GPUs).
+The planned analysis (`results/gate0/analysis.md`) gives **H1: partial**.
+
+**Linear saddle.**
+
+| κ (dial) | `M-orc` against `S-orc` |
+|---|---|
+| 1 (2) | worse, ×1.9 higher error |
+| 4 (5) | worse, ×3.1 |
+| 16 (17) | worse, ×4.3 |
+| 64 (65) | better, ×0.50; also better than `U` (×0.17) and `TUR` (×0.30) |
+
+**Davis–Skodje.** `M-orc` is worse than `S-orc` at γ = 3, 6 and 18 (×1.2 to
+×2.5) and the same at γ = 66. The self-consistent versions behave like the
+oracle ones.
+
+**Reading.** In these two-dimensional problems, nearly every method succeeds
+(E_max < 1 in 24/24 runs; the only failures are `U` and `TUR` at κ = 64).
+The final errors are small, 1e-2 to 1e-4. There, the matrix weight costs some
+accuracy, because it accepts a larger residual along the contracting
+direction. It helps only in the hardest setting, the κ = 64 saddle, where the
+plain loss struggles. So the matrix weight is not uniformly better: its value
+lies in the hard regime, where standard training fails or nearly fails.
