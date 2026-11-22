@@ -155,6 +155,17 @@ def side_direction(out: Path) -> None:
                                                 mean, scale))
 
 
+def side_sequential(out: Path) -> None:
+    """Plan amendment 2: time-marching to horizon 4 with segments of length 0.5 or 1.0."""
+    ics = frozen_lorenz_states()
+    mean, scale = lorenz_scaling(0)
+    for L, S in ((0.5, 8), (1.0, 4)):
+        for m in ("U", "S-self", "M-self"):
+            j = job(Lorenz63(), L, m, ics, SEEDS, f"results/side/sequential/H4_L{L:g}/{m}", mean, scale)
+            j["segments"] = S
+            write_job(out, f"sequential_H4_L{L:g}_{m}", j)
+
+
 def pilot(out: Path) -> None:
     """Timing pilot: one batch per family with the full step count (results kept separate)."""
     sad = LinearSaddle(64.0)
@@ -171,11 +182,11 @@ def pilot(out: Path) -> None:
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("gate", choices=["gate0", "gate1", "gate2", "side", "pilot", "gate3", "side_direction"])
+    ap.add_argument("gate", choices=["gate0", "gate1", "gate2", "side", "pilot", "gate3", "side_direction", "side_sequential"])
     args = ap.parse_args()
     out = ROOT / "jobs" / args.gate
     {"gate0": gate0, "gate1": gate1, "gate2": gate2, "side": side, "pilot": pilot, "gate3": gate3,
-     "side_direction": side_direction}[args.gate](out)
+     "side_direction": side_direction, "side_sequential": side_sequential}[args.gate](out)
     print(f"wrote {len(list(out.glob('*.json')))} job files to {out.relative_to(ROOT)}")
 
 

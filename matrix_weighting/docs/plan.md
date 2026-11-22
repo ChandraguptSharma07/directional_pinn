@@ -271,3 +271,30 @@ chaotic systems, chosen before any of their runs:
 - **Partial:** any other outcome.
 
 `D-self` results are reported descriptively only.
+
+## Amendment 2 (22 November 2026, evening): time-marching side run
+
+*Written before any time-marching network was trained. This is exploratory
+and has no decision rule.*
+
+**Background.** The earlier project reached T = 2 on Lorenz-63 by
+time-marching: 8 consecutive segments of length 0.25, each starting from the
+previous segment's predicted end state. If the matrix weight makes single
+windows of length 1 trainable, fewer and longer segments might reach longer
+horizons.
+
+**Setup.**
+
+- Horizon 4 on Lorenz-63, from the 12 Gate 1 states, seeds 0–2.
+- Segment length 0.5 (8 segments) or 1.0 (4 segments).
+- Each segment is trained with the section 5 settings (20,000 steps),
+  starting from the previous segment's predicted end state. The reference is
+  used only to score the result.
+- Methods: `U`, `S-self`, `M-self`.
+
+**Reported.**
+
+- **Success:** E_max < 1 over all of [0, 4].
+- **Error:** the median of log10 E_rms over [0, 4].
+- **Expectation stated in advance:** at segment length 1.0, `M-self`
+  succeeds in more runs than `U`.
