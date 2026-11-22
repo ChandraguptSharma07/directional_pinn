@@ -20,26 +20,36 @@
 
 ## lorenz96_n8 T1
 
-- n/a
-- n/a
-- n/a
-- n/a
-- n/a
+- M-self vs S-self: mean Δ -0.390 [-0.526, -0.234] (×0.41; A lower in 86% of pairs) → **beats**
+- M-self vs U: mean Δ -1.153 [-1.373, -0.961] (×0.07; A lower in 100% of pairs) → **beats**
+- M-self vs TUR: mean Δ -1.791 [-2.038, -1.536] (×0.02; A lower in 100% of pairs) → **beats**
+- D-self vs U: mean Δ -0.484 [-0.725, -0.211] (×0.33; A lower in 78% of pairs) → **beats**
+- M-self vs D-self: mean Δ -0.670 [-0.862, -0.493] (×0.21; A lower in 100% of pairs) → **beats**
 
 ## lorenz96_n8 T2
 
-- n/a
-- n/a
-- n/a
-- n/a
-- n/a
+- M-self vs S-self: mean Δ -0.377 [-0.774, +0.003] (×0.42; A lower in 75% of pairs) → no decision
+- M-self vs U: mean Δ -0.732 [-1.141, -0.377] (×0.19; A lower in 92% of pairs) → **beats**
+- M-self vs TUR: mean Δ -0.796 [-1.207, -0.432] (×0.16; A lower in 94% of pairs) → **beats**
+- D-self vs U: mean Δ -0.116 [-0.232, -0.002] (×0.77; A lower in 69% of pairs) → no decision
+- M-self vs D-self: mean Δ -0.616 [-0.960, -0.310] (×0.24; A lower in 92% of pairs) → **beats**
 
-**H4 (lorenz96_n8): incomplete** (beats at some window: {'S-self': False, 'U': False, 'TUR': False}; worse somewhere: False)
+**H4 (lorenz96_n8): supported** (beats at some window: {'S-self': True, 'U': True, 'TUR': True}; worse somewhere: False)
 
 ## Descriptive table
 
 | system | T | method | n | median log10 E_rms [IQR] | median log10 E_max | E_max<1 |
 |---|---|---|---:|---|---:|---:|
+| lorenz96_n8 | T1 | D-self | 36 | -1.32 [-1.74, -0.92] | -1.08 | 35/36 |
+| lorenz96_n8 | T1 | M-self | 36 | -1.95 [-2.14, -1.88] | -1.63 | 36/36 |
+| lorenz96_n8 | T1 | S-self | 36 | -1.63 [-1.87, -1.27] | -1.20 | 36/36 |
+| lorenz96_n8 | T1 | TUR | 36 | 0.02 [-0.70, 0.32] | 0.39 | 13/36 |
+| lorenz96_n8 | T1 | U | 36 | -0.97 [-1.23, -0.54] | -0.70 | 29/36 |
+| lorenz96_n8 | T2 | D-self | 36 | 1.05 [0.96, 1.10] | 1.22 | 0/36 |
+| lorenz96_n8 | T2 | M-self | 36 | 0.63 [-0.32, 0.90] | 0.94 | 10/36 |
+| lorenz96_n8 | T2 | S-self | 36 | 0.90 [0.50, 1.01] | 1.16 | 1/36 |
+| lorenz96_n8 | T2 | TUR | 36 | 1.12 [1.10, 1.14] | 1.28 | 0/36 |
+| lorenz96_n8 | T2 | U | 36 | 1.09 [1.04, 1.13] | 1.27 | 0/36 |
 | rossler | T10 | D-self | 36 | -0.65 [-0.92, -0.05] | -0.14 | 20/36 |
 | rossler | T10 | M-self | 36 | -1.50 [-1.61, -1.14] | -1.05 | 30/36 |
 | rossler | T10 | S-self | 36 | 0.36 [-0.56, 1.01] | 0.80 | 13/36 |

@@ -405,3 +405,25 @@ the lowest error and the least GPU time.
 this budget fewer, longer segments do not beat more, shorter ones. Its
 practical value is where a long single window is needed, not as a drop-in
 replacement for time-marching.
+
+### Gate 3 complete: H4 supported for Rössler and for Lorenz-96
+
+`hy1069/mw-gate3-l96-dir-c` finished all 12 jobs. Planned analysis
+(`results/gate3/analysis.md`) for Lorenz-96 (N = 8, F = 8): **H4 supported**.
+
+| window | `M-self` vs `S-self` | vs `U` | vs `TUR` | success: `M-self` / `S-self` / `D-self` / `U` / `TUR` |
+|---|---|---|---|---|
+| T = 1 | ×0.41, beats | ×0.07, beats | ×0.02, beats | 36 / 36 / 35 / 29 / 13 of 36 |
+| T = 2 | ×0.42, no decision | ×0.19, beats | ×0.16, beats | 10 / 1 / 0 / 0 / 0 of 36 |
+
+Rössler had already given H4 supported. With Lorenz-96, the planned H4 rule
+is met for both Gate 3 systems.
+
+**Direction-only side run on Lorenz T = 1 (exploratory).**
+
+- `D-self` (same total weight at every time; only the split across
+  directions follows G): 23/36 successes, median log10 E_rms −1.56.
+- `D-orc`: 10/36, median 1.21.
+
+So direction alone already helps a lot when it is self-consistent.
+Uniform weighting succeeds in 7/36 and Turinici's in 5/36.
