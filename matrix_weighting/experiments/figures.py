@@ -45,6 +45,7 @@ def strip(ax, runs, keys, labels, title):
     ax.set_xticks(range(len(labels)), labels, rotation=45, ha="right", fontsize=8)
     ax.set_title(title, fontsize=9)
     ax.set_ylabel("log10 of average error")
+    ax.set_xlabel("method")
     ax.grid(axis="y", alpha=0.3)
 
 

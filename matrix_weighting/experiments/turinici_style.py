@@ -80,14 +80,18 @@ def case_figure(system, T, title, comp, out_dir):
                    ylabel="average equation error")
     for ax, ttl in ((axes[0, 2], "(c) error at the final time, every network"), (axes[0, 3], "(d) average error over the window, every network")):
         ax.set_xticks(range(len(names)), ["uniform", "Turinici", "scalar\n(no direction)", "matrix\n(Lyapunov dir.)"], fontsize=8)
-        ax.set(title=ttl, ylabel="log10 error")
+        ax.set(title=ttl, ylabel="log10 error", xlabel="method")
         ax.grid(axis="y", alpha=0.3)
-    axes[1, 0].set(title=f"(e) one example run: variable {comp + 1} over time", xlabel="time t")
+    axes[1, 0].set(title=f"(e) one example run: variable {comp + 1} over time", xlabel="time t",
+                   ylabel=f"value of variable {comp + 1}")
     axes[1, 1].set(title="(f) the same example: error over time", xlabel="time t", ylabel="error")
-    axes[1, 2].set(title="(g) equation error over time (typical network)", xlabel="time t")
+    axes[1, 2].set(title="(g) equation error over time (typical network)", xlabel="time t", ylabel="equation error")
     axes[1, 3].set(title="(h) weight given to each time (end of training)", xlabel="time t", ylabel="weight")
-    axes[0, 0].legend(fontsize=8)
-    axes[1, 0].legend(fontsize=7)
+    # Uniform weighting gives every time the same weight (1); draw it so panel (h) shows all four methods.
+    axes[1, 3].axhline(1.0, color="#7f7f7f", lw=1.5, ls="--", label="uniform (all times equal)")
+    for ax in (axes[0, 0], axes[0, 1], axes[1, 1], axes[1, 2], axes[1, 3]):
+        ax.legend(fontsize=7, loc="best")
+    axes[1, 0].legend(fontsize=7, loc="best")
     for ax in axes.ravel():
         ax.tick_params(labelsize=8)
     fig.suptitle(f"{title}\n36 networks per method (12 starting points × 3 seeds), same networks and "
