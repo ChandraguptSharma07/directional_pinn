@@ -27,7 +27,7 @@ import numpy as np  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 METHODS = [("U", "uniform", "#7f7f7f"), ("TUR", "Turinici", "#9467bd"),
-           ("S-self", "scalar Gramian (no direction)", "#ff7f0e"), ("M-self", "matrix (Lyapunov directions)", "#1f77b4")]
+           ("S-self", "scalar weight (no direction)", "#ff7f0e"), ("M-self", "matrix (Lyapunov directions)", "#1f77b4")]
 CASES = [("rossler", "T10", "Rössler, window [0, 10]", 0), ("rossler", "T5", "Rössler, window [0, 5]", 0),
          ("lorenz96_n8", "T1", "Lorenz-96 (N=8), window [0, 1]", 0), ("lorenz96_n8", "T2", "Lorenz-96 (N=8), window [0, 2]", 0)]
 
@@ -45,7 +45,8 @@ def band(ax, its, values, color, label):
 
 
 def case_figure(system, T, title, comp, out_dir):
-    fig, axes = plt.subplots(2, 4, figsize=(19, 8.2))
+    fig, axes4 = plt.subplots(4, 2, figsize=(12, 17))
+    axes = axes4.reshape(2, 4)  # same panel order (a)-(h), drawn two per row
     rows = []
     for m, label, color in METHODS:
         s, d = load(system, T, m)
@@ -74,24 +75,24 @@ def case_figure(system, T, title, comp, out_dir):
                      "median_E_rms": float(10 ** np.median(er)),
                      "median_GPU_seconds": float(s["runtime_seconds"])})
     names = [lbl for _, lbl, _ in METHODS]
-    axes[0, 0].set(yscale="log", title="(a) trajectory error during training", xlabel="iteration", ylabel="RMS error over window")
-    axes[0, 1].set(yscale="log", title="(b) equation error during training (unweighted)", xlabel="iteration",
-                   ylabel="RMS residual")
-    for ax, ttl in ((axes[0, 2], "(c) final-time error |x̂(T) − x(T)|"), (axes[0, 3], "(d) RMS error over the window")):
-        ax.set_xticks(range(len(names)), ["uniform", "Turinici", "scalar\nGramian", "matrix\n(Lyapunov)"], fontsize=8)
+    axes[0, 0].set(yscale="log", title="(a) error of the solution during training", xlabel="training step", ylabel="average error over the window")
+    axes[0, 1].set(yscale="log", title="(b) how badly the equation is broken, during training", xlabel="training step",
+                   ylabel="average equation error")
+    for ax, ttl in ((axes[0, 2], "(c) error at the final time, every network"), (axes[0, 3], "(d) average error over the window, every network")):
+        ax.set_xticks(range(len(names)), ["uniform", "Turinici", "scalar\n(no direction)", "matrix\n(Lyapunov dir.)"], fontsize=8)
         ax.set(title=ttl, ylabel="log10 error")
         ax.grid(axis="y", alpha=0.3)
-    axes[1, 0].set(title=f"(e) example: component {comp + 1}, initial condition 1, seed 0", xlabel="t")
-    axes[1, 1].set(title="(f) example: error over time", xlabel="t", ylabel="|x̂(t) − x(t)|")
-    axes[1, 2].set(title="(g) equation error |r(t)| (median of 36)", xlabel="t")
-    axes[1, 3].set(title="(h) residual weight at end of training (median)", xlabel="t", ylabel="weight (trace / n)")
+    axes[1, 0].set(title=f"(e) one example run: variable {comp + 1} over time", xlabel="time t")
+    axes[1, 1].set(title="(f) the same example: error over time", xlabel="time t", ylabel="error")
+    axes[1, 2].set(title="(g) equation error over time (typical network)", xlabel="time t")
+    axes[1, 3].set(title="(h) weight given to each time (end of training)", xlabel="time t", ylabel="weight")
     axes[0, 0].legend(fontsize=8)
     axes[1, 0].legend(fontsize=7)
     for ax in axes.ravel():
         ax.tick_params(labelsize=8)
-    fig.suptitle(f"{title}: 36 networks per method (12 initial conditions × 3 seeds), same networks and budget "
-                 f"(20,000 Adam steps); bands = quartiles", fontsize=11)
-    fig.tight_layout()
+    fig.suptitle(f"{title}\n36 networks per method (12 starting points × 3 seeds), same networks and "
+                 f"training budget; shaded bands = middle half of the networks", fontsize=11)
+    fig.tight_layout(rect=(0, 0, 1, 0.955))
     stem = f"turinici_style_{system}_{T}"
     fig.savefig(out_dir / f"{stem}.png", dpi=140)
     fig.savefig(out_dir / f"{stem}.pdf")

@@ -22,6 +22,14 @@ from analyze import load, log_err  # noqa: E402
 COLORS = {"U": "#7f7f7f", "TUR": "#9467bd", "S-orc": "#ff7f0e", "M-orc": "#1f77b4", "S-self": "#ff7f0e",
           "M-self": "#1f77b4", "D-self": "#2ca02c"}
 ORDER = ["U", "TUR", "S-orc", "S-self", "M-orc", "M-self"]
+PLAIN = {"U": "uniform", "TUR": "Turinici", "S-orc": "scalar\n(oracle)", "S-self": "scalar\n(self)",
+         "M-orc": "matrix\n(oracle)", "M-self": "matrix\n(self)"}
+TITLES = {"lorenz63": "Lorenz-63 (no extra variables)", "lorenz63_damped3": "Lorenz-63 + 3 extra damped variables",
+          "lorenz63_damped9": "Lorenz-63 + 9 extra damped variables", "lorenz63_damped29": "Lorenz-63 + 29 extra damped variables",
+          "saddle_k1": "saddle, kappa = 1", "saddle_k4": "saddle, kappa = 4", "saddle_k16": "saddle, kappa = 16",
+          "saddle_k64": "saddle, kappa = 64", "davis_skodje_g3": "Davis-Skodje, gamma = 3",
+          "davis_skodje_g6": "Davis-Skodje, gamma = 6", "davis_skodje_g18": "Davis-Skodje, gamma = 18",
+          "davis_skodje_g66": "Davis-Skodje, gamma = 66"}
 
 
 def strip(ax, runs, keys, labels, title):
@@ -36,7 +44,7 @@ def strip(ax, runs, keys, labels, title):
         ax.hlines(np.median(y), i - 0.3, i + 0.3, color="k", lw=2)
     ax.set_xticks(range(len(labels)), labels, rotation=45, ha="right", fontsize=8)
     ax.set_title(title, fontsize=9)
-    ax.set_ylabel("log10 E_rms")
+    ax.set_ylabel("log10 of average error")
     ax.grid(axis="y", alpha=0.3)
 
 
@@ -55,10 +63,10 @@ def gate0(out: Path):
     runs = load("gate0")
     systems = ["saddle_k1", "saddle_k4", "saddle_k16", "saddle_k64", "davis_skodje_g3", "davis_skodje_g6",
                "davis_skodje_g18", "davis_skodje_g66"]
-    fig, axes = plt.subplots(2, 4, figsize=(14, 6.5))
+    fig, axes = plt.subplots(4, 2, figsize=(10, 13))
     for ax, s in zip(axes.ravel(), systems):
         methods = [m for m in ORDER if (s, "T2", m) in runs]
-        strip(ax, runs, [(s, "T2", m) for m in methods], methods, s)
+        strip(ax, runs, [(s, "T2", m) for m in methods], [PLAIN[m] for m in methods], TITLES[s])
     fig.tight_layout()
     fig.savefig(out / "gate0_errors.png", dpi=150)
     fig.savefig(out / "gate0_errors.pdf")
@@ -67,9 +75,9 @@ def gate0(out: Path):
 def gate2(out: Path):
     runs = load("gate2", lorenz_part=True)
     systems = ["lorenz63", "lorenz63_damped3", "lorenz63_damped9", "lorenz63_damped29"]
-    fig, axes = plt.subplots(1, 4, figsize=(15, 3.8))
-    for ax, s in zip(axes, systems):
-        strip(ax, runs, [(s, "T1", m) for m in ORDER], ORDER, f"{s} (Lorenz-part error)")
+    fig, axes = plt.subplots(2, 2, figsize=(10, 8))
+    for ax, s in zip(axes.ravel(), systems):
+        strip(ax, runs, [(s, "T1", m) for m in ORDER], [PLAIN[m] for m in ORDER], TITLES[s])
     fig.tight_layout()
     fig.savefig(out / "gate2_errors.png", dpi=150)
     fig.savefig(out / "gate2_errors.pdf")
@@ -81,8 +89,8 @@ def gate3(out: Path):
               ("lorenz96_n8", "T1", "Lorenz-96 (N=8), window 1"), ("lorenz96_n8", "T2", "Lorenz-96 (N=8), window 2")]
     methods = ["U", "TUR", "S-self", "D-self", "M-self"]
     labels = ["uniform", "Turinici", "scalar\n(no direction)", "direction\nonly", "matrix\n(Lyapunov dir.)"]
-    fig, axes = plt.subplots(1, 4, figsize=(15, 4.2))
-    for ax, (system, T, title) in zip(axes, panels):
+    fig, axes = plt.subplots(2, 2, figsize=(11, 9))
+    for ax, (system, T, title) in zip(axes.ravel(), panels):
         keys = [(system, T, m) for m in methods]
         strip(ax, runs, keys, labels, title)
         ax.set_title(title, fontsize=9, pad=16)
@@ -91,8 +99,8 @@ def gate3(out: Path):
             if d:
                 n_ok = sum(v["success"] for v in d.values())
                 ax.annotate(f"{n_ok}/{len(d)}", (i, ax.get_ylim()[1]), ha="center", va="bottom", fontsize=8)
-    fig.suptitle("Trajectory error per network (36 each); black bar = median; numbers = runs with error < 1 throughout",
-                 fontsize=9, y=1.02)
+    fig.suptitle("Error of each trained network (36 per method). Black bar = typical (median) network.\n"
+                 "Number on top = networks whose error stayed below 1 the whole time.", fontsize=9, y=1.03)
     fig.tight_layout()
     fig.savefig(out / "gate3_errors.png", dpi=150, bbox_inches="tight")
     fig.savefig(out / "gate3_errors.pdf", bbox_inches="tight")
