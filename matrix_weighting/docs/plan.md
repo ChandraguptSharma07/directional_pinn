@@ -298,3 +298,28 @@ horizons.
 - **Error:** the median of log10 E_rms over [0, 4].
 - **Expectation stated in advance:** at segment length 1.0, `M-self`
   succeeds in more runs than `U`.
+
+## Amendment 3 (22 November 2026, night): soft initial condition on stiff dial settings
+
+*Written before any of these runs. Exploratory, with no decision rule.*
+
+**Motivation.** The dial study's handoff (`docs/handoff_2026-11-22.md` on
+`main`) reports a problem with the hard initial-condition form
+x0 + (t/T)(g − x0) on stiff systems. It forces the raw output g to spike to
+about T·κ·d near t = 0, so the dial study used a soft initial condition
+(penalty λ_IC = 100). Gate 0 used the hard form throughout. The matrix
+weight's only Gate 0 win, at saddle κ = 64, could therefore partly reflect
+its tolerance of that spike's residual, which lies along the contracting
+direction.
+
+**Setup.** Gate 0's settings, initial conditions and seeds are kept, with two
+changes:
+
+- the network output is unconstrained;
+- the loss adds λ_IC ‖x̂(0) − x0‖² per network, with λ_IC = 100.
+
+The residual weights are unchanged. The settings are saddle κ ∈ {16, 64}
+(`U`, `TUR`, `S-orc`, `M-orc`) and Davis–Skodje γ ∈ {18, 66} (all six
+methods), on Kaggle GPU.
+
+**Reported.** The same paired contrasts as Gate 0, labelled exploratory.
