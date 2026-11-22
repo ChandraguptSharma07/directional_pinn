@@ -546,3 +546,30 @@ output by U(0). So "Turinici's weighting fails here" holds for this
 implementation only.
 
 The soft-initial-condition kernel stayed queued on nikita245678k as well. It was moved to `yess16/mw-side-soft-ic-c`, and the queued copy was replaced by a no-op.
+
+### Gate 1 complete: H2 partial
+
+All nine reruns finished on nixxa with the checkpointing code; none was
+stopped. The planned analysis (`results/gate1/analysis.md`) gives
+**H2: partial**.
+
+**`M-self` against the three comparators:**
+
+| T | vs `U` | vs `TUR` | vs `S-self` |
+|---|---|---|---|
+| 1 | ×0.01, beats | ×0.00, beats | ×0.50, no decision |
+| 2 | ×0.21, beats | ×0.20, beats | ×0.59, no decision |
+| 0.5 | no decision | no decision | no decision |
+
+`M-self` beats `U` and `TUR`, never beats `S-self`, and is worse than none.
+At T = 0.5 every method succeeds (36/36).
+
+**Mechanism check with oracle weights.** `M-orc` beats `S-orc` at T = 1
+(×0.03). At T = 0.5 and T = 2 there is no decision.
+
+**Success counts** (36 networks each) are identical to the GPU replicate:
+
+| T | `M-self` | `S-self` | `M-orc` | `S-orc` | `U` | `TUR` |
+|---|---|---|---|---|---|---|
+| 1 | 27 | 24 | 23 | 9 | 7 | 5 |
+| 2 | 8 | 5 | 3 | 6 | 0 | 0 |
