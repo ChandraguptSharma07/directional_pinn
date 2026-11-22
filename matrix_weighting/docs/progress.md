@@ -151,3 +151,18 @@ weighting. The closest work:
 This is a quick check, not a full review. A novelty statement still needs a
 fuller search, for example of the data-assimilation literature on weighting
 in the unstable subspace.
+
+### GPU out-of-memory in the direction-blind weight; fix (22 November, evening)
+
+On Kaggle GPUs, `torch.linalg.eigvalsh` asked for about 9 GB of workspace for
+one batch of 36 × 512 small symmetric matrices. Three `S-self` jobs ran out of
+memory at their first weight update and wrote no results:
+
+- side GPU replicate: Lorenz T = 0.5 and T = 1;
+- Gate 2: k = 0.
+
+`mw/weights.py::best_scalar` now computes these eigenvalues on the CPU. The
+mathematics is unchanged and the tests still pass (26/26). Jobs that finished
+before the fix are kept. Failed jobs are rerun with the fixed code on the
+same kind of GPU (kernel `hy1069/mw-rerun-1`). The nixxa runs use the CPU and
+were never affected.

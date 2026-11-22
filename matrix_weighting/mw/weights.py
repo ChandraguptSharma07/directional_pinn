@@ -84,7 +84,9 @@ def minimax_matrix(A: torch.Tensor) -> torch.Tensor:
 
 def best_scalar(A: torch.Tensor) -> torch.Tensor:
     """sqrt(lambda_max(A_i)) per time, normalized to mean 1."""
-    lam = torch.linalg.eigvalsh(A)[..., -1].clamp_min(0.0)
+    # On CPU: batched eigvalsh on CUDA asked for ~9 GB of workspace for 36 x 512 small matrices
+    # and ran out of memory on Kaggle (docs/progress.md). The values are the same.
+    lam = torch.linalg.eigvalsh(A.cpu())[..., -1].clamp_min(0.0).to(A.device)
     return normalize_scalar(lam.sqrt())
 
 
