@@ -1,0 +1,20 @@
+{
+  "saddle_k64": {
+    "max_error": 0.3500469869625892,
+    "max_reference_norm": 7.38905609893065,
+    "relative_max_error": 0.047373708126704876,
+    "passes": true,
+    "median_error": 0.1166838193735147,
+    "runtime_seconds": 131.97950949898222
+  },
+  "davis_skodje_g66": {
+    "max_error": 0.0007827518293115565,
+    "max_reference_norm": 1.4353775259405828,
+    "relative_max_error": 0.0005453281907828606,
+    "passes": true,
+    "median_error": 0.000404835763129692,
+    "runtime_seconds": 132.10448456098675
+  },
+  "iterations": 20000,
+  "all_pass": true
+}

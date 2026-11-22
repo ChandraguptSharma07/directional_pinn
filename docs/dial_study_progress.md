@@ -84,3 +84,27 @@ the horizon, so it is much smaller than the single-push ratio sigma_1/sigma_2.
 ### Pilot (accuracy only)
 The pilot was started at 20,000 iterations: window 0, seed 0, at kappa = 64 and
 gamma = 66. Its result is recorded below once it finishes.
+
+**Pilot result.** `experiments/25_dial_pinn_runs.py --pilot` trained window 0,
+seed 0 at the two stiffest settings on the CPU. Each run took about 132 s.
+
+| setting | max error | relative to max state norm | median error | pilot rule (≤ 5%) |
+|---|---:|---:|---:|---|
+| saddle, kappa = 64 | 0.350 | 4.74% | 0.117 | pass |
+| Davis–Skodje, gamma = 66 | 0.00078 | 0.05% | 0.00040 | pass |
+
+Both pilots passed, so the main runs use 20,000 iterations as planned. No
+direction statistic was computed in the pilot. Output is in
+`results/dial_study/pilot/`.
+
+### Main runs
+- **Started:** at about 18:05 IST.
+- **Devices.** The plan does not fix the device. To halve the wall time:
+  - family L trains on the GPU, as one stacked model of 40 runs per setting;
+  - family D trains on the CPU, with ten processes and one run each.
+- **Why the device split does not matter.** Stacked and separate training give
+  the same models up to floating-point rounding (tested in
+  `tests/test_dial_systems.py`), and each family is analysed separately.
+- **An aborted first launch.** A single GPU process for all settings was
+  stopped after about two minutes, before it had saved any run, and replaced
+  by this split.

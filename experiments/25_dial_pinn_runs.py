@@ -78,18 +78,25 @@ def pilot(args) -> None:
 
 def main_runs(args) -> None:
     start = time.perf_counter()
-    for system in dial_settings():
+    settings = [s for s in dial_settings() if args.family is None or s.to_dict()["family"] == args.family]
+    for system in settings:
         jobs = [make_job(system, w, s, args.iterations, args.device, args.out) for w in ANALYSIS_WINDOWS for s in SEEDS]
         todo = [job for job in jobs if not (Path(job["run_dir"]) / "metrics.json").exists()]
         print(f"{system.name}: {len(todo)}/{len(jobs)} runs to train", flush=True)
         if todo:
             t0 = time.perf_counter()
-            summaries = run_jobs_together(todo)
+            if args.workers > 1:  # one process per run (CPU)
+                with ProcessPoolExecutor(max_workers=args.workers) as pool:
+                    summaries = list(pool.map(run_job, todo))
+            else:  # one stacked model for all runs of the setting
+                summaries = run_jobs_together(todo)
             finite = sum(s["finite"] for s in summaries)
             print(f"{system.name}: done in {time.perf_counter() - t0:.0f} s, {finite}/{len(summaries)} finite", flush=True)
     rows = []
     for system in dial_settings():
         for run_dir in sorted((args.out / system.name / "runs").glob("w*_s*")):
+            if not (run_dir / "metrics.json").exists():
+                continue
             summary = json.loads((run_dir / "metrics.json").read_text())
             rows.append({"setting": system.name, "dial": system.dial, **{k: summary[k] for k in (
                 "window", "seed", "finite", "median_error", "max_error", "max_reference_norm", "median_residual",
@@ -104,6 +111,8 @@ def main() -> None:
     parser.add_argument("--pilot", action="store_true")
     parser.add_argument("--iterations", type=int, default=20000)
     parser.add_argument("--device", default="cpu")
+    parser.add_argument("--family", choices=["L", "D"], default=None, help="train only this family")
+    parser.add_argument("--workers", type=int, default=1, help="CPU processes, one run each (default: stacked)")
     parser.add_argument("--out", type=Path, default=REPO_ROOT / "results/dial_study")
     args = parser.parse_args()
     pilot(args) if args.pilot else main_runs(args)
