@@ -1,7 +1,7 @@
 # Speaker script: 10 minutes, 4 speakers, 12 slides
 
-The deck is `presentation.pptx` (also `presentation.pdf`). The same text is in
-the speaker notes of each slide. Each speaker has about 2.5 minutes, and the
+The deck is `presentation.pptx` (also `presentation.pdf`): 12 slides plus a
+references slide. The same text is in the speaker notes of each slide. Each speaker has about 2.5 minutes, and the
 times below add up to about 10 minutes. Treat the words as a guide and say them
 in your own words.
 
@@ -10,7 +10,9 @@ in your own words.
 | Aditya Bhagora | 1–3 | the problem and the key idea |
 | Chandragupt Sharma | 4–6 | the reference paper and our method |
 | Himanshu Yadav | 7–9 | worked example, how we tested, main result |
-| Pranjul Gupta | 10–12 | training curves, the trend, limits and conclusion |
+| Pranjul Gupta | 10–12 | training curves, the trend, limitations and conclusion |
+
+Slide 13 (references) is not presented. Leave it up during questions.
 
 ---
 
@@ -22,7 +24,7 @@ or PINNs, on chaotic systems. We extend a recent paper by Turinici: instead of
 giving each time one weight, we give each time a matrix built from the
 directions in which errors grow or shrink."
 
-**Slide 2, the problem (about 60 s).**
+**Slide 2, PINNs and the problem with chaos (about 60 s).**
 "A PINN is a neural network that takes time t and outputs a solution x-hat of
 t. We train it so that it satisfies the equation dx/dt = f(x); the starting
 value x0 is built into the network.
@@ -112,7 +114,7 @@ solution: the tangent propagator along it, then G by a short backward sweep
 over the time grid, then the weight. We refresh it every 10 training steps, so
 we never need the true solution."
 
-**Slide 8, how we tested (about 45 s).**
+**Slide 8, experimental setup (about 45 s).**
 "We used six systems, from simple two-dimensional test systems to Lorenz-63,
 Rössler and Lorenz-96. We compared four methods: uniform weights, Turinici's
 weights, our harm matrix without direction, which we call scalar, and our
@@ -156,7 +158,7 @@ On the right is one example run against the true solution. Our network follows
 it over the whole window; the others leave it near t = 3.5 and never come
 back."
 
-**Slide 11, more harmless directions (about 50 s).**
+**Slide 11, adding harmless directions (about 50 s).**
 "To test the theory, we added k extra fast-shrinking variables to Lorenz-63:
 0, 3, 9 and 29. These add harmless directions.
 
@@ -168,7 +170,7 @@ with no extra variables, which is not statistically significant, then 8, 50
 and 100 times lower. More harmless directions give a bigger benefit from using
 direction, which is what the theory predicts."
 
-**Slide 12, limits and conclusion (about 50 s).**
+**Slide 12, limitations and conclusion (about 50 s).**
 "To be honest about limits: on plain Lorenz-63 most of the gain comes from
 timing, and a well-tuned causal training method does about as well. On easy
 problems our weight costs a little accuracy, and it needs about 3 times more
