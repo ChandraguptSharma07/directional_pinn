@@ -272,3 +272,45 @@ hit the eigenvalue out-of-memory failure (old code) and were added to
 The uniform and Turinici failures at T = 1 do not go away with 2.5 times more
 steps, a wider network or a denser grid. The `M-self` result holds under all
 three changes.
+
+### Rerun results change the reading of Lorenz T = 1 (exploratory)
+
+`mw-rerun-2` and the earlier reruns completed the missing `S-self` jobs.
+Medians of log10 E_rms:
+
+- **On plain Lorenz-63 at T = 1, `S-self` does about as well as `M-self`.**
+  - Gate 2, k = 0: −2.27 (67% success) against −2.29 (75%).
+  - GPU replicate: −2.27 against −2.29.
+  - Sensitivity variants: −2.96, −2.47 and −2.67, against −2.65, −2.45 and
+    −2.25 for `M-self`.
+- **The oracle scalar weight `S-orc` fails** (25% success), although its time
+  profile is the one `S-self` ends with.
+
+**The training histories (post hoc) suggest why.** For its first ~3,000 steps,
+`S-self` puts very little weight on the second half of the window. Its weight
+at t/T = 0.75 is about 0.09, against 0.46 for the oracle; at t = T it is about
+0.004, against 0.06. Once the first half is right, its profile relaxes to the
+oracle's. So the self-consistent weights act like an automatic **causal
+schedule**: the late window counts for little while the network's own path
+is still wrong there.
+
+**The present reading has two separate effects:**
+
+1. **A better time weight.**
+   - The Gramian along the network's own path, even as a scalar, rescues
+     Lorenz T = 1: 19% success for `U`, 14% for `TUR`, about 67–75% for the
+     self-consistent Gramian weights.
+   - Turinici's state-based proxy does not.
+2. **Direction:**
+   - It matters with fixed (oracle) weights: `M-orc` reaches 64% against 25%
+     for `S-orc`.
+   - It matters with many contracting directions: in Gate 2 at k = 3 and 9,
+     `M-self` reaches 75% against 56% and 19% for `S-self`.
+   - It matters on Rössler at T = 10: about 25 times lower error than
+     `S-self`.
+   - On plain Lorenz-63 at T = 1 it adds little once the weights are
+     self-consistent.
+
+This is exploratory. The planned H2 decision on Lorenz-63 comes from the
+nixxa Gate 1 runs. If `S-self` matches `M-self` there too, H2 will be
+"partial", and that is what will be reported.
