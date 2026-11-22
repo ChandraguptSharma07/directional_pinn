@@ -29,8 +29,8 @@ def load(gate: str, lorenz_part: bool = False) -> dict:
     for f in sorted((ROOT / "results" / gate).rglob("summary.json")):
         s = json.loads(f.read_text())
         job = s["job"]
-        rel = Path(job["out_dir"]).parts  # results/<gate>/<system>/<T..>/<method..>
-        system, T, method = rel[2], rel[3], "/".join(rel[4:])
+        rel = Path(job["out_dir"]).relative_to(Path("results") / gate).parts  # <system>/<T..>/<method..>
+        system, T, method = rel[0], rel[1], "/".join(rel[2:])
         m = s.get("metrics_lorenz_part") if lorenz_part and "metrics_lorenz_part" in s else s["metrics"]
         for i, p in enumerate(s["pairs"]):
             runs[(system, T, method)][(p["ic"], p["seed"])] = {
@@ -145,10 +145,11 @@ def gate0() -> dict:
     return res
 
 
-def gate1() -> dict:
-    runs = load("gate1")
+def gate1(source: str = "gate1") -> dict:
+    """Planned H2 analysis. source="side/gate1_gpu" applies the same rule to the GPU replicate (side run)."""
+    runs = load(source)
     res = {"describe": describe(runs), "horizons": {}}
-    lines = ["# Gate 1 analysis (planned rules, docs/plan.md section 8)", ""]
+    lines = [f"# Gate 1 analysis (planned rules, docs/plan.md section 8) on results/{source}", ""]
     beats_any = {m: False for m in ("S-self", "U", "TUR")}
     worse_any = False
     complete = True
@@ -180,7 +181,7 @@ def gate1() -> dict:
     res["worse_at_some_horizon"] = worse_any
     lines += [f"**H2: {verdict}** (beats at some horizon: {beats_any}; worse somewhere: {worse_any})", "",
               "## Descriptive table", "", table_md(res["describe"])]
-    write("gate1", res, lines)
+    write(source, res, lines)
     return res
 
 
@@ -269,10 +270,11 @@ def write(gate: str, res: dict, lines: list[str]) -> None:
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("gates", nargs="+", choices=["gate0", "gate1", "gate2", "gate3", "side"])
+    ap.add_argument("gates", nargs="+", choices=["gate0", "gate1", "gate2", "gate3", "side", "gate1_gpu"])
     args = ap.parse_args()
     for g in args.gates:
-        {"gate0": gate0, "gate1": gate1, "gate2": gate2, "gate3": gate3, "side": side}[g]()
+        {"gate0": gate0, "gate1": gate1, "gate2": gate2, "gate3": gate3, "side": side,
+         "gate1_gpu": lambda: gate1("side/gate1_gpu")}[g]()
 
 
 if __name__ == "__main__":

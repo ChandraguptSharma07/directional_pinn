@@ -471,3 +471,18 @@ By 21:10 the pool reported 9 of its first 11 finished jobs as `FAILED (exit -9)`
 **Rerun.** The nine lost jobs are queued on nixxa (`jobs/gate1_rerun` there:
 same job files, 9 workers). They start automatically when the first pool
 ends. Settings, seeds and initial conditions are unchanged.
+
+### Preview: the Gate 1 rule applied to the GPU replicate (side run)
+
+`analyze.py gate1_gpu` applies the H2 rule to `results/side/gate1_gpu` and
+gives **partial**:
+
+- `M-self` beats `U` and `TUR` at T = 1 (×0.01) and at T = 2 (×0.21, ×0.20).
+- It does not beat `S-self` at any horizon (×1.10, ×0.52, ×0.59; every
+  interval contains 0).
+- At T = 0.5 nothing differs.
+
+This is only a preview on other hardware; the planned decision waits for the
+nixxa runs. The soft-initial-condition kernel stayed queued on hy1069. It was
+moved to `nikita245678k/mw-side-soft-ic-b`, and the queued copy was replaced
+by a no-op.
