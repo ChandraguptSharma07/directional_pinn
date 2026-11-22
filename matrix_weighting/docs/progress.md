@@ -124,3 +124,30 @@ replicate (`jobs/side_gate1gpu`, kernels `hy1069/mw-g1-gpu-a` and
 `yess16/mw-g1-gpu-b`). It checks whether the Gate 1 conclusion survives
 different hardware and numerics. The planned Gate 1 decision uses only the
 nixxa runs.
+
+### Literature check (required by plan section 11)
+
+Searches on 22 November 2026 found no PINN loss weighted by a tangent-linear
+(propagator) matrix. The searches combined Lyapunov vectors, tangent-linear
+sensitivity, adjoint and dual weighted residuals, shadowing, and PINN loss
+weighting. The closest work:
+
+- [Turinici, arXiv:2407.21642v2](https://arxiv.org/html/2407.21642v2):
+  scalar exponent-based time weights; the direction-blind special case.
+- [arXiv:2604.01835](https://arxiv.org/abs/2604.01835): a
+  dual-weighted-residual error estimator, localized to choose PINN
+  collocation points. It is a scalar indicator per point for a chosen goal,
+  not a matrix weight in the loss.
+- [Wang, Sankaran and Perdikaris, arXiv:2203.07404](https://arxiv.org/pdf/2203.07404):
+  causal time weights.
+- [Hillebrecht and Unger, arXiv:2203.17055](https://pdf.arxiv.org/pdf/2203.17055):
+  a posteriori ODE error bounds for PINNs.
+- [De Ryck et al., arXiv:2310.05801](https://arxiv.org/pdf/2310.05801):
+  operator preconditioning of physics-informed training.
+- [Özalp et al., arXiv:2305.15111](https://arxiv.org/pdf/2305.15111v1):
+  covariant Lyapunov vectors used to evaluate physics-informed LSTMs, not to
+  weight a loss.
+
+This is a quick check, not a full review. A novelty statement still needs a
+fuller search, for example of the data-assimilation literature on weighting
+in the unstable subspace.
