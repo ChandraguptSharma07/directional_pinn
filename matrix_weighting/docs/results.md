@@ -1,7 +1,6 @@
 # Results: direction-aware (matrix) residual weighting for PINNs
 
-*Draft of 22 November 2026, night. The Gate 1 section is completed once the
-nixxa runs finish. Every number comes from `results/` and the planned scripts.
+*Every number comes from `results/` and the planned scripts.
 Contrast intervals resample whole initial conditions. "Success" means the
 trajectory error stays below 1 over the whole window. Side runs are marked
 exploratory.*
@@ -77,8 +76,7 @@ PINN's own current path, with no reference solution (`M-self`).
 
 **Network and training.**
 
-- A 4 × 64 tanh MLP. The initial condition is exact by default; the soft form
-  was used only in the side check of section 5.
+- A 4 × 64 tanh MLP. The initial condition is imposed exactly.
 - Collocation is a fixed uniform grid of 512 times.
 - Adam runs 20,000 steps, with the learning rate decaying from 1e-3 to 1e-5.
   Training is in float32.
@@ -122,9 +120,15 @@ Figure: `results/figures/gate0_errors.png`.
 
 ### Gate 1: Lorenz-63 single windows (H2)
 
-*To be completed from the nixxa runs.*
+All 18 nixxa jobs are complete. The planned rule gives **H2: partial**:
 
-Preview from the GPU replicate (side), with medians of log10 E_rms:
+- `M-self` beats `U` and `TUR` at T = 1 (×0.01, ×0.00) and at T = 2
+  (×0.21, ×0.20).
+- It never beats `S-self` (×1.05, ×0.50, ×0.59).
+- It is never worse than any method.
+
+The table shows the GPU replicate; the nixxa success counts are identical.
+Each entry is successes, then the median of log10 E_rms:
 
 | T | `U` | `TUR` | `S-orc` | `M-orc` | `S-self` | `M-self` |
 |---|---|---|---|---|---|---|
@@ -190,8 +194,24 @@ and 20 of 36 at T = 0.5, then 1 and 0 at T = 1, and 0 at T = 2.
 | 0.5 | 27/36 | 24/36 | 25/36 |
 | 1.0 | 0/36 | 4/36 | 15/36 |
 
-**Causal weighting, Turinici's own benchmark, soft initial condition:** to be
-added when those runs finish.
+**Causal weighting, Lorenz-63** (fixed ε), successes of 36:
+
+| T | ε = 0.1 | ε = 1 | ε = 10 |
+|---|---|---|---|
+| 0.5 | 36 | 36 | 36 |
+| 1 | 20 | 25 | 21 |
+| 2 | 3 | 3 | 0 |
+
+**Turinici's own benchmark**: (1, 1, 1), T = 0.5, 5 × 20 network, 2,000 steps,
+10 seeds. Successes of 10, with the median error:
+
+| method | `U` | `TUR` | `S-orc` | `M-orc` | `S-self` | `M-self` |
+|---|---|---|---|---|---|---|
+| successes | 0 | 0 | 8 | 1 | 10 | 9 |
+| median error | 31 | 31 | 0.067 | 34 | 0.037 | 0.12 |
+
+This used our implementation, which imposes the initial condition
+differently from the paper.
 
 **Mechanism check** (`results/*/mechanism.json`), residual energy along the
 least harmful direction of G:

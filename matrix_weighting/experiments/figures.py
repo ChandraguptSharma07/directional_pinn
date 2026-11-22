@@ -41,7 +41,8 @@ def strip(ax, runs, keys, labels, title):
         y = np.array([log_err(v["E_rms"]) for v in d.values()])
         x = i + np.random.default_rng(i).uniform(-0.18, 0.18, size=len(y))
         ax.scatter(x, y, s=9, alpha=0.6, color=COLORS.get(key[2], "k"))
-        ax.hlines(np.median(y), i - 0.3, i + 0.3, color="k", lw=2)
+        # Black bar: the ordinary median of the errors (not the median of their logarithms).
+        ax.hlines(np.log10(np.median(10.0 ** y)), i - 0.3, i + 0.3, color="k", lw=2)
     ax.set_xticks(range(len(labels)), labels, rotation=45, ha="right", fontsize=8)
     ax.set_title(title, fontsize=9)
     ax.set_ylabel("log10 of average error")

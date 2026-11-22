@@ -60,7 +60,7 @@ def case_figure(system, T, title, comp, out_dir):
         for ax, vals in ((axes[0, 2], eT), (axes[0, 3], er)):
             x = k + np.random.default_rng(k).uniform(-0.18, 0.18, len(vals))
             ax.scatter(x, vals, s=10, alpha=0.6, color=color)
-            ax.hlines(np.median(vals), k - 0.3, k + 0.3, color="k", lw=2)
+            ax.hlines(np.log10(np.median(10.0 ** vals)), k - 0.3, k + 0.3, color="k", lw=2)  # ordinary median
         t, xh, xr, r = d["t_eval"], d["x_eval"], d["ref_eval"], d["r_eval"]
         if m == "U":
             axes[1, 0].plot(t, xr[0, :, comp], color="k", lw=2.2, label="reference")
@@ -71,8 +71,8 @@ def case_figure(system, T, title, comp, out_dir):
             w = np.median(np.array(h["weight_time_profile"][-1]), axis=0)
             axes[1, 3].semilogy(np.linspace(0, float(T[1:]), len(w)), w, color=color, lw=1.5, label=label)
         succ = int(np.sum(met["success_max_below_1"]))
-        rows.append({"method": label, "success": f"{succ}/{len(eT)}", "median_E_T": float(10 ** np.median(eT)),
-                     "median_E_rms": float(10 ** np.median(er)),
+        rows.append({"method": label, "success": f"{succ}/{len(eT)}", "median_E_T": float(np.median(10.0 ** eT)),
+                     "median_E_rms": float(np.median(10.0 ** er)),
                      "median_GPU_seconds": float(s["runtime_seconds"])})
     names = [lbl for _, lbl, _ in METHODS]
     axes[0, 0].set(yscale="log", title="(a) error of the solution during training", xlabel="training step", ylabel="average error over the window")
@@ -108,7 +108,7 @@ def main() -> None:
     out_dir = ROOT / "results" / "figures"
     out_dir.mkdir(parents=True, exist_ok=True)
     lines = ["# Turinici-style comparison on the Gate 3 systems (saved runs, no new training)", "",
-             "Median over 36 networks. Success = error below 1 over the whole window.", ""]
+             "Ordinary median over the 36 networks (not the median of log errors). Success = error below 1 over the whole window.", ""]
     for system, T, title, comp in CASES:
         rows = case_figure(system, T, title, comp, out_dir)
         base = rows[0]

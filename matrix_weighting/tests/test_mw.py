@@ -157,6 +157,8 @@ def test_trace_inequality_behind_the_minimax_weight():
 
 
 def test_turinici_matches_repository_port():
+    if not (ROOT.parent / "src" / "pinn" / "train.py").exists():
+        pytest.skip("needs the main directional_pinn repository (src/) next to this folder")
     sys.path.insert(0, str(ROOT.parent))
     from src.pinn.train import turinici_time_weights
     from src.systems.lorenz63 import LorenzParams

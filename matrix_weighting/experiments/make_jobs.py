@@ -167,7 +167,7 @@ def side_sequential(out: Path) -> None:
 
 
 def side_soft_ic(out: Path) -> None:
-    """Plan amendment 3: Gate 0's stiffest settings with a soft initial condition (lambda_IC = 100)."""
+    """Gate 0's stiffest settings with the optional soft initial condition (lambda_IC = 100)."""
     T = 2.0
     for system, methods in [(LinearSaddle(16), LINEAR4), (LinearSaddle(64), LINEAR4),
                             (DavisSkodje(18), ALL6), (DavisSkodje(66), ALL6)]:

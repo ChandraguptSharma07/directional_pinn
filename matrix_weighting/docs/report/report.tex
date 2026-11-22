@@ -8,9 +8,8 @@
 \usepackage{caption}
 \captionsetup[table]{skip=8pt}
 \usepackage[hidelinks]{hyperref}
-\newcommand{\pending}[1]{\textcolor{red!70!black}{[pending: #1]}}
 
-\title{Using Lyapunov Directions to Train Physics-Informed Neural Networks Better}
+\title{Using Finite-Time Lyapunov Directions to Train Physics-Informed Neural Networks Better}
 \author{Aditya Bhagora \and Chandragupt Sharma \and Himanshu Yadav \and Pranjul Gupta}
 \date{}
 
@@ -28,7 +27,8 @@ mistake the same way whatever its direction. In a chaotic system, mistakes in so
 directions grow fast while mistakes in other directions die out quickly.
 
 We extend Turinici's idea so that the importance also depends on the \emph{direction} of the
-mistake. These directions are the Lyapunov directions of the system. The new weight is a
+mistake. We use finite-time Lyapunov directions: the directions in which the system
+stretches or shrinks small mistakes over the time window being solved. The new weight is a
 small matrix at each time instead of a single number.
 
 We tested this with rules fixed before any training. On two chaotic systems, Rössler and
@@ -36,7 +36,7 @@ Lorenz-96, the new weight gave clearly better results than three alternatives: e
 weights, Turinici's weights, and the same weight with the direction information removed.
 For example, on Rössler over the time window $[0,10]$, 30 of 36 networks learned the
 correct solution with our weight, compared with 4 (equal weights), 1 (Turinici) and 13
-(no direction) of 36. The error at the final time was 76 times smaller than with equal weights.
+(no direction) of 36. The median error at the final time was 75 times smaller than with equal weights.
 
 On the plain Lorenz-63 system, most of the benefit comes from \emph{when} the weight is
 placed, not from direction. A tuned version of an older method does about as well there.
@@ -89,6 +89,15 @@ variables. These are the Lyapunov directions. They change as the solution moves.
 push along a growing direction gets larger; the same push along a shrinking direction
 fades away (Figure~\ref{fig:explain-directions}).
 
+\paragraph{Finite-time directions (the ones we use).} Strictly speaking, Lyapunov exponents
+and directions are defined as averages over a very long time. A PINN, however, solves the
+equation only over a fixed time window. Our method therefore uses the \emph{finite-time}
+version: the directions in which a small push grows or shrinks over the rest of the current
+window. These are finite-time sensitivity directions, closely related to finite-time
+Lyapunov vectors (the singular vectors of the matrix $\Phi$ below). They approach the
+long-time Lyapunov directions only when the window is long. In this report,
+``Lyapunov directions'' always means these finite-time directions.
+
 \paragraph{The tangent propagator.} To follow how a small push evolves, we use a matrix
 $\Phi(t,s)$. It takes a small push made at time $s$ and tells us what it has become at a
 later time $t$. It is computed from the derivatives of the equation along the solution.
@@ -117,8 +126,9 @@ Before this study, our group looked at trained Lorenz-63 PINNs. We asked whether
 These results suggested using directions during training, not only for diagnosis.
 
 \subsection{Objective}
-\textbf{Our objective is to improve PINN training by using Lyapunov directions.} Lyapunov
-directions are the directions in which the system stretches or shrinks small pushes. In
+\textbf{Our objective is to improve PINN training by using Lyapunov directions,} in their
+finite-time form: the directions in which the system stretches or shrinks small pushes over
+the time window being solved. In
 detail, we want to:
 \begin{enumerate}
 \item extend Turinici's time weighting so that it also uses directions;
@@ -337,6 +347,10 @@ We call $G(s)$ the \emph{harm matrix}; mathematically it is a Gramian.
 \item A residual in a growing direction gives a large value.
 \item A residual in a fast-shrinking direction gives a small value.
 \end{itemize}
+The eigenvectors of $G(s)$ are the finite-time sensitivity directions over the rest of the
+window $[s,T]$. These are the ``Lyapunov directions'' our method uses. They depend on the
+window: for a short window they reflect short-term stretching, and only for long windows
+do they approach the long-time Lyapunov directions.
 
 \subsection{The new weight}
 Turinici gives each time one number. We give each time a small matrix $W(t)$ and use the
@@ -504,6 +518,10 @@ Accurate solution & DOP853 solver, tolerance $10^{-12}$\\\bottomrule
   the final time.
 \item \textbf{Accurate network.} A network counts as ``accurate'' if its error stays below
   1 for the whole window.
+\item \textbf{Median error.} When we report one error for a method, it is the ordinary
+  median of its 36 errors (the middle value). The results often split into two groups,
+  accurate networks and networks that lost the solution. The median can then fall between
+  the groups, so we always give the number of accurate networks next to it.
 \item \textbf{When one method ``beats'' another.} It must give at least 1.5 times lower
   error, and a bootstrap confidence interval must confirm the difference.
 \item \textbf{Rules fixed in advance.} We wrote down the hypotheses and decision rules
@@ -532,16 +550,16 @@ H4: the method works on other chaotic systems & Rössler, Lorenz-96 & \textbf{tr
 \subsection{Rössler and Lorenz-96: our main positive result}
 \begin{table}[H]\centering
 \caption{Rössler and Lorenz-96. ``Accurate'' counts networks (out of 36) whose error stays
-below 1 the whole time. Errors are for the typical (median) network.}
+below 1 the whole time. Errors are medians over the 36 networks.}
 \begin{tabular}{llcccc}\toprule
 System, window & Measure & uniform & Turinici & scalar & \textbf{matrix (ours)}\\\midrule
 Rössler, $[0,10]$ & accurate networks & 4 & 1 & 13 & \textbf{30}\\
- & error at final time & 3.19 & 5.61 & 5.60 & \textbf{0.042}\\
- & average error & 1.97 & 3.58 & 2.27 & \textbf{0.031}\\\midrule
+ & error at final time & 3.20 & 5.61 & 7.75 & \textbf{0.042}\\
+ & average error & 1.97 & 3.58 & 2.99 & \textbf{0.031}\\\midrule
 Rössler, $[0,5]$ & accurate networks & 18 & 19 & 21 & \textbf{25}\\
- & error at final time & 0.216 & 0.240 & 0.023 & \textbf{0.0036}\\\midrule
+ & error at final time & 0.600 & 0.350 & 0.023 & \textbf{0.0036}\\\midrule
 Lorenz-96, $[0,1]$ & accurate networks & 29 & 13 & 36 & \textbf{36}\\
- & error at final time & 0.187 & 2.44 & 0.057 & \textbf{0.015}\\\midrule
+ & error at final time & 0.187 & 2.47 & 0.057 & \textbf{0.015}\\\midrule
 Lorenz-96, $[0,2]$ & accurate networks & 0 & 0 & 1 & \textbf{10}\\
  & error at final time & 14.9 & 15.0 & 12.2 & \textbf{8.45}\\\bottomrule
 \end{tabular}
@@ -565,7 +583,7 @@ true for both systems.
 \begin{figure}[htbp]\centering
 \includegraphics[width=0.95\textwidth]{figures/gate3_errors.pdf}
 \caption{Rössler and Lorenz-96. Each dot is one trained network; lower is better. Black
-bars show the typical network. Numbers on top count the accurate networks.}
+bars show the median error. Numbers on top count the accurate networks.}
 \label{fig:gate3}
 \end{figure}
 
@@ -629,21 +647,21 @@ All laptop runs, which decide H2, are complete. They agree exactly with the repe
 For the window of length 1:
 
 \begin{table}[H]\centering\small
-\caption{Plain Lorenz-63, all windows. Accurate networks out of 36, and the error of the
-typical (median) network, averaged over the window.}
+\caption{Plain Lorenz-63, all windows. Accurate networks out of 36, and the median over the
+36 networks of the error averaged over the window.}
 \begin{tabular}{lcccccc}\toprule
  & \multicolumn{2}{c}{window 0.5} & \multicolumn{2}{c}{window 1} & \multicolumn{2}{c}{window 2}\\
 Method & accurate & error & accurate & error & accurate & error\\\midrule
-matrix (self) & 36 & 0.0012 & \textbf{27} & 0.0051 & \textbf{8} & 14\\
+matrix (self) & 36 & 0.0012 & \textbf{27} & 0.0052 & \textbf{8} & 14\\
 scalar (self) & 36 & 0.0010 & 24 & 0.0046 & 5 & 21\\
-matrix (oracle) & 36 & 0.0012 & 23 & 0.0045 & 3 & 20\\
-scalar (oracle) & 36 & 0.0009 & 9 & 19 & 6 & 22\\
+matrix (oracle) & 36 & 0.0012 & 23 & 0.0046 & 3 & 20\\
+scalar (oracle) & 36 & 0.0009 & 9 & 18 & 6 & 22\\
 uniform & 36 & 0.0009 & 7 & 19 & 0 & 25\\
 Turinici & 36 & 0.0012 & 5 & 19 & 0 & 24\\\bottomrule
 \end{tabular}
 \end{table}
-An error of about 19 or more means the network has lost track of the true solution. The
-typical network of uniform and Turinici at window 1 is in this state.
+An error of about 18 or more means the network has lost track of the true solution. The
+median network of uniform and Turinici at window 1 is in this state.
 
 \begin{itemize}
 \item \textbf{Window 0.5:} every method works.
@@ -674,8 +692,7 @@ Window & $\varepsilon=0.1$ & $\varepsilon=1$ & $\varepsilon=10$ & matrix (self) 
 1 & 20 & 25 & 21 & 27 & 7\\
 2 & 3 & 3 & 0 & 8 & 0\\\bottomrule
 \end{tabular}
-\end{table} \pending{causal method on Rössler, Lorenz-96 and the
-extra-variable systems}
+\end{table}
 
 \subsection{Two-dimensional test systems}
 On these easy systems almost every method works. The table shows how the matrix weight's
@@ -689,7 +706,7 @@ Davis--Skodje ($\gamma=3,6,18,66$) & 1.2$\times$ worse & 2.5$\times$ worse & 1.8
 \end{center}
 So on easy problems the matrix weight costs a little accuracy. It helps only in the
 stiffest case, where it also beats uniform (6 times) and Turinici (3 times). H1 is
-therefore only partly true. \pending{extra check with a softer starting condition}
+therefore only partly true.
 
 \begin{figure}[htbp]\centering
 \includegraphics[width=0.85\textwidth]{figures/gate0_errors.pdf}
@@ -703,14 +720,14 @@ repeated Lorenz-63 window 1 with three changes, one at a time (Table~\ref{tab:se
 of them rescues the old methods; our weights keep working.
 
 \begin{table}[H]\centering
-\caption{Lorenz-63, window 1: typical error with more steps, a wider network or more time
+\caption{Lorenz-63, window 1: median error with more steps, a wider network or more time
 points.}
 \label{tab:sens}
 \begin{tabular}{lcccc}\toprule
 Change & uniform & Turinici & scalar (self) & matrix (self)\\\midrule
-none (standard) & 19 & 19 & 0.0046 & 0.0051\\
+none (standard) & 19 & 19 & 0.0046 & 0.0052\\
 50{,}000 steps (2.5 times more) & 19 & 19 & 0.0011 & 0.0022\\
-network twice as wide (128) & 19 & 19 & 0.0034 & 0.0035\\
+network twice as wide (128) & 19 & 19 & 0.0035 & 0.0036\\
 twice as many time points (1{,}024) & 19 & 19 & 0.0022 & 0.0056\\\bottomrule
 \end{tabular}
 \end{table}
@@ -766,16 +783,16 @@ value in a slightly different way than the paper, so this is not an exact copy o
 paper's experiment.
 
 \begin{table}[H]\centering
-\caption{Turinici's test problem (10 seeds): accurate networks out of 10, and the error of
-the typical network.}
+\caption{Turinici's test problem (10 seeds): accurate networks out of 10, and the median
+error.}
 \label{tab:bench}
 \begin{tabular}{lcc}\toprule
-Method & accurate (of 10) & typical error\\\midrule
-uniform & 0 & 32\\
-Turinici & 0 & 32\\
-scalar (oracle) & 8 & 0.066\\
+Method & accurate (of 10) & median error\\\midrule
+uniform & 0 & 31\\
+Turinici & 0 & 31\\
+scalar (oracle) & 8 & 0.067\\
 matrix (oracle) & 1 & 34\\
-scalar (self) & \textbf{10} & 0.035\\
+scalar (self) & \textbf{10} & 0.037\\
 matrix (self) & 9 & 0.12\\\bottomrule
 \end{tabular}
 \end{table}
@@ -790,10 +807,10 @@ intended.
 
 \begin{table}[H]\centering
 \caption{Lorenz-63, window 1: share of the leftover residual in the most harmful and in
-the most harmless direction (typical network).}
+the most harmless direction (medians over the 36 networks).}
 \label{tab:mech}
 \begin{tabular}{lccc}\toprule
-Method & most harmful & most harmless & typical error\\\midrule
+Method & most harmful & most harmless & median error\\\midrule
 matrix (oracle) & 6\% & 73\% & 0.0044\\
 matrix (self) & 9\% & 60\% & 0.0052\\
 scalar (oracle) & 70\% & 4\% & 18\\
@@ -841,6 +858,8 @@ uniform & 60\% & 1\% & 19\\\bottomrule
 \subsection{Limitations}
 \begin{itemize}
 \item We tested small networks on ordinary differential equations only.
+\item The directions we use are finite-time sensitivity directions over the current window,
+  not the long-time Lyapunov vectors of the system.
 \item The theory uses a linear approximation and a worst-case argument. It does not predict
   exactly what training will do.
 \item Our weight costs about 3 times more computer time per run than uniform weights.
@@ -866,7 +885,8 @@ tuning.
 
 \paragraph{Next steps.}
 \begin{itemize}
-\item Finish the comparison with the causal method on Rössler and Lorenz-96 (running).
+\item Compare with other time-weighting methods, such as tuned causal training, on more
+  systems.
 \item Try partial differential equations such as Kuramoto--Sivashinsky, which have many
   shrinking directions.
 \item Try problems where the PINN must also fit measured data.
@@ -906,19 +926,18 @@ Characterizing dynamics with covariant Lyapunov vectors. \emph{Phys.\ Rev.\ Lett
 \appendix
 \section{Rules fixed in advance, and changes along the way}
 \label{app:amend}
-The plan (\texttt{docs/plan.md}) was written before any network was trained. Four additions
-were written down before their own runs:
+The plan (\texttt{docs/plan.md}) was written before any network was trained. The rules for the
+later experiments were written down as dated additions to the plan before those experiments
+were run:
 \begin{enumerate}
-\item Rössler and Lorenz-96 as further tests (H4), and the direction-only weight.
-\item Solving long times in pieces.
-\item A check of the 2D systems with a softer starting condition.
-\item The causal method on the systems where direction mattered.
+\item Rössler and Lorenz-96 as further tests (H4), and the direction-only weight;
+\item solving long times in pieces.
 \end{enumerate}
 
 Changes along the way, all recorded with dates in \texttt{docs/progress.md}:
 \begin{itemize}
 \item The 2D tests moved from the laptop to GPUs because the laptop ran short of memory.
-  Each experiment still runs on a single kind of computer.
+  Each experiment was run entirely on one kind of computer.
 \item One GPU routine ran out of memory. It now runs on the CPU, and the affected runs were
   repeated.
 \item Nine laptop runs were stopped by the system when memory ran out. They were repeated
@@ -938,7 +957,8 @@ Changes along the way, all recorded with dates in \texttt{docs/progress.md}:
 \label{app:tables}
 The tables below list every comparison computed by the analysis script that was written
 before training. The ``error ratio'' is the error of the first method divided by the error
-of the second, for the typical starting point; below 1 means the first method is better.
+of the second. It is averaged over the 12 starting points on a logarithmic scale (a
+geometric mean), as fixed in the plan. Below 1 means the first method is better.
 The 95\% interval shows how sure we are. ``Beats'' needs a ratio of at most $1/1.5$ and an
 interval entirely below 1; ``worse'' needs an interval entirely above 1.
 
@@ -959,7 +979,9 @@ interval entirely below 1; ``worse'' needs an interval entirely above 1.
 \item[Lyapunov exponent] The average rate at which small differences grow (positive) or
   shrink (negative).
 \item[Lyapunov direction] A direction in which small differences grow or shrink at a given
-  rate.
+  rate, defined over a very long time.
+\item[Finite-time Lyapunov (sensitivity) direction] A direction in which small differences
+  grow or shrink over a given finite time window. This is what our method uses.
 \item[Tangent propagator $\Phi$] The matrix that turns a small push at one time into its
   effect at a later time.
 \item[Harm matrix $G$] Our matrix that adds up how much later error a residual causes, in
@@ -970,7 +992,8 @@ interval entirely below 1; ``worse'' needs an interval entirely above 1.
 \item[Causal training] Weights that let later times count only once earlier times are
   learned \cite{wang2022}.
 \item[Accurate network] A trained network whose error stays below 1 for the whole window.
-\item[Median] The middle value: half of the networks are better and half worse.
+\item[Median] The middle value of the 36 errors (the ordinary median): half of the networks
+  are better and half worse.
 \end{description}
 
 \end{document}

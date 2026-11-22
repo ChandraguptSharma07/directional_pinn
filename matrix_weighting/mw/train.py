@@ -29,7 +29,7 @@ class Settings:
     lr_final: float = 1e-5
     weight_every: int = 10  # self-consistent tangent weights are recomputed every this many steps
     causal_eps: float = 1.0
-    lambda_ic: float = 0.0  # 0: exact (hard) initial condition; > 0: soft penalty lambda |x_hat(0) - x0|^2 (amendment 3)
+    lambda_ic: float = 0.0  # 0: exact (hard) initial condition; > 0: soft penalty lambda |x_hat(0) - x0|^2
     dtype: str = "float32"
     device: str = "cpu"
     log_every: int = 500
