@@ -1,153 +1,401 @@
 \documentclass[11pt,a4paper]{article}
 \usepackage[margin=2.2cm]{geometry}
-\usepackage{amsmath,amssymb}
+\usepackage{amsmath,amssymb,amsthm}
 \usepackage{graphicx}
 \usepackage{booktabs}
 \usepackage{float}
-\usepackage[hidelinks]{hyperref}
 \usepackage{xcolor}
 \usepackage{caption}
 \captionsetup[table]{skip=8pt}
+\usepackage[hidelinks]{hyperref}
 \newcommand{\pending}[1]{\textcolor{red!70!black}{[pending: #1]}}
+\newtheorem{proposition}{Proposition}
+\newtheorem*{proposition*}{Proposition}
 
-\title{Direction-aware residual weighting for physics-informed neural networks:\\
-a matrix generalization of regime-aware time weighting}
-\author{Chandragupt Sharma}
+\title{Direction-Aware Residual Weighting for Physics-Informed Neural Networks:\\
+A Matrix Generalization of Regime-Aware Time Weighting}
+\author{Aditya Bhagora \and Chandragupt Sharma \and Himanshu Yadav \and Pranjul Gupta}
 \date{Interim report, 22--23 November 2026}
 
 \begin{document}
 \maketitle
 
 \begin{abstract}
-Turinici's regime-aware time weighting (arXiv:2407.21642v2) weights the residual of a
-physics-informed neural network (PINN) in time, using one growth rate per time and
-hence the same weight for every direction of the residual. We extend his minimax
-argument to a matrix weight per time, built from the tangent propagator of the ODE:
-$W(t)\propto G(t)/\sqrt{\operatorname{tr}G(t)}$ with
-$G(t)=\int_t^T\Phi(s,t)^{\top}\Phi(s,t)\,ds$. Turinici's weight is the
-direction-blind special case, and the guaranteed improvement over the best
-direction-blind weight is at most $\sqrt n$. The weight can be computed along the
-PINN's own current path, without a reference solution. In pre-registered experiments
-on Rössler and Lorenz-96, the matrix weight beat the direction-blind version of the
-same weight, uniform weighting and Turinici's weighting. On Rössler over $[0,10]$, 30 of
-36 networks stayed accurate with the matrix weight, against 13, 4 and 1 of 36 for the
-other three. The final-time error was 76 times lower than with uniform weighting. On
-Lorenz-63 driving up to 29 damped modes, the matrix weight kept 27 of 36 networks
-accurate at every dimension, while the direction-blind version fell to 5 of 36. On plain
-Lorenz-63 the benefit is mostly an automatic causal time schedule. There, the
-direction-blind Gramian weight and well-tuned causal weighting do about as well, and
-on easy problems the matrix weight costs a little accuracy.
+Physics-informed neural networks (PINNs) often fail on time-dependent chaotic problems.
+Small violations of the equation early in time grow into large trajectory errors.
+Our reference paper, Turinici's \emph{Regime-Aware Time Weighting for Physics-Informed
+Neural Networks}, addresses this by weighting the equation residual in time. It uses a
+weight derived from a worst-case bound that contains one growth rate per time. That
+weight treats every direction of the residual alike. We extend the same minimax argument
+from a scalar to a matrix weight per time, built from the tangent propagator $\Phi$ of the
+ODE (the matrix that carries a small perturbation forward in time). The result is
+\[
+ W(t)\propto G(t)/\sqrt{\operatorname{tr}G(t)},\qquad
+ G(t)=\int_t^T\Phi(s,t)^{\top}\Phi(s,t)\,ds .
+\]
+The reference paper's weight is the direction-blind special case. The guaranteed gain
+over the best direction-blind weight is at most $\sqrt n$, where $n$ is the state
+dimension. The weight can be computed along the network's own current trajectory,
+without a reference solution.
+
+We tested it with rules fixed before training. On the Rössler and Lorenz-96 systems the
+matrix weight beat three comparators: the direction-blind version of the same weight,
+uniform weighting, and the reference paper's weighting. On Rössler over $[0,10]$, 30 of 36
+networks stayed accurate, against 13, 4 and 1 of 36 for those comparators, and the
+final-time error was 76 times lower than with uniform weighting. On Lorenz-63 driving up
+to 29 damped modes, the matrix weight kept 27 of 36 networks accurate at every
+dimension, while the direction-blind weight fell to 5 of 36.
+
+On plain Lorenz-63 the gain comes mostly from an automatic causal time schedule. There,
+the direction-blind weight and well-tuned causal weighting do about as well, and on easy
+problems the matrix weight costs a little accuracy.
 \end{abstract}
 
-\section{Summary of findings}
+\tableofcontents
+\newpage
+
+%=====================================================================
+\section{Introduction and objectives}
+\subsection{Background}
+A PINN represents the solution of a differential equation by a neural network. It is
+trained to make the equation residual small at a set of collocation points
+\cite{raissi2019}. For an initial value problem $\dot x=f(x)$, $x(0)=x_0$, the network
+$\hat x(t)$ is trained on the residual $r(t)=\dot{\hat x}(t)-f(\hat x(t))$.
+
+For chaotic dynamics this is hard. A small residual early in the window is a small push
+on the trajectory, and the dynamics can amplify it exponentially. A network can
+therefore reach a small residual everywhere and still follow the wrong trajectory.
+
+Several remedies weight or order the residual in time:
+\begin{itemize}
+\item causal training \cite{wang2022};
+\item exponential and optimal time sampling \cite{turinici2024sampling};
+\item regime-aware time weighting from Lyapunov-type growth rates \cite{turinici2025}, our
+  reference paper.
+\end{itemize}
+
+Our group's earlier work asked a diagnostic question about trained Lorenz-63 PINNs: does
+the \emph{direction} of a residual, relative to the expanding directions of the dynamics,
+predict later error?
+\begin{itemize}
+\item Alignment with a single Lyapunov or singular vector did not predict it.
+\item The full tangent propagator applied to the residual did add information.
+\item A follow-up showed that direction matters when the stretching gap is large.
+\item The same follow-up showed that directions computed along the network's own path
+  match those computed along the exact solution.
+\end{itemize}
+These findings motivate moving the propagator from diagnosis into training.
+
+\subsection{Objective}
+\textbf{Our objective is to improve PINN training on time-dependent problems by using
+Lyapunov directions,} that is, the directions in which the dynamics stretch and squeeze
+small perturbations. Concretely:
 \begin{enumerate}
-\item \textbf{Where the plain loss fails, weights from the tangent Gramian fix training.} On
-  Lorenz-63 windows of length 1, uniform weighting kept 7 of 36 networks accurate and
-  Turinici's weighting 5 of 36. The Gramian weights computed along the PINN's own path
-  kept 24 (scalar) to 27 (matrix), with about 100 times lower median error. The failures
-  of the uniform and Turinici losses persisted with 2.5 times more steps, a wider network
-  and a denser grid.
-\item \textbf{The direction effect grows with the number of harmless directions.}
+\item extend the reference paper's time weighting to a direction-aware (matrix) weighting,
+  derived by the same argument;
+\item make it computable without the exact solution;
+\item test, with rules fixed before training, whether it improves trajectory accuracy over
+  uniform weighting, the reference paper's weighting, and a direction-blind weight that
+  uses the same information;
+\item identify for which systems and regimes the direction information helps, and for
+  which it does not.
+\end{enumerate}
+
+\subsection{Research questions and hypotheses}
+\begin{itemize}
+\item[\textbf{H1}] \emph{Mechanism.} With known (oracle) directions, the matrix weight
+  beats the best direction-blind weight, and the gain grows with the stretching gap.
+\item[\textbf{H2}] \emph{Usable method.} Computed along the network's own trajectory, the
+  matrix weight beats the direction-blind version, uniform weighting and the reference
+  weighting on Lorenz-63.
+\item[\textbf{H3}] \emph{Dimension.} Its gain over uniform weighting grows with the number
+  of strongly contracting directions.
+\item[\textbf{H4}] \emph{Further systems.} The H2 rule holds on Rössler and on Lorenz-96.
+\end{itemize}
+
+\subsection{Contributions}
+\begin{enumerate}
+\item A matrix generalization of the reference paper's minimax time weighting. The optimal
+  weight is the normalized window Gramian of the tangent propagator, and the improvement
+  in the guaranteed bound is at most $\sqrt n$ (Section~\ref{sec:method}).
+\item A reference-free, self-consistent estimate of this weight. It is computed along the
+  network's current trajectory, as the reference paper does for its scalar growth rate.
+\item A pre-registered evaluation on six systems. It covers 36 networks per method and
+  setting, oracle and self-consistent versions, and a decomposition of the gains into a
+  time-schedule effect and a direction effect.
+\end{enumerate}
+
+%=====================================================================
+\section{The reference paper}
+\label{sec:reference}
+\subsection{Bibliographic details and scope}
+G.~Turinici, \emph{Regime-Aware Time Weighting for Physics-Informed Neural Networks},
+arXiv:2407.21642v2 (August 2025). Version 1 (July 2024) was titled \emph{Lyapunov weights
+to convey the meaning of time in physics-informed neural networks}.
+
+The paper studies how the \emph{time sampling or weighting} of the PINN residual affects
+the quality of the solution. Its aim is principled weights, in place of the ad hoc
+choices of earlier work, without new hyperparameters.
+
+\subsection{Setting}
+The paper considers $\partial_t u=\mathcal G_t u$ with initial and boundary data. The
+network $\mathcal U_\theta$ satisfies the initial condition exactly, by the shift
+$\mathcal U_\theta(t)-\mathcal U_\theta(0)+u_0$. It defines the equation error $w$ through
+\[
+ \partial_t\mathcal U_\theta=\mathcal G_t\mathcal U_\theta+w ,
+\]
+so the network output is the exact solution of an equation with source $w$. The loss is
+$\mathcal L(\theta)=\int_0^T\int_\Omega\rho(t)\,|w(t,x)|^2\,dx\,dt$, with a time weight
+$\rho\ge0$ to be chosen. Earlier proposals include:
+\begin{itemize}
+\item causal weights $\rho(t)=e^{-\varepsilon\int_0^t\|w\|^2}$ \cite{wang2022};
+\item exponential weights $\rho(t)=e^{-\varepsilon t}$.
+\end{itemize}
+Both have a parameter $\varepsilon$ that must be tuned.
+
+\subsection{What the paper establishes}
+\begin{proposition*}[Turinici, Proposition 1]
+Let $\lambda(t)$ satisfy
+\[
+ \langle\mathcal G_t(u)-\mathcal G_t(\mathcal U_\theta),\,u-\mathcal U_\theta\rangle
+ \le\lambda(t)\,\|u-\mathcal U_\theta\|^2 .
+\]
+Then
+\[
+ \|u(T)-\mathcal U_\theta(T)\|\le\int_0^T e^{\int_t^T\lambda(s)\,ds}\,\|w(t)\|\,dt .
+\]
+\end{proposition*}
+A residual at time $t$ therefore costs at most $e^{\int_t^T\lambda}$ times its size in the
+final error. For chaotic or unstable dynamics ($\lambda>0$) early residuals matter most.
+For contracting dynamics ($\lambda<0$) they are washed out, and for neutral dynamics all
+times count equally. This is the \emph{regime awareness} of the title.
+
+\begin{proposition*}[Turinici, Proposition 2]
+Suppose training reaches a fixed level of the weighted loss, $\mathbb E_\rho\|w\|^2\le C_p$.
+Then the weight that minimizes the worst-case bound on the final error is
+\[
+ \rho^{\mathrm{opt}}(t)\propto e^{-\int_0^t\lambda(s)\,ds} .
+\]
+\end{proposition*}
+The proof uses Cauchy--Schwarz twice: once to find the worst residual for a given $\rho$,
+and once to choose the best $\rho$.
+
+\paragraph{Practical estimator.} The ideal $\lambda$ requires the unknown exact solution.
+The paper substitutes the current network state and replaces the exact solution by zero:
+\[
+ \lambda_n(t)\approx
+ \frac{\langle\mathcal G_t(\mathcal U_{\theta_n})-\mathcal G_t(0),\,\mathcal U_{\theta_n}\rangle}
+      {\|\mathcal U_{\theta_n}\|^2} .
+\]
+This is its Eq.~(17), recomputed during training. It is exact for operators of the form
+$\mathcal A_t u+\xi_t+\alpha_t u$ with antisymmetric $\mathcal A_t$.
+
+\paragraph{Experiments.}
+\begin{itemize}
+\item \textbf{Lorenz-63:} initial state $(1,1,1)$, window $T=0.5$, a $5\times20$ tanh
+  network, a uniform grid of 256 times, and 2{,}000 Adam steps at learning rate 0.01. The
+  paper reports convergence, close agreement with the reference solution, and an estimate
+  $\lambda_n$ with the right sign and order of magnitude. It reports that causal and
+  exponential weighting perform worse at the same budget, and that uniform weighting fails.
+\item \textbf{Burgers' equation:} a second example, with the same conclusions.
+\end{itemize}
+
+\subsection{What we understood from it}
+\begin{enumerate}
+\item \textbf{The weight comes from an error-propagation bound.} It is not ad hoc. It
+  says that the training loss should approximate the \emph{error} it causes, not the
+  residual itself. This is the idea we keep.
+\item \textbf{The optimality is conditional.} $\rho^{\mathrm{opt}}$ is optimal for the
+  stated minimax problem: a fixed weighted-loss budget and an exact initial condition. It
+  is not a guarantee for a finite training run.
+\item \textbf{The bound is scalar, so the weight is the same in every direction.} The
+  one-sided growth rate $\lambda$ bounds the stretching of the \emph{worst} direction.
+  Real dynamics stretch some directions and strongly squeeze others; Lorenz-63 has
+  exponents of about $0.9$, $0$ and $-14.6$. A residual along a squeezed direction dies
+  out and causes little error. The scalar weight cannot see this, and it over-penalizes
+  such residuals.
+\item \textbf{The estimator is not a Lyapunov exponent.} Eq.~(17) uses the network state
+  with zero in place of the exact solution, so it measures a state-dependent rate, not
+  the stretching of errors. On attractor windows of Lorenz-63 it is often negative. Its
+  weights then \emph{increase} with time: in our runs, from about 0.26 at $t=0$ to 2.75 at
+  $t=T$ (median over networks, $T=1$). That is the opposite of the intended emphasis on
+  early times.
+\item \textbf{The paper targets the final-time error.} Accuracy over the whole window is
+  often what matters, and changing the target changes the optimal weight.
+\item \textbf{Our earlier port did not reproduce an improvement.} We ported the weighting
+  to our PyTorch PINNs.
   \begin{itemize}
-  \item Matrix against direction-blind weight, same Gramian, self-consistent: Rössler over $[0,10]$, 25 times lower error; Lorenz-96 over $[0,1]$, 2.5 times lower.
-  \item Lorenz-63 driving $k$ damped modes: 2, 8, 50 and 100 times lower error at $k=0,3,9,29$.
-  \item Plain Lorenz-63 with self-consistent weights: no reliable difference.
-  \end{itemize}
-\item \textbf{Mechanism.} Matrix-weighted networks leave 60--73\% of their leftover residual
-  along the direction the dynamics erase fastest. Uniformly weighted networks put about
-  60\% along the most harmful direction.
-\item \textbf{Limits.}
-  \begin{itemize}
-  \item On easy two-dimensional problems, the matrix weight gives 1.2 to 4 times larger errors.
-  \item A single Lorenz-63 window of length 2 remains out of reach for every method.
-  \item Weighting for the final-time error alone (Turinici's target) fails beyond $T=0.5$.
-  \item For long horizons, short time-marching segments with uniform weighting stay the most reliable.
-  \item The matrix weight costs about three times the GPU time of uniform weighting per run.
+  \item On sequential windows of length 0.25 the weights were nearly uniform and did not
+    help.
+  \item On a global window of length 2, neither weighting worked.
+  \item In this study, on the paper's own benchmark with our implementation (a different
+    initial-condition parameterization), neither uniform nor Turinici weighting reached
+    the reference solution in 2{,}000 steps.
   \end{itemize}
 \end{enumerate}
 
-\begin{table}[H]\centering
-\caption{Pre-registered hypotheses and verdicts (rules in \texttt{docs/plan.md}, fixed before training).}
-\small
-\begin{tabular}{p{4.6cm}p{1.1cm}p{4.2cm}p{4.6cm}}\toprule
-Hypothesis & Gate & Systems & Verdict\\\midrule
-H1 mechanism, known directions & 0 & stiff saddle, Davis--Skodje & partial\\
-H2 usable method & 1 & Lorenz-63, $T\in\{0.5,1,2\}$ & \pending{CPU runs; GPU replicate gives partial}\\
-H3 gain over uniform grows with dimension & 2 & Lorenz-63 with $k$ damped modes & not supported\\
-H4 same rule on further systems & 3 & Rössler, Lorenz-96 & \textbf{supported for both}\\\bottomrule
-\end{tabular}
-\end{table}
+\subsection{The open question we take up}
+Items 3 and 4 point to the same gap: \emph{direction}. We ask whether the propagator
+$\Phi$, which stretches some directions and squeezes others, can replace the scalar bound
+$e^{\int\lambda}$, and whether doing so improves training.
 
-\section{Method}
-\subsection{From scalar to matrix weights}
-For an ODE $\dot x=f(x)$ and a PINN $\hat x(t)$ with exact initial state, write the
-residual as $r=\dot{\hat x}-f(\hat x)$. To first order, the error $e=x-\hat x$ satisfies
-$\dot e=J(t)e-r$, so
+%=====================================================================
+\section{Proposed method}
+\label{sec:method}
+\subsection{Error propagation with directions}
+With an exact initial state, the error $e=x-\hat x$ satisfies $\dot e=J(t)e-r$ to first
+order. Here $J$ is the Jacobian of $f$ along the path. By Duhamel's formula,
 \[
- e(t)=-\int_0^t\Phi(t,s)\,r(s)\,ds .
+ e(t)=-\int_0^t\Phi(t,s)\,r(s)\,ds,
 \]
-Here $\Phi$ is the tangent propagator. By Minkowski's inequality,
+where $\Phi(t,s)$ is the tangent propagator. Its singular vectors are the finite-time
+Lyapunov directions. Taking the $L^2$ norm over the window and applying Minkowski's
+inequality gives
 \[
  \|e\|_{L^2(0,T)}\le\int_0^T\sqrt{r(s)^{\top}G(s)\,r(s)}\,ds,
- \qquad
- G(s)=\int_s^T\Phi(\tau,s)^{\top}\Phi(\tau,s)\,d\tau .
+ \qquad G(s)=\int_s^T\Phi(\tau,s)^{\top}\Phi(\tau,s)\,d\tau .
 \]
-The matrix $G(s)$ measures how much error a unit residual at time $s$ causes in each
-direction over the rest of the window.
+$G(s)$ measures how much error a unit residual at time $s$ causes, in each direction, over
+the rest of the window. Its eigenvectors are the residual directions, ordered by harm.
 
-Following Turinici's Proposition 2, allow a matrix weight $M(s)\succeq0$ in the loss
-$\int r^{\top}Mr$, with budget $\int\operatorname{tr}M=1$. Two Cauchy--Schwarz steps and
-the trace inequality $\lambda_{\max}(M^{-1/2}GM^{-1/2})\ge\operatorname{tr}G/\operatorname{tr}M$
-give the minimax-optimal weight
+\subsection{The optimal matrix weight}
+\begin{proposition}
+Allow a matrix weight $M(s)\succeq0$ in the loss $\int r^{\top}Mr$, with budget
+$\int_0^T\operatorname{tr}M=1$ (the analogue of $\int\rho=1$). The weight that minimizes
+the worst case of the bound above, under a fixed weighted-loss level, is
 \[
  M^\star(s)\propto\frac{G(s)}{\sqrt{\operatorname{tr}G(s)}} .
 \]
-The best direction-blind weight is $\rho^\star(s)\propto\sqrt{\lambda_{\max}G(s)}$. The
-ratio of the two guaranteed bounds lies in $[1,\sqrt n]$. Turinici's weight is the
-direction-blind case built on a looser one-sided growth bound. Replacing $G$ by
-$\Phi(T,s)^{\top}\Phi(T,s)$ gives the final-time version. The full derivation is in
-\texttt{docs/theory.md}.
+The best direction-blind weight $M=\rho I$ is $\rho^\star(s)\propto\sqrt{\lambda_{\max}G(s)}$.
+The ratio of the two guaranteed bounds lies in $[1,\sqrt n]$.
+\end{proposition}
 
-\subsection{Computing the weight}
-Let the grid be $t_0,\dots,t_{N-1}$ with spacing $h$. With step propagators
-$\Phi_i=\exp\!\big(h(J_i+J_{i+1})/2\big)$, the window Gramian follows from the backward
-recursion
+\begin{proof}[Sketch]
+The proof follows the reference paper and has three steps.
+\begin{enumerate}
+\item Cauchy--Schwarz in time gives the worst residual for a given $M$. It yields the
+  factor $\int\lambda_{\max}(M^{-1/2}GM^{-1/2})$.
+\item At each time, $\lambda_{\max}(M^{-1/2}GM^{-1/2})\ge\operatorname{tr}G/\operatorname{tr}M$,
+  with equality when $M\propto G$. This is the step that brings in direction.
+\item Cauchy--Schwarz again distributes the budget over time, with density
+  $\propto\sqrt{\operatorname{tr}G}$.
+\end{enumerate}
+Replacing $G$ by $\Phi(T,s)^{\top}\Phi(T,s)$ gives the final-time version. The
+reference paper's weight is the scalar case with the looser bound
+$e^{\int\lambda}\ge\|\Phi\|$. The full derivation is in \texttt{docs/theory.md}.
+\end{proof}
+
+\paragraph{Interpretation.} The matrix weight asks the network to be precise where
+residuals grow into error and allows larger residuals where the dynamics erase them. In
+Lorenz-63 a residual along the most contracting direction (exponent $\approx-14.6$) decays
+by a factor $e$ within about $0.07$ time units.
+
+\subsection{Computing the weight without the exact solution}
+On the collocation grid $t_0,\dots,t_{N-1}$ with spacing $h$, we form step propagators
+$\Phi_i=\exp\!\big(h(J_i+J_{i+1})/2\big)$ and the backward recursion
 \[
- G_i=\Phi_i^{\top}G_{i+1}\Phi_i+\tfrac h2(I+\Phi_i^{\top}\Phi_i),\qquad G_{N-1}=0 .
+ G_i=\Phi_i^{\top}G_{i+1}\Phi_i+\tfrac h2\big(I+\Phi_i^{\top}\Phi_i\big),\qquad G_{N-1}=0,
 \]
-The Jacobians are taken along the reference solution (\emph{oracle}, labelled
-\texttt{-orc}) or along the PINN's own current path, refreshed every 10 steps
-(\emph{self-consistent}, \texttt{-self}). The self-consistent version needs no reference
-solution, just as Turinici's Eq.~(17) uses the PINN's own state.
+which is the trapezoidal rule for $G$. The Jacobians $J_i$ are evaluated in one of two
+ways:
+\begin{itemize}
+\item along the reference solution (\emph{oracle}, used as a control);
+\item along the network's current trajectory, refreshed every 10 optimizer steps
+  (\emph{self-consistent}). This version needs no reference solution, just as the
+  reference paper's Eq.~(17).
+\end{itemize}
+For an $n$-dimensional system each update costs $N$ small matrix exponentials and a
+sequential pass of $N$ matrix products.
 
 \subsection{Weights compared}
-\begin{itemize}
-\item \texttt{U}: uniform weighting.
-\item \texttt{TUR}: Turinici's Eqs.~(13) and (17).
-\item \texttt{S}: the best direction-blind weight, $\sqrt{\lambda_{\max}G}\,I$.
-\item \texttt{M}: the matrix weight, $G/\sqrt{\operatorname{tr}G}$.
-\item \texttt{D}: direction only, $nG/\operatorname{tr}G$, with the same total weight at every time.
-\item Causal weighting (Wang, Sankaran and Perdikaris): $\rho_i\propto\exp(-\varepsilon h\sum_{j<i}\|r_j\|^2)$.
-\end{itemize}
-Every weight is rescaled to mean trace $n$.
-
-\subsection{Experimental design}
-\begin{itemize}
-\item \textbf{Training.} Every network is a $4\times64$ tanh MLP with exact initial condition. Collocation is a fixed grid of 512 times. Training uses 20{,}000 Adam steps, with the learning rate decaying from $10^{-3}$ to $10^{-5}$, in float32.
-\item \textbf{Fairness.} All methods share the networks, initializations, grid and budget; only the weights differ.
-\item \textbf{Scale.} Each setting trains 36 networks per method: 12 attractor initial conditions $\times$ 3 seeds, or 8 $\times$ 3 for the two-dimensional systems.
-\item \textbf{Statistics.} Contrasts are paired differences of $\log_{10}$ RMS trajectory error, averaged over seeds within each initial condition, with 95\% bootstrap intervals over initial conditions. ``A beats B'' requires at least 1.5 times lower error with the interval below zero.
-\item \textbf{Pre-registration.} Hypotheses, rules and settings were committed before any training. Later additions were committed as dated amendments before their runs.
-\item \textbf{Platforms.} Lorenz-63 ran on a CPU laptop; the other gates ran on Kaggle T4 GPUs. A complete GPU replicate of the Lorenz-63 runs reproduced the CPU success counts exactly.
-\end{itemize}
-
-\section{Results}
-\subsection{Rössler and Lorenz-96 (Gate 3, H4 supported)}
 \begin{table}[H]\centering
-\caption{Gate 3. Success = trajectory error below 1 over the whole window, out of 36
-networks. Errors are medians over the 36 networks.}
+\caption{Residual weights compared. Each is rescaled so that its mean trace over the grid is $n$.}
+\begin{tabular}{lll}\toprule
+Code & Weight & Uses direction?\\\midrule
+\texttt{U} & $I$ (uniform) & no\\
+\texttt{TUR} & $\rho_i I$, $\rho_i\propto\exp(-h\sum_{j\le i}\lambda_j)$, $\lambda$ from Eq.~(17) & no\\
+\texttt{S} & $\sqrt{\lambda_{\max}G_i}\,I$ (best direction-blind) & no\\
+\texttt{M} & $G_i/\sqrt{\operatorname{tr}G_i}$ (proposed) & yes\\
+\texttt{D} & $nG_i/\operatorname{tr}G_i$ (direction only, flat in time) & yes\\
+causal & $\rho_i\propto\exp(-\varepsilon h\sum_{j<i}\|r_j\|^2)$ \cite{wang2022} & no\\\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent Suffixes: \texttt{-orc} computes $G$ along the reference; \texttt{-self} along the
+network's own path.
+
+%=====================================================================
+\section{Experimental design}
+\subsection{Systems}
+\begin{itemize}
+\item \textbf{Two-dimensional ``dial'' systems.} A stiff linear saddle with rates $+1$ and
+  $-\kappa$, $\kappa\in\{1,4,16,64\}$, and the Davis--Skodje slow--fast system
+  \cite{davis1999}, $\gamma\in\{3,6,18,66\}$. Window $[0,2]$, 8 initial conditions.
+\item \textbf{Lorenz-63} \cite{lorenz1963}: $(\sigma,\rho,\beta)=(10,28,8/3)$, windows of
+  length 0.5, 1 and 2, 12 initial states on the attractor.
+\item \textbf{Lorenz-63 driving $k$ damped modes}, $\dot q_j=\gamma_j(x-q_j)$, with $\gamma_j$
+  log-spaced in $[5,50]$ and $k\in\{0,3,9,29\}$. The modes add contracting directions
+  without changing the chaotic core.
+\item \textbf{Rössler} \cite{rossler1976}: $(a,b,c)=(0.2,0.2,5.7)$, windows of length 5
+  and 10.
+\item \textbf{Lorenz-96} \cite{lorenz1996}: $N=8$, $F=8$, windows of length 1 and 2.
+\end{itemize}
+
+\subsection{Training protocol}
+\begin{itemize}
+\item \textbf{Network.} A $4\times64$ tanh MLP with Xavier initialization. The initial
+  condition is imposed exactly, $\hat x=x_0+(t/T)(\mathrm{net}-x_0)$, and the time
+  derivative is computed exactly.
+\item \textbf{Optimization.} A fixed uniform grid of 512 times. Adam with 20{,}000 steps,
+  the learning rate decaying exponentially from $10^{-3}$ to $10^{-5}$, in float32.
+\item \textbf{Fairness.} All methods share the same networks, initializations, grid and
+  number of steps; only the residual weight differs.
+\item \textbf{Scale.} Every setting trains 36 networks per method (12 initial conditions
+  $\times$ 3 seeds; 24 for the dial systems).
+\item \textbf{Reference solutions.} DOP853 with tolerances $10^{-12}$, or exact formulas.
+\end{itemize}
+
+\subsection{Outcomes and statistics}
+\begin{itemize}
+\item \textbf{Primary outcome.} The RMS trajectory error over the window, $E_{\mathrm{rms}}$,
+  against the reference.
+\item \textbf{Secondary outcomes.} The final-time error, and success (error below 1 over the
+  whole window).
+\item \textbf{Contrasts.} Methods are compared by paired differences of
+  $\log_{10}E_{\mathrm{rms}}$, averaged over seeds within each initial condition, with 95\%
+  bootstrap intervals over initial conditions.
+\item \textbf{Decision rule.} ``A beats B'' requires at least 1.5 times lower error with
+  the interval below zero.
+\item \textbf{Pre-registration.} Hypotheses, systems, settings and decision rules were
+  committed before training. Additions were committed as dated amendments before their
+  runs (Appendix~\ref{app:amend}).
+\end{itemize}
+
+\subsection{Computing platforms}
+Lorenz-63 (H2) was trained on a CPU laptop; the other experiments ran on Kaggle T4 GPUs. A
+complete GPU replicate of the Lorenz-63 runs reproduced the CPU success counts exactly. The
+outcomes therefore do not depend on the hardware.
+
+%=====================================================================
+\section{Results}
+\subsection{Overview of verdicts}
+\begin{table}[H]\centering\small
+\caption{Pre-registered hypotheses and verdicts.}
+\begin{tabular}{p{4.6cm}p{4.6cm}p{6.0cm}}\toprule
+Hypothesis & Systems & Verdict\\\midrule
+H1 mechanism, known directions & stiff saddle, Davis--Skodje & partial: helps only at the stiffest saddle\\
+H2 usable method & Lorenz-63 & \pending{CPU runs; GPU replicate gives partial}\\
+H3 gain over uniform grows with dimension & Lorenz-63 with $k$ damped modes & not supported (gain already $\sim$100$\times$ at $k=0$)\\
+H4 same rule on further systems & Rössler, Lorenz-96 & \textbf{supported for both}\\\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Rössler and Lorenz-96}
+\begin{table}[H]\centering
+\caption{Rössler and Lorenz-96. Success = trajectory error below 1 over the whole window,
+out of 36 networks. Errors are medians over the 36 networks.}
 \begin{tabular}{llcccc}\toprule
-System, window & Quantity & uniform & Turinici & scalar Gramian & \textbf{matrix}\\\midrule
+System, window & Quantity & uniform & reference paper & scalar Gramian & \textbf{matrix (ours)}\\\midrule
 Rössler, $[0,10]$ & success & 4 & 1 & 13 & \textbf{30}\\
  & final-time error & 3.19 & 5.61 & 5.60 & \textbf{0.042}\\
  & RMS error & 1.97 & 3.58 & 2.27 & \textbf{0.031}\\\midrule
@@ -162,20 +410,31 @@ Lorenz-96, $[0,2]$ & success & 0 & 0 & 1 & \textbf{10}\\
 
 \paragraph{Planned contrasts for the matrix weight.} These are fold changes in RMS error.
 \begin{itemize}
-\item \textbf{Rössler $T=10$.} Against scalar 0.04, uniform 0.03, Turinici 0.02; all three ``beats''.
-\item \textbf{Rössler $T=5$.} Against uniform 0.17 and Turinici 0.16 (``beats''); against scalar 0.36 (no decision).
-\item \textbf{Lorenz-96 $T=1$.} Against scalar 0.41, uniform 0.07, Turinici 0.02; all three ``beats''.
-\item \textbf{Lorenz-96 $T=2$.} Against uniform 0.19 and Turinici 0.16 (``beats''); against scalar 0.42 (no decision).
+\item \textbf{Rössler $T=10$.} Against scalar 0.04, uniform 0.03, reference paper 0.02.
+  All three ``beat''.
+\item \textbf{Rössler $T=5$.} Against uniform 0.17 and reference paper 0.16 (``beat'');
+  against scalar 0.36 (no decision).
+\item \textbf{Lorenz-96 $T=1$.} Against scalar 0.41, uniform 0.07, reference paper 0.02.
+  All three ``beat''.
+\item \textbf{Lorenz-96 $T=2$.} Against uniform 0.19 and reference paper 0.16 (``beat'');
+  against scalar 0.42 (no decision).
 \end{itemize}
-The matrix weight never lost a contrast, so H4 is supported for both systems.
+The matrix weight lost no contrast, so H4 is supported for both systems.
+
+\begin{figure}[H]\centering
+\includegraphics[width=\textwidth]{figures/gate3_errors.pdf}
+\caption{Rössler and Lorenz-96: RMS error of every network (36 per method). Black bars are
+medians; numbers above each column count the accurate networks.}
+\end{figure}
 
 \begin{figure}[H]\centering
 \includegraphics[width=\textwidth]{figures/turinici_style_rossler_T10.pdf}
-\caption{Rössler over $[0,10]$, in the style of Turinici's figures. (a) Trajectory error and
-(b) equation error during training (median and quartiles of 36 networks).
-(c) Final-time error and (d) RMS error per network. (e) An example trajectory and
-(f) its error; this is initial condition 1, seed 0, the same starting network for every
-method. (g) Equation error over the window. (h) The learned time weights.}
+\caption{Rössler over $[0,10]$, in the format of the reference paper's figures.
+(a) Trajectory error and (b) equation error during training (median and quartiles of 36
+networks). (c) Final-time error and (d) RMS error per network. (e) An example trajectory
+against the reference and (f) its error over time; this is initial condition 1, seed 0,
+the same starting network for every method. (g) Equation error over the window (median).
+(h) The learned time weights at the end of training.}
 \end{figure}
 
 \begin{figure}[H]\centering
@@ -183,121 +442,246 @@ method. (g) Equation error over the window. (h) The learned time weights.}
 \caption{Lorenz-96 ($N=8$, $F=8$) over $[0,1]$. Panels as in the Rössler figure.}
 \end{figure}
 
-\subsection{Dimension dial: Lorenz-63 driving $k$ damped modes (Gate 2)}
+\subsection{Dimension dial: Lorenz-63 with damped modes}
 \begin{table}[H]\centering
-\caption{Gate 2: successes (out of 36) on the Lorenz part, window $[0,1]$.}
+\caption{Lorenz-63 driving $k$ damped modes. Accurate networks (out of 36) on the Lorenz
+part; window $[0,1]$.}
 \begin{tabular}{lcccccc}\toprule
-$k$ ($n=3+k$) & uniform & Turinici & scalar (orc.) & matrix (orc.) & scalar (self) & matrix (self)\\\midrule
+$k$ ($n=3+k$) & uniform & reference & scalar (orc.) & matrix (orc.) & scalar (self) & \textbf{matrix (self)}\\\midrule
 0 & 7 & 5 & 9 & 23 & 24 & \textbf{27}\\
 3 & 7 & 4 & 5 & 17 & 20 & \textbf{27}\\
 9 & 3 & 0 & 4 & 10 & 7 & \textbf{27}\\
 29 & 0 & 0 & 3 & 5 & 5 & \textbf{27}\\\bottomrule
 \end{tabular}
 \end{table}
-The pre-registered H3 contrast, matrix against uniform, is already about 100-fold at
+
+The pre-registered H3 contrast, matrix against uniform, is about 100-fold already at
 $k=0$ and does not grow reliably, so H3 is not supported. The contrast of the matrix
-weight against the direction-blind scalar weight does grow with $k$: 0.52 (no decision),
-then 0.13, 0.02 and 0.01. A direction-blind weight wastes more of its budget as more
-directions become harmless, as the theory predicts.
+weight against the direction-blind weight, with the same Gramian, does grow with $k$: 0.52
+(no decision), then 0.13, 0.02 and 0.01. A direction-blind weight wastes more of its budget
+as more directions become harmless, as the theory predicts.
 
 \begin{figure}[H]\centering
 \includegraphics[width=\textwidth]{figures/gate2_errors.pdf}
-\caption{Gate 2: RMS error on the Lorenz part, for every network and method.}
+\caption{Lorenz-63 driving $k$ damped modes: RMS error on the Lorenz part for every network.}
 \end{figure}
 
-\subsection{Plain Lorenz-63 (Gate 1)}
-The GPU replicate is complete. The CPU runs that decide H2 are half complete and match
-it exactly where both exist: at $T=1$ the successes are 27, 24, 23, 9, 7 and 5 for the
-matrix (self), scalar (self), matrix (oracle), scalar (oracle), uniform and Turinici
-weights respectively.
-\begin{itemize}
-\item \textbf{$T=0.5$.} All methods succeed.
-\item \textbf{$T=1$.} The self-consistent weights beat uniform and Turinici by about 100-fold. The matrix and scalar versions do not differ reliably (fold change 0.52, interval includes 1).
-\item \textbf{$T=2$.} Every method mostly fails. The matrix weight succeeds most often (8 of 36, against 0 for uniform and Turinici).
-\end{itemize}
-Applying the H2 rule to the replicate gives \emph{partial}. \pending{the decisive CPU
-runs; about one hour.}
+\subsection{Plain Lorenz-63}
+The GPU replicate is complete. The CPU runs that decide H2 are half complete and agree
+with it exactly where both exist. At $T=1$ the accurate networks number:
 
-\paragraph{Causal weighting (side run).} With fixed $\varepsilon$:
-\begin{itemize}
-\item at $T=1$, successes were 20, 25 and 21 of 36 for $\varepsilon=0.1$, 1 and 10;
-\item at $T=2$, successes were 0 to 3 of 36.
-\end{itemize}
-On plain Lorenz-63, well-tuned causal weighting is therefore about as good as the
-Gramian weights. The training histories explain why. Early in training, the
-self-consistent weights put very little weight on the late part of the window. This acts
-as an automatic causal schedule, with no parameter to tune. \pending{causal weighting
-($\varepsilon=1$) on Rössler, Lorenz-96 and the damped systems}
+\begin{center}
+\begin{tabular}{lcccccc}\toprule
+ & matrix (self) & scalar (self) & matrix (orc.) & scalar (orc.) & uniform & reference paper\\\midrule
+accurate (of 36) & 27 & 24 & 23 & 9 & 7 & 5\\\bottomrule
+\end{tabular}
+\end{center}
 
-\subsection{Two-dimensional dial systems (Gate 0, H1 partial)}
-Fold changes of the matrix (oracle) weight against the scalar (oracle) weight:
 \begin{itemize}
-\item stiff linear saddle, $\kappa=1,4,16,64$: 1.9, 3.1 and 4.3 (worse), then \textbf{0.50} (beats);
-\item Davis--Skodje, $\gamma=3,6,18,66$: 1.2, 2.5 and 1.8 (worse), then 1.0 (no decision).
+\item \textbf{$T=0.5$.} Every method succeeds.
+\item \textbf{$T=1$.} The self-consistent Gramian weights beat uniform and reference
+  weighting by about 100-fold. Matrix and scalar do not differ reliably (fold change 0.52,
+  interval contains 1).
+\item \textbf{$T=2$.} Every method mostly fails. The matrix weight succeeds most often: 8
+  of 36, against 0 for uniform and reference weighting.
 \end{itemize}
-Every method succeeds on these easy problems. There, the matrix weight trades a little
-accuracy for a larger residual along the contracting direction. It helps only at the
-stiffest saddle. \pending{soft initial-condition check of this result}
+Applying the H2 rule to the replicate gives \emph{partial}. \pending{the decisive CPU runs}
 
-\subsection{Further side runs}
+\paragraph{Comparison with causal weighting.} The plain Lorenz-63 result is driven by
+time weighting more than by direction. The training histories show that, early in
+training, the self-consistent weights put very little weight on the late part of the
+window. This acts as an automatic causal schedule. Causal weighting with fixed
+$\varepsilon$ gave:
 \begin{itemize}
-\item \textbf{Final-time matrix weight} (Turinici's target, $\Phi(T,t)^{\top}\Phi(T,t)$):
-  21 and 20 successes at $T=0.5$, but 0--1 at $T\ge1$. The window target is what helps.
-\item \textbf{Direction only} (same total weight at every time), Lorenz-63 $T=1$: 23 of 36
-  (self-consistent) and 10 of 36 (oracle), against 7 for uniform.
-\item \textbf{Time-marching to horizon 4} (Lorenz-63):
+\item at $T=1$: 20, 25 and 21 accurate networks of 36 for $\varepsilon=0.1$, 1 and 10;
+\item at $T=2$: 0--3 of 36.
+\end{itemize}
+A well-tuned causal weight therefore matches the Gramian weights on plain Lorenz-63; ours
+needs no parameter. \pending{causal weighting ($\varepsilon=1$) on Rössler, Lorenz-96 and
+the damped systems}
+
+\subsection{Two-dimensional dial systems}
+Fold change of the matrix (oracle) weight against the scalar (oracle) weight:
+\begin{center}
+\begin{tabular}{lcccc}\toprule
+System & dial 2 & dial 5 & dial 17 & dial 65\\\midrule
+stiff saddle, $\kappa=1,4,16,64$ & 1.9 (worse) & 3.1 (worse) & 4.3 (worse) & \textbf{0.50 (beats)}\\
+Davis--Skodje, $\gamma=3,6,18,66$ & 1.2 (worse) & 2.5 (worse) & 1.8 (worse) & 1.0 (no decision)\\\bottomrule
+\end{tabular}
+\end{center}
+At the stiffest saddle the matrix weight also beats uniform (0.17) and reference weighting
+(0.30). Every method succeeds on these easy problems. There the matrix weight trades a
+little accuracy for a larger residual along the contracting direction, and it helps only
+in the stiffest setting. \pending{soft initial-condition check}
+
+\subsection{Further checks}
+\begin{itemize}
+\item \textbf{Robustness.} On Lorenz-63 at $T=1$, uniform and reference weighting still
+  fail with 2.5 times more steps, a wider network (128 units) or a denser grid (1{,}024
+  times). The Gramian weights still succeed in all three cases (median $\log_{10}$ error
+  $-2.2$ to $-3.0$).
+\item \textbf{Final-time target.} The matrix weight for the final-time error, the reference
+  paper's target, succeeds at $T=0.5$ (21 of 36) but fails at $T\ge1$ (0--1 of 36). The
+  window target is essential.
+\item \textbf{Direction only.} With equal total weight at every time and only the split
+  across directions taken from $G$, 23 of 36 networks are accurate at Lorenz-63 $T=1$,
+  against 7 for uniform.
+\item \textbf{Time-marching to horizon 4.}
   \begin{itemize}
-  \item segments of length 0.5: uniform 27, scalar 24, matrix 25 successes;
-  \item segments of length 1: uniform 0, scalar 4, matrix 15.
+  \item With segments of length 1: matrix weight 15 of 36 accurate, uniform 0.
+  \item With segments of length 0.5: uniform 27, matrix 25.
   \end{itemize}
-  The matrix weight makes longer segments trainable, but many short segments with
-  uniform weighting stay the most reliable.
-\item \textbf{Turinici's benchmark} (initial state $(1,1,1)$, $T=0.5$, $5\times20$
-  network, 2{,}000 steps, 10 seeds). This used our implementation, which imposes the
-  initial condition differently from his code. Uniform and Turinici weighting reached 0
-  of 10; the self-consistent Gramian weights reached 9--10 of 10.
+  The matrix weight makes longer segments trainable, but short segments with uniform
+  weighting remain the most reliable route to long horizons.
 \item \textbf{Mechanism.} Residual energy along the least harmful direction of $G$:
   \begin{itemize}
-  \item at $T=1$: 60--73\% with the matrix weights, against 1--4\% with uniform and Turinici;
+  \item at Lorenz-63 $T=1$: 60--73\% with the matrix weights, against 1--4\% with
+    uniform and reference weighting;
   \item at $T=0.5$, where every method succeeds: 37--43\% against 17--22\%.
   \end{itemize}
 \end{itemize}
 
+%=====================================================================
 \section{Discussion}
+\subsection{Relation to the reference paper}
+\begin{itemize}
+\item \textbf{What we keep.} The training loss should approximate the error a residual
+  causes; this is the reference paper's central idea, and we keep it. Its minimax argument
+  carries over unchanged from scalars to matrices.
+\item \textbf{What we change.}
+  \begin{itemize}
+  \item the scalar growth bound becomes the actual tangent propagator, which carries
+    directions;
+  \item the final-time target becomes the window error;
+  \item the zero-solution growth estimate becomes a Gramian computed along the network's
+    own path.
+  \end{itemize}
+\item \textbf{What changes in the results.} Each change matters in our experiments:
+  \begin{itemize}
+  \item the reference paper's estimator produced weights that grow in time on Lorenz-63;
+  \item the final-time target failed at $T\ge1$;
+  \item the self-consistent window Gramian rescued training.
+  \end{itemize}
+\end{itemize}
+
+\subsection{Two separate effects}
 \begin{enumerate}
-\item \textbf{Two separate effects.}
+\item \textbf{A better time schedule.} Gramian weights computed along the network's own
+  path give an adaptive time schedule that behaves like causal training. This alone
+  rescues plain Lorenz-63.
+\item \textbf{A direction effect.} The matrix form adds a gain that grows with the number of
+  contracting directions:
   \begin{itemize}
-  \item Gramian weights computed along the network's own path give a well-shaped,
-    adaptive time schedule. This is what rescues plain Lorenz-63.
-  \item The matrix form adds a direction effect. It grows with the number of
-    contracting directions and the length of the window: large on Rössler and on
-    Lorenz-63 with many damped modes, small on plain Lorenz-63.
+  \item small on plain Lorenz-63;
+  \item large on Rössler over $[0,10]$;
+  \item very large with many damped modes.
   \end{itemize}
-\item \textbf{Consistency with the theory.} The guaranteed gain of the matrix over the
-  best scalar weight is at most $\sqrt n$. The observed training gains are much larger,
-  because the loss weighting also changes the optimization: the residual moves into
-  harmless directions. The theory predicts larger gains when many directions are
-  harmless, and that is where they appear.
-\item \textbf{Limitations.}
-  \begin{itemize}
-  \item The results are for small MLPs on ODEs, with one optimizer.
-  \item Computing the weights costs about three times the GPU time of uniform weighting per run.
-  \item The analysis is linearized.
-  \item For forward ODE problems, PINNs remain far slower than classical integrators. The value is for PINN training, and for settings that need long single windows.
-  \end{itemize}
-\item \textbf{Next steps.}
-  \begin{itemize}
-  \item Compare with tuned causal weighting on the systems where direction matters (running).
-  \item Test a dissipative PDE (Kuramoto--Sivashinsky or Burgers), where many contracting directions are expected.
-  \item Test inverse and data-assimilation problems.
-  \item Make the weight update cheaper.
-  \end{itemize}
+  This agrees with the theory, which predicts the largest direction gains when many
+  directions are harmless.
 \end{enumerate}
 
-\paragraph{Reproducibility.} The code, tests (36 passing), job files, per-run summaries
-and figures are in the \texttt{matrix\_weighting/} folder of the repository (branch
-\texttt{matrix-weighting}). The plan and its four dated amendments are in
-\texttt{docs/plan.md}, and the dated record of every run and deviation is in
-\texttt{docs/progress.md}.
+\subsection{Limitations}
+\begin{itemize}
+\item The results cover small MLPs on ODE systems, with one optimizer setting.
+\item The analysis is linearized, and the proposition bounds a worst case; it does not
+  predict a training run.
+\item The weights cost about three times the GPU time of uniform weighting per run.
+\item On easy problems the matrix weight costs some accuracy.
+\item A single Lorenz-63 window of length 2 remains out of reach.
+\item For forward ODE problems, PINNs remain far slower than classical integrators. The
+  contribution is to PINN training methodology, and to settings that need long single
+  windows.
+\end{itemize}
+
+%=====================================================================
+\section{Conclusion and future work}
+Extending the reference paper's weighting from one number per time to one matrix per time
+gives a principled, reference-free, direction-aware residual weight. With rules fixed in
+advance:
+\begin{itemize}
+\item it improved PINN training on Rössler and Lorenz-96 over uniform weighting, the
+  reference paper's weighting, and a direction-blind weight from the same information;
+\item its advantage over the direction-blind weight grew with the number of contracting
+  directions;
+\item on plain Lorenz-63 its benefit is matched by an automatic or tuned causal time
+  schedule;
+\item on easy problems it costs a little accuracy.
+\end{itemize}
+
+Next steps:
+\begin{itemize}
+\item a comparison with tuned causal weighting on the systems where direction matters
+  (running);
+\item dissipative PDEs such as Kuramoto--Sivashinsky, which are expected to have many
+  contracting directions;
+\item inverse and data-assimilation problems;
+\item a cheaper weight update.
+\end{itemize}
+
+%=====================================================================
+\begin{thebibliography}{99}
+\bibitem{raissi2019} M.~Raissi, P.~Perdikaris, G.~E.~Karniadakis. Physics-informed neural
+networks: a deep learning framework for solving forward and inverse problems involving
+nonlinear partial differential equations. \emph{J.\ Comput.\ Phys.} 378 (2019) 686--707.
+\bibitem{turinici2025} G.~Turinici. Regime-aware time weighting for physics-informed neural
+networks. arXiv:2407.21642v2, 2025.
+\bibitem{turinici2024sampling} G.~Turinici. Optimal time sampling in physics-informed neural
+networks. arXiv:2404.18780, 2024.
+\bibitem{wang2022} S.~Wang, S.~Sankaran, P.~Perdikaris. Respecting causality is all you need
+for training physics-informed neural networks. arXiv:2203.07404, 2022.
+\bibitem{deryck2024} T.~De Ryck, F.~Bonnet, S.~Mishra, E.~de B\'ezenac. An operator
+preconditioning perspective on training in physics-informed machine learning. ICLR 2024.
+\bibitem{hillebrecht2022} B.~Hillebrecht, B.~Unger. Certified machine learning: a posteriori
+error estimation for physics-informed neural networks. arXiv:2203.17055, 2022.
+\bibitem{lorenz1963} E.~N.~Lorenz. Deterministic nonperiodic flow. \emph{J.\ Atmos.\ Sci.} 20
+(1963) 130--141.
+\bibitem{rossler1976} O.~E.~R\"ossler. An equation for continuous chaos. \emph{Phys.\ Lett.\
+A} 57 (1976) 397--398.
+\bibitem{lorenz1996} E.~N.~Lorenz. Predictability: a problem partly solved. \emph{Proc.\
+ECMWF Seminar on Predictability}, 1996.
+\bibitem{davis1999} M.~J.~Davis, R.~T.~Skodje. Geometric investigation of low-dimensional
+manifolds in systems approaching equilibrium. \emph{J.\ Chem.\ Phys.} 111 (1999) 859--874.
+\bibitem{ginelli2007} F.~Ginelli, P.~Poggi, A.~Turchi, H.~Chat\'e, R.~Livi, A.~Politi.
+Characterizing dynamics with covariant Lyapunov vectors. \emph{Phys.\ Rev.\ Lett.} 99 (2007)
+130601.
+\bibitem{kingma2015} D.~P.~Kingma, J.~Ba. Adam: a method for stochastic optimization. ICLR
+2015.
+\end{thebibliography}
+
+\appendix
+\section{Pre-registration and deviations}
+\label{app:amend}
+The plan (\texttt{docs/plan.md}) was committed before any network was trained. Four dated
+amendments were committed before their own runs:
+\begin{enumerate}
+\item Rössler and Lorenz-96 as a further test (H4), plus the direction-only weight.
+\item Time-marching as a side experiment.
+\item A soft initial-condition check of the stiff dial settings.
+\item Causal weighting on the systems where direction mattered.
+\end{enumerate}
+
+Deviations, all recorded in \texttt{docs/progress.md}:
+\begin{itemize}
+\item \textbf{Platforms.} The two-dimensional experiments moved from the CPU laptop to GPUs
+  because of the laptop's limited memory. Every experiment stays on a single platform.
+\item \textbf{GPU memory.} A GPU memory failure in one eigenvalue routine was fixed by
+  computing it on the CPU; the affected jobs were rerun.
+\item \textbf{Lost CPU jobs.} Nine CPU jobs stopped by the operating system's
+  out-of-memory killer are being rerun unchanged, now with checkpointing.
+\end{itemize}
+
+\section{Additional figures}
+\begin{figure}[H]\centering
+\includegraphics[width=\textwidth]{figures/turinici_style_rossler_T5.pdf}
+\caption{Rössler over $[0,5]$.}
+\end{figure}
+\begin{figure}[H]\centering
+\includegraphics[width=\textwidth]{figures/turinici_style_lorenz96_n8_T2.pdf}
+\caption{Lorenz-96 over $[0,2]$.}
+\end{figure}
+\begin{figure}[H]\centering
+\includegraphics[width=\textwidth]{figures/gate0_errors.pdf}
+\caption{Two-dimensional dial systems: RMS error per network.}
+\end{figure}
 
 \end{document}
