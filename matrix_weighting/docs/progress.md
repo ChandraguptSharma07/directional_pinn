@@ -340,3 +340,28 @@ accuracy, because it accepts a larger residual along the contracting
 direction. It helps only in the hardest setting, the κ = 64 saddle, where the
 plain loss struggles. So the matrix weight is not uniformly better: its value
 lies in the hard regime, where standard training fails or nearly fails.
+
+### Gate 2 complete: H3 not supported; the direction effect grows with k
+
+`nikita245678k/mw-g2-k29-b` finished the k = 29 jobs. Planned analysis on the
+Lorenz-part error (`results/gate2/analysis.md`):
+
+**H3 is not supported** by the planned rule. The gain of `M-self` over `U` is
+already very large at k = 0 (mean Δ −2.16, about 145 times lower error) and
+does not grow reliably with k. The gain at k = 29 minus the gain at k = 0 is
++0.28, with interval [−0.30, +0.98].
+
+**Secondary contrasts** were computed by the planned script but do not decide
+H3. The gain of `M-self` over the direction-blind `S-self` grows steadily
+with the number of contracting directions:
+
+| k | Δ, `M-self` against `S-self` | interval | fold change | verdict |
+|---|---|---|---|---|
+| 0 | −0.28 | [−0.93, +0.15] | ×0.52 | no decision |
+| 3 | −0.89 | — | ×0.13 | beats |
+| 9 | −1.69 | — | ×0.02 | beats |
+| 29 | −2.01 | — | ×0.01 | beats |
+
+This is the theory's prediction: a direction-blind weight wastes more of its
+budget as more directions become harmless. With oracle weights, `M-orc` beats
+`S-orc` at every k.
