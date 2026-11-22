@@ -1,20 +1,102 @@
 it      0      1.8 s  median residual rms 7.061e+01  median grid error rms 1.816e+01
-Traceback (most recent call last):
-  File "/kaggle/working/mw/experiments/run_job.py", line 98, in <module>
-    main()
-    ~~~~^^
-  File "/kaggle/working/mw/experiments/run_job.py", line 87, in main
-    s = run(job, device=args.device)
-  File "/kaggle/working/mw/experiments/run_job.py", line 50, in run
-    res = train_batch(system, job["method"], x0, seeds, job["out_mean"], job["out_scale"], settings,
-                      ref_grid=ref_grid, ref_eval=ref_eval)
-  File "/kaggle/working/mw/mw/train.py", line 80, in train_batch
-    kind, W = wt.tangent_weight(method, x, system.jac, h)
-              ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/kaggle/working/mw/mw/weights.py", line 121, in tangent_weight
-    return "scalar", best_scalar(G)
-                     ~~~~~~~~~~~^^^
-  File "/kaggle/working/mw/mw/weights.py", line 87, in best_scalar
-    lam = torch.linalg.eigvalsh(A)[..., -1].clamp_min(0.0)
-          ~~~~~~~~~~~~~~~~~~~~~^^^
-torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 9.32 GiB. GPU 0 has a total capacity of 14.56 GiB of which 4.39 GiB is free. Process 30 has 342.00 MiB memory in use. Process 31 has 268.00 MiB memory in use. Including non-PyTorch memory, this process has 9.58 GiB memory in use. Of the allocated memory 102.73 MiB is allocated by PyTorch, and 9.33 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)
+it    500     14.5 s  median residual rms 1.082e+01  median grid error rms 1.716e+01
+it   1000     26.9 s  median residual rms 8.358e+00  median grid error rms 1.587e+01
+it   1500     39.6 s  median residual rms 5.351e+00  median grid error rms 1.478e+01
+it   2000     52.5 s  median residual rms 4.109e+00  median grid error rms 1.377e+01
+it   2500     65.2 s  median residual rms 4.600e+00  median grid error rms 1.304e+01
+it   3000     77.7 s  median residual rms 4.046e+00  median grid error rms 1.194e+01
+it   3500     90.4 s  median residual rms 2.301e+00  median grid error rms 3.450e+00
+it   4000    102.7 s  median residual rms 2.004e+00  median grid error rms 5.650e-01
+it   4500    114.7 s  median residual rms 1.342e+00  median grid error rms 2.806e-01
+it   5000    127.5 s  median residual rms 1.139e+00  median grid error rms 1.605e-01
+it   5500    139.4 s  median residual rms 1.039e+00  median grid error rms 1.480e-01
+it   6000    151.5 s  median residual rms 9.415e-01  median grid error rms 1.151e-01
+it   6500    163.2 s  median residual rms 7.485e-01  median grid error rms 7.570e-02
+it   7000    175.6 s  median residual rms 7.010e-01  median grid error rms 8.072e-02
+it   7500    187.9 s  median residual rms 9.969e-01  median grid error rms 9.342e-02
+it   8000    200.5 s  median residual rms 5.186e-01  median grid error rms 6.204e-02
+it   8500    212.7 s  median residual rms 6.923e-01  median grid error rms 6.318e-02
+it   9000    224.9 s  median residual rms 7.397e-01  median grid error rms 7.452e-02
+it   9500    236.7 s  median residual rms 5.197e-01  median grid error rms 3.678e-02
+it  10000    249.2 s  median residual rms 4.392e-01  median grid error rms 5.844e-02
+it  10500    261.6 s  median residual rms 4.131e-01  median grid error rms 4.721e-02
+it  11000    273.8 s  median residual rms 3.571e-01  median grid error rms 2.980e-02
+it  11500    286.2 s  median residual rms 3.945e-01  median grid error rms 2.912e-02
+it  12000    299.0 s  median residual rms 4.877e-01  median grid error rms 4.748e-02
+it  12500    312.0 s  median residual rms 4.163e-01  median grid error rms 3.718e-02
+it  13000    325.2 s  median residual rms 3.921e-01  median grid error rms 4.186e-02
+it  13500    338.5 s  median residual rms 3.653e-01  median grid error rms 3.031e-02
+it  14000    351.0 s  median residual rms 3.043e-01  median grid error rms 2.022e-02
+it  14500    364.0 s  median residual rms 3.487e-01  median grid error rms 3.397e-02
+it  15000    377.2 s  median residual rms 3.187e-01  median grid error rms 3.151e-02
+it  15500    390.5 s  median residual rms 3.720e-01  median grid error rms 3.026e-02
+it  16000    403.9 s  median residual rms 3.009e-01  median grid error rms 2.444e-02
+it  16500    417.1 s  median residual rms 3.787e-01  median grid error rms 3.160e-02
+it  17000    430.7 s  median residual rms 3.995e-01  median grid error rms 2.798e-02
+it  17500    444.0 s  median residual rms 4.086e-01  median grid error rms 2.900e-02
+it  18000    456.8 s  median residual rms 3.012e-01  median grid error rms 2.507e-02
+it  18500    469.0 s  median residual rms 2.745e-01  median grid error rms 2.305e-02
+it  19000    481.3 s  median residual rms 2.633e-01  median grid error rms 1.862e-02
+it  19500    493.4 s  median residual rms 3.057e-01  median grid error rms 1.533e-02
+it  20000    506.0 s  median residual rms 2.558e-01  median grid error rms 1.863e-02
+it  20500    518.3 s  median residual rms 2.544e-01  median grid error rms 1.316e-02
+it  21000    528.3 s  median residual rms 2.422e-01  median grid error rms 1.063e-02
+it  21500    538.4 s  median residual rms 2.143e-01  median grid error rms 1.072e-02
+it  22000    548.6 s  median residual rms 2.092e-01  median grid error rms 8.309e-03
+it  22500    557.9 s  median residual rms 2.381e-01  median grid error rms 9.153e-03
+it  23000    568.3 s  median residual rms 2.460e-01  median grid error rms 1.154e-02
+it  23500    578.1 s  median residual rms 2.091e-01  median grid error rms 7.722e-03
+it  24000    588.7 s  median residual rms 2.187e-01  median grid error rms 6.772e-03
+it  24500    598.2 s  median residual rms 1.923e-01  median grid error rms 7.439e-03
+it  25000    608.7 s  median residual rms 1.881e-01  median grid error rms 4.901e-03
+it  25500    618.1 s  median residual rms 1.867e-01  median grid error rms 7.023e-03
+it  26000    627.8 s  median residual rms 1.688e-01  median grid error rms 5.893e-03
+it  26500    637.3 s  median residual rms 1.703e-01  median grid error rms 6.125e-03
+it  27000    647.4 s  median residual rms 1.781e-01  median grid error rms 5.270e-03
+it  27500    657.1 s  median residual rms 1.588e-01  median grid error rms 3.654e-03
+it  28000    666.3 s  median residual rms 1.696e-01  median grid error rms 4.421e-03
+it  28500    673.5 s  median residual rms 1.590e-01  median grid error rms 3.248e-03
+it  29000    680.5 s  median residual rms 1.647e-01  median grid error rms 3.977e-03
+it  29500    687.6 s  median residual rms 1.514e-01  median grid error rms 3.510e-03
+it  30000    694.6 s  median residual rms 1.537e-01  median grid error rms 4.172e-03
+it  30500    701.8 s  median residual rms 1.595e-01  median grid error rms 4.788e-03
+it  31000    709.0 s  median residual rms 1.448e-01  median grid error rms 4.876e-03
+it  31500    715.9 s  median residual rms 1.507e-01  median grid error rms 3.217e-03
+it  32000    722.9 s  median residual rms 1.469e-01  median grid error rms 4.069e-03
+it  32500    730.0 s  median residual rms 1.379e-01  median grid error rms 3.544e-03
+it  33000    737.1 s  median residual rms 1.520e-01  median grid error rms 5.427e-03
+it  33500    744.6 s  median residual rms 1.386e-01  median grid error rms 2.982e-03
+it  34000    751.7 s  median residual rms 1.310e-01  median grid error rms 3.184e-03
+it  34500    759.0 s  median residual rms 1.315e-01  median grid error rms 2.483e-03
+it  35000    766.1 s  median residual rms 1.381e-01  median grid error rms 3.594e-03
+it  35500    773.4 s  median residual rms 1.310e-01  median grid error rms 3.425e-03
+it  36000    780.7 s  median residual rms 1.302e-01  median grid error rms 2.765e-03
+it  36500    787.8 s  median residual rms 1.251e-01  median grid error rms 2.434e-03
+it  37000    795.0 s  median residual rms 1.225e-01  median grid error rms 1.921e-03
+it  37500    802.2 s  median residual rms 1.374e-01  median grid error rms 3.538e-03
+it  38000    809.5 s  median residual rms 1.344e-01  median grid error rms 2.831e-03
+it  38500    816.7 s  median residual rms 1.238e-01  median grid error rms 2.570e-03
+it  39000    824.0 s  median residual rms 1.199e-01  median grid error rms 1.875e-03
+it  39500    831.1 s  median residual rms 1.185e-01  median grid error rms 2.778e-03
+it  40000    838.6 s  median residual rms 1.157e-01  median grid error rms 2.026e-03
+it  40500    845.9 s  median residual rms 1.198e-01  median grid error rms 1.775e-03
+it  41000    853.1 s  median residual rms 1.189e-01  median grid error rms 2.233e-03
+it  41500    860.4 s  median residual rms 1.138e-01  median grid error rms 1.754e-03
+it  42000    867.4 s  median residual rms 1.147e-01  median grid error rms 2.197e-03
+it  42500    874.3 s  median residual rms 1.120e-01  median grid error rms 1.499e-03
+it  43000    881.2 s  median residual rms 1.112e-01  median grid error rms 1.812e-03
+it  43500    888.3 s  median residual rms 1.104e-01  median grid error rms 1.310e-03
+it  44000    895.1 s  median residual rms 1.095e-01  median grid error rms 1.472e-03
+it  44500    902.0 s  median residual rms 1.085e-01  median grid error rms 1.324e-03
+it  45000    909.0 s  median residual rms 1.121e-01  median grid error rms 2.126e-03
+it  45500    915.9 s  median residual rms 1.068e-01  median grid error rms 1.318e-03
+it  46000    922.8 s  median residual rms 1.074e-01  median grid error rms 1.503e-03
+it  46500    929.8 s  median residual rms 1.064e-01  median grid error rms 1.886e-03
+it  47000    936.7 s  median residual rms 1.043e-01  median grid error rms 1.374e-03
+it  47500    943.7 s  median residual rms 1.043e-01  median grid error rms 1.825e-03
+it  48000    950.7 s  median residual rms 1.027e-01  median grid error rms 1.500e-03
+it  48500    957.5 s  median residual rms 1.033e-01  median grid error rms 1.130e-03
+it  49000    964.7 s  median residual rms 1.068e-01  median grid error rms 1.209e-03
+it  49500    972.0 s  median residual rms 1.004e-01  median grid error rms 1.104e-03
+it  50000    979.3 s  median residual rms 1.026e-01  median grid error rms 1.121e-03
+done results/side/sensitivity/iters50k/T1/S-self: median log10 E_rms -2.956, runtime 979 s
