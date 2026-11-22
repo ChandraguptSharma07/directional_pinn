@@ -69,7 +69,7 @@ def build(user: str, slug: str, job_files: list[Path], out: Path, workers: int) 
         for rel in CODE:
             tar.add(ROOT / rel, arcname=rel)
         for f in job_files:
-            tar.add(f, arcname=f"jobs/kaggle/{f.name}")
+            tar.add(f, arcname=f"jobs/kaggle/{f.parent.name}__{f.name}")  # folder prefix: names repeat across folders
     bundle = base64.b64encode(buf.getvalue()).decode()
     out.mkdir(parents=True, exist_ok=True)
     (out / "run.py").write_text(RUNNER.format(bundle=bundle, workers=workers))

@@ -245,3 +245,14 @@ queued for over 30 minutes while other accounts' kernels started at once.
 - **Time-marching side run (plan amendment 2):** built, waiting for a free
   Kaggle GPU slot. Every account is at its limit of 2 concurrent GPU
   sessions.
+
+### Rerun kernel: two jobs recovered, one lost to a packaging bug
+
+`mw-rerun-1` produced the Gate 2 k = 0 `S-self` job and the replicate's
+T = 0.5 `S-self` job. Its third job, the replicate's T = 1 `S-self`, was
+silently dropped. Two job files from different folders share the name
+`lorenz63_T1_S-self.json`, and the packer stored both under that name.
+
+`remote/kaggle_kernel.py` now prefixes each packed job file with its folder
+name. No earlier kernel mixed folders with clashing names. The dropped job
+goes in `mw-rerun-2` when a GPU slot frees.

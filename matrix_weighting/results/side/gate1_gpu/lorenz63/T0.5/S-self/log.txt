@@ -1,20 +1,42 @@
-it      0      1.5 s  median residual rms 8.253e+01  median grid error rms 1.355e+01
-Traceback (most recent call last):
-  File "/kaggle/working/mw/experiments/run_job.py", line 98, in <module>
-    main()
-    ~~~~^^
-  File "/kaggle/working/mw/experiments/run_job.py", line 87, in main
-    s = run(job, device=args.device)
-  File "/kaggle/working/mw/experiments/run_job.py", line 50, in run
-    res = train_batch(system, job["method"], x0, seeds, job["out_mean"], job["out_scale"], settings,
-                      ref_grid=ref_grid, ref_eval=ref_eval)
-  File "/kaggle/working/mw/mw/train.py", line 80, in train_batch
-    kind, W = wt.tangent_weight(method, x, system.jac, h)
-              ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/kaggle/working/mw/mw/weights.py", line 121, in tangent_weight
-    return "scalar", best_scalar(G)
-                     ~~~~~~~~~~~^^^
-  File "/kaggle/working/mw/mw/weights.py", line 87, in best_scalar
-    lam = torch.linalg.eigvalsh(A)[..., -1].clamp_min(0.0)
-          ~~~~~~~~~~~~~~~~~~~~~^^^
-torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 9.32 GiB. GPU 0 has a total capacity of 14.56 GiB of which 4.46 GiB is free. Including non-PyTorch memory, this process has 9.58 GiB memory in use. Process 29 has 270.00 MiB memory in use. Process 31 has 270.00 MiB memory in use. Of the allocated memory 102.73 MiB is allocated by PyTorch, and 9.33 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)
+it      0      0.9 s  median residual rms 8.253e+01  median grid error rms 1.355e+01
+it    500      8.2 s  median residual rms 1.564e+00  median grid error rms 5.036e-02
+it   1000     15.4 s  median residual rms 8.408e-01  median grid error rms 2.101e-02
+it   1500     22.5 s  median residual rms 7.740e-01  median grid error rms 3.138e-02
+it   2000     29.5 s  median residual rms 5.617e-01  median grid error rms 1.788e-02
+it   2500     36.6 s  median residual rms 4.855e-01  median grid error rms 1.270e-02
+it   3000     43.8 s  median residual rms 4.406e-01  median grid error rms 1.567e-02
+it   3500     50.7 s  median residual rms 3.725e-01  median grid error rms 8.830e-03
+it   4000     58.0 s  median residual rms 3.596e-01  median grid error rms 9.653e-03
+it   4500     65.3 s  median residual rms 3.162e-01  median grid error rms 6.623e-03
+it   5000     72.5 s  median residual rms 2.710e-01  median grid error rms 4.220e-03
+it   5500     79.8 s  median residual rms 2.744e-01  median grid error rms 8.103e-03
+it   6000     87.2 s  median residual rms 2.817e-01  median grid error rms 6.849e-03
+it   6500     95.2 s  median residual rms 2.443e-01  median grid error rms 6.059e-03
+it   7000    103.1 s  median residual rms 2.319e-01  median grid error rms 3.414e-03
+it   7500    111.1 s  median residual rms 2.254e-01  median grid error rms 4.520e-03
+it   8000    118.6 s  median residual rms 2.177e-01  median grid error rms 4.025e-03
+it   8500    125.8 s  median residual rms 2.034e-01  median grid error rms 4.045e-03
+it   9000    132.8 s  median residual rms 1.884e-01  median grid error rms 2.906e-03
+it   9500    140.0 s  median residual rms 2.015e-01  median grid error rms 2.833e-03
+it  10000    147.7 s  median residual rms 1.786e-01  median grid error rms 2.974e-03
+it  10500    155.2 s  median residual rms 1.796e-01  median grid error rms 2.658e-03
+it  11000    162.3 s  median residual rms 1.662e-01  median grid error rms 2.074e-03
+it  11500    169.6 s  median residual rms 1.641e-01  median grid error rms 2.244e-03
+it  12000    177.0 s  median residual rms 1.549e-01  median grid error rms 2.076e-03
+it  12500    184.1 s  median residual rms 1.510e-01  median grid error rms 2.120e-03
+it  13000    191.3 s  median residual rms 1.448e-01  median grid error rms 1.989e-03
+it  13500    198.4 s  median residual rms 1.415e-01  median grid error rms 1.515e-03
+it  14000    205.5 s  median residual rms 1.400e-01  median grid error rms 1.605e-03
+it  14500    212.6 s  median residual rms 1.360e-01  median grid error rms 1.491e-03
+it  15000    219.8 s  median residual rms 1.333e-01  median grid error rms 1.409e-03
+it  15500    227.2 s  median residual rms 1.322e-01  median grid error rms 1.395e-03
+it  16000    234.3 s  median residual rms 1.285e-01  median grid error rms 1.351e-03
+it  16500    241.4 s  median residual rms 1.277e-01  median grid error rms 1.465e-03
+it  17000    248.5 s  median residual rms 1.254e-01  median grid error rms 1.189e-03
+it  17500    255.7 s  median residual rms 1.227e-01  median grid error rms 1.183e-03
+it  18000    262.7 s  median residual rms 1.207e-01  median grid error rms 1.167e-03
+it  18500    269.9 s  median residual rms 1.183e-01  median grid error rms 1.109e-03
+it  19000    277.1 s  median residual rms 1.165e-01  median grid error rms 1.096e-03
+it  19500    284.1 s  median residual rms 1.148e-01  median grid error rms 1.009e-03
+it  20000    291.2 s  median residual rms 1.131e-01  median grid error rms 1.036e-03
+done results/side/gate1_gpu/lorenz63/T0.5/S-self: median log10 E_rms -2.988, runtime 291 s
