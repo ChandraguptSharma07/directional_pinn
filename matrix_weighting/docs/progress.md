@@ -544,3 +544,5 @@ with the median log10 E_rms:
 x0 + (t/T)(raw − x0), PyTorch, and our own initialization; he shifts the
 output by U(0). So "Turinici's weighting fails here" holds for this
 implementation only.
+
+The soft-initial-condition kernel stayed queued on nikita245678k as well. It was moved to `yess16/mw-side-soft-ic-c`, and the queued copy was replaced by a no-op.
