@@ -1,0 +1,92 @@
+\begin{table}[H]\centering\small
+\caption{Two-dimensional test systems (oracle directions). Error ratio below 1 means the first method has lower error.}
+\begin{tabular}{llccc}\toprule
+Setting & Comparison & Error ratio & 95\% interval & Result\\\midrule
+saddle $\kappa$=1 & matrix (oracle) vs scalar (oracle) & 1.9 & [1.6, 2.3] & worse\\
+saddle $\kappa$=1 & matrix (oracle) vs uniform & 1.2 & [1, 1.4] & worse\\
+saddle $\kappa$=1 & matrix (oracle) vs Turinici & 1.5 & [1.3, 1.7] & worse\\
+saddle $\kappa$=4 & matrix (oracle) vs scalar (oracle) & 3.1 & [2.1, 4.6] & worse\\
+saddle $\kappa$=4 & matrix (oracle) vs uniform & 2.3 & [1.6, 3.3] & worse\\
+saddle $\kappa$=4 & matrix (oracle) vs Turinici & 2.8 & [1.8, 4.2] & worse\\
+saddle $\kappa$=16 & matrix (oracle) vs scalar (oracle) & 4.3 & [3, 6.2] & worse\\
+saddle $\kappa$=16 & matrix (oracle) vs uniform & 2.9 & [1.9, 4.2] & worse\\
+saddle $\kappa$=16 & matrix (oracle) vs Turinici & 4.6 & [3.3, 6.4] & worse\\
+saddle $\kappa$=64 & matrix (oracle) vs scalar (oracle) & 0.5 & [0.28, 0.96] & beats\\
+saddle $\kappa$=64 & matrix (oracle) vs uniform & 0.17 & [0.11, 0.31] & beats\\
+saddle $\kappa$=64 & matrix (oracle) vs Turinici & 0.3 & [0.16, 0.63] & beats\\
+Davis--Skodje $\gamma$=3 & matrix (oracle) vs scalar (oracle) & 1.2 & [1, 1.5] & worse\\
+Davis--Skodje $\gamma$=3 & matrix (oracle) vs uniform & 1 & [0.85, 1.3] & no decision\\
+Davis--Skodje $\gamma$=3 & matrix (oracle) vs Turinici & 0.83 & [0.65, 1.1] & no decision\\
+Davis--Skodje $\gamma$=6 & matrix (oracle) vs scalar (oracle) & 2.5 & [2.1, 2.8] & worse\\
+Davis--Skodje $\gamma$=6 & matrix (oracle) vs uniform & 2 & [1.5, 2.8] & worse\\
+Davis--Skodje $\gamma$=6 & matrix (oracle) vs Turinici & 0.96 & [0.77, 1.2] & no decision\\
+Davis--Skodje $\gamma$=18 & matrix (oracle) vs scalar (oracle) & 1.8 & [1.3, 2.5] & worse\\
+Davis--Skodje $\gamma$=18 & matrix (oracle) vs uniform & 1.4 & [1.1, 1.9] & worse\\
+Davis--Skodje $\gamma$=18 & matrix (oracle) vs Turinici & 0.36 & [0.3, 0.45] & beats\\
+Davis--Skodje $\gamma$=66 & matrix (oracle) vs scalar (oracle) & 1 & [0.83, 1.2] & no decision\\
+Davis--Skodje $\gamma$=66 & matrix (oracle) vs uniform & 0.88 & [0.74, 1] & no decision\\
+Davis--Skodje $\gamma$=66 & matrix (oracle) vs Turinici & 0.42 & [0.33, 0.52] & beats\\
+\bottomrule\end{tabular}\end{table}
+
+\begin{table}[H]\centering\small
+\caption{Plain Lorenz-63 (laptop runs that decide H2).}
+\begin{tabular}{llccc}\toprule
+Setting & Comparison & Error ratio & 95\% interval & Result\\\midrule
+Lorenz-63, window 0.5 & matrix (self) vs scalar (self) & 1.1 & [0.88, 1.2] & no decision\\
+Lorenz-63, window 0.5 & matrix (self) vs uniform & 1.1 & [0.77, 1.4] & no decision\\
+Lorenz-63, window 0.5 & matrix (self) vs Turinici & 1.1 & [0.68, 1.5] & no decision\\
+Lorenz-63, window 0.5 & matrix (oracle) vs scalar (oracle) & 1.2 & [0.99, 1.5] & no decision\\
+Lorenz-63, window 1 & matrix (self) vs scalar (self) & 0.5 & [0.11, 1.3] & no decision\\
+Lorenz-63, window 1 & matrix (self) vs uniform & 0.0068 & [0.00085, 0.061] & beats\\
+Lorenz-63, window 1 & matrix (self) vs Turinici & 0.0045 & [0.00062, 0.038] & beats\\
+Lorenz-63, window 1 & matrix (oracle) vs scalar (oracle) & 0.028 & [0.0021, 0.34] & beats\\
+Lorenz-63, window 2 & matrix (self) vs scalar (self) & 0.59 & [0.23, 1.4] & no decision\\
+Lorenz-63, window 2 & matrix (self) vs uniform & 0.21 & [0.072, 0.54] & beats\\
+Lorenz-63, window 2 & matrix (self) vs Turinici & 0.2 & [0.066, 0.54] & beats\\
+Lorenz-63, window 2 & matrix (oracle) vs scalar (oracle) & 1.5 & [0.79, 4] & no decision\\
+\bottomrule\end{tabular}\end{table}
+
+\begin{table}[H]\centering\small
+\caption{Lorenz-63 with extra damped variables (error on the Lorenz variables).}
+\begin{tabular}{llccc}\toprule
+Setting & Comparison & Error ratio & 95\% interval & Result\\\midrule
+Lorenz-63 + 0 extra & matrix (self) vs uniform & 0.0069 & [0.00082, 0.065] & beats\\
+Lorenz-63 + 0 extra & matrix (self) vs scalar (self) & 0.52 & [0.12, 1.4] & no decision\\
+Lorenz-63 + 0 extra & matrix (self) vs Turinici & 0.0046 & [0.0006, 0.041] & beats\\
+Lorenz-63 + 0 extra & matrix (oracle) vs scalar (oracle) & 0.028 & [0.0022, 0.34] & beats\\
+Lorenz-63 + 3 extra & matrix (self) vs uniform & 0.0068 & [0.0012, 0.042] & beats\\
+Lorenz-63 + 3 extra & matrix (self) vs scalar (self) & 0.13 & [0.044, 0.38] & beats\\
+Lorenz-63 + 3 extra & matrix (self) vs Turinici & 0.0035 & [0.00071, 0.021] & beats\\
+Lorenz-63 + 3 extra & matrix (oracle) vs scalar (oracle) & 0.055 & [0.0071, 0.33] & beats\\
+Lorenz-63 + 9 extra & matrix (self) vs uniform & 0.0036 & [0.00074, 0.02] & beats\\
+Lorenz-63 + 9 extra & matrix (self) vs scalar (self) & 0.021 & [0.0049, 0.081] & beats\\
+Lorenz-63 + 9 extra & matrix (self) vs Turinici & 0.0023 & [0.00054, 0.012] & beats\\
+Lorenz-63 + 9 extra & matrix (oracle) vs scalar (oracle) & 0.23 & [0.052, 0.9] & beats\\
+Lorenz-63 + 29 extra & matrix (self) vs uniform & 0.0037 & [0.00091, 0.019] & beats\\
+Lorenz-63 + 29 extra & matrix (self) vs scalar (self) & 0.0098 & [0.0026, 0.041] & beats\\
+Lorenz-63 + 29 extra & matrix (self) vs Turinici & 0.0032 & [0.00076, 0.017] & beats\\
+Lorenz-63 + 29 extra & matrix (oracle) vs scalar (oracle) & 0.52 & [0.25, 0.95] & beats\\
+\bottomrule\end{tabular}\end{table}
+
+\begin{table}[H]\centering\small
+\caption{Rössler and Lorenz-96.}
+\begin{tabular}{llccc}\toprule
+Setting & Comparison & Error ratio & 95\% interval & Result\\\midrule
+Rössler, window 5 & matrix (self) vs scalar (self) & 0.36 & [0.085, 1.1] & no decision\\
+Rössler, window 5 & matrix (self) vs uniform & 0.17 & [0.043, 0.52] & beats\\
+Rössler, window 5 & matrix (self) vs Turinici & 0.16 & [0.041, 0.49] & beats\\
+Rössler, window 5 & matrix (self) vs direction only (self) & 0.73 & [0.39, 1.3] & no decision\\
+Rössler, window 10 & matrix (self) vs scalar (self) & 0.039 & [0.016, 0.086] & beats\\
+Rössler, window 10 & matrix (self) vs uniform & 0.027 & [0.012, 0.055] & beats\\
+Rössler, window 10 & matrix (self) vs Turinici & 0.023 & [0.012, 0.043] & beats\\
+Rössler, window 10 & matrix (self) vs direction only (self) & 0.18 & [0.088, 0.35] & beats\\
+Lorenz-96, window 1 & matrix (self) vs scalar (self) & 0.41 & [0.3, 0.58] & beats\\
+Lorenz-96, window 1 & matrix (self) vs uniform & 0.07 & [0.042, 0.11] & beats\\
+Lorenz-96, window 1 & matrix (self) vs Turinici & 0.016 & [0.0092, 0.029] & beats\\
+Lorenz-96, window 1 & matrix (self) vs direction only (self) & 0.21 & [0.14, 0.32] & beats\\
+Lorenz-96, window 2 & matrix (self) vs scalar (self) & 0.42 & [0.17, 1] & no decision\\
+Lorenz-96, window 2 & matrix (self) vs uniform & 0.19 & [0.072, 0.42] & beats\\
+Lorenz-96, window 2 & matrix (self) vs Turinici & 0.16 & [0.062, 0.37] & beats\\
+Lorenz-96, window 2 & matrix (self) vs direction only (self) & 0.24 & [0.11, 0.49] & beats\\
+\bottomrule\end{tabular}\end{table}
+
