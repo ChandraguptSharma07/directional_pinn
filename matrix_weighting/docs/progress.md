@@ -115,3 +115,12 @@ concurrent workers per GPU:
 | hy1069 | `mw-g2-k3-final` | Gate 2, k = 3 (6); side, final-time weights (6) |
 | yess16 | `mw-side-causal-bench` | side: causal (9), Turinici benchmark (6) |
 | nikita245678k | `mw-side-sens` | side: sensitivity (12) |
+
+### Added side run: GPU replicate of Gate 1 (before any Gate 1 result)
+
+The 18 Gate 1 jobs, unchanged except for the output folder
+(`results/side/gate1_gpu/`), were queued on Kaggle GPUs as an exploratory
+replicate (`jobs/side_gate1gpu`, kernels `hy1069/mw-g1-gpu-a` and
+`yess16/mw-g1-gpu-b`). It checks whether the Gate 1 conclusion survives
+different hardware and numerics. The planned Gate 1 decision uses only the
+nixxa runs.
