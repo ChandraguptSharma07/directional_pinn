@@ -365,3 +365,11 @@ with the number of contracting directions:
 This is the theory's prediction: a direction-blind weight wastes more of its
 budget as more directions become harmless. With oracle weights, `M-orc` beats
 `S-orc` at every k.
+
+### nixxa memory (about 20:00)
+
+The owner's Firefox grew, and free memory on nixxa fell to about 240 MB, with
+no swap. Our 10 Gate 1 jobs were stable at about 3.9 GB. Their
+`oom_score_adj`, and the pool's, was raised to 1000. If memory runs out, the
+kernel then stops one of our jobs (to be rerun) rather than one of the
+owner's programs. Training is unaffected.
