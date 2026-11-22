@@ -214,6 +214,44 @@ def gate2() -> dict:
     return res
 
 
+def gate3() -> dict:
+    """Plan amendment 1: the H2 rule applied per system (H4)."""
+    runs = load("gate3")
+    res = {"describe": describe(runs), "systems": {}}
+    lines = ["# Gate 3 analysis (plan amendment 1; H2 rule per system)", ""]
+    for system, windows in (("rossler", ("T5", "T10")), ("lorenz96_n8", ("T1", "T2"))):
+        beats_any = {m: False for m in ("S-self", "U", "TUR")}
+        worse_any, complete, per = False, True, {}
+        for T in windows:
+            k = lambda m: (system, T, m)  # noqa: E731
+            c = {f"Mself_vs_{m}": contrast(runs, k("M-self"), k(m)) for m in ("S-self", "U", "TUR")}
+            c["Dself_vs_U"] = contrast(runs, k("D-self"), k("U"))
+            c["Mself_vs_Dself"] = contrast(runs, k("M-self"), k("D-self"))
+            for m in ("S-self", "U", "TUR"):
+                cm = c[f"Mself_vs_{m}"]
+                if cm is None:
+                    complete = False
+                    continue
+                beats_any[m] |= cm["A_beats_B"]
+                worse_any |= cm["A_worse_than_B"]
+            per[T] = c
+            lines += [f"## {system} {T}", ""] + [f"- {fmt_contrast(v)}" for v in c.values()] + [""]
+        if not complete:
+            verdict = "incomplete"
+        elif all(beats_any.values()) and not worse_any:
+            verdict = "supported"
+        elif not any(beats_any.values()):
+            verdict = "rejected"
+        else:
+            verdict = "partial"
+        res["systems"][system] = {"windows": per, "H4": verdict, "beats_any_window": beats_any,
+                                  "worse_at_some_window": worse_any}
+        lines += [f"**H4 ({system}): {verdict}** (beats at some window: {beats_any}; worse somewhere: {worse_any})", ""]
+    lines += ["## Descriptive table", "", table_md(res["describe"])]
+    write("gate3", res, lines)
+    return res
+
+
 def side() -> dict:
     runs = load("side")
     res = {"describe": describe(runs)}
@@ -231,10 +269,10 @@ def write(gate: str, res: dict, lines: list[str]) -> None:
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("gates", nargs="+", choices=["gate0", "gate1", "gate2", "side"])
+    ap.add_argument("gates", nargs="+", choices=["gate0", "gate1", "gate2", "gate3", "side"])
     args = ap.parse_args()
     for g in args.gates:
-        {"gate0": gate0, "gate1": gate1, "gate2": gate2, "side": side}[g]()
+        {"gate0": gate0, "gate1": gate1, "gate2": gate2, "gate3": gate3, "side": side}[g]()
 
 
 if __name__ == "__main__":
