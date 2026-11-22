@@ -1,0 +1,22 @@
+it      0      0.0 s  median residual rms 8.792e+01  median grid error rms 2.222e+01
+it    100      0.8 s  median residual rms 1.077e+01  median grid error rms 3.147e+01
+it    200      1.5 s  median residual rms 1.017e+01  median grid error rms 3.146e+01
+it    300      2.3 s  median residual rms 1.007e+01  median grid error rms 3.145e+01
+it    400      3.0 s  median residual rms 9.769e+00  median grid error rms 3.145e+01
+it    500      3.8 s  median residual rms 9.714e+00  median grid error rms 3.145e+01
+it    600      4.6 s  median residual rms 9.701e+00  median grid error rms 3.145e+01
+it    700      5.4 s  median residual rms 9.680e+00  median grid error rms 3.146e+01
+it    800      6.1 s  median residual rms 9.673e+00  median grid error rms 3.146e+01
+it    900      6.9 s  median residual rms 9.665e+00  median grid error rms 3.146e+01
+it   1000      7.6 s  median residual rms 9.650e+00  median grid error rms 3.146e+01
+it   1100      8.4 s  median residual rms 9.646e+00  median grid error rms 3.146e+01
+it   1200      9.1 s  median residual rms 9.646e+00  median grid error rms 3.146e+01
+it   1300      9.9 s  median residual rms 9.641e+00  median grid error rms 3.146e+01
+it   1400     10.7 s  median residual rms 9.640e+00  median grid error rms 3.146e+01
+it   1500     11.5 s  median residual rms 9.637e+00  median grid error rms 3.146e+01
+it   1600     12.2 s  median residual rms 9.637e+00  median grid error rms 3.146e+01
+it   1700     13.0 s  median residual rms 9.636e+00  median grid error rms 3.146e+01
+it   1800     13.8 s  median residual rms 9.634e+00  median grid error rms 3.146e+01
+it   1900     14.6 s  median residual rms 9.633e+00  median grid error rms 3.145e+01
+it   2000     15.4 s  median residual rms 9.631e+00  median grid error rms 3.146e+01
+done results/side/turinici_benchmark/T0.5/U: median log10 E_rms 1.498, runtime 15 s

@@ -506,3 +506,41 @@ The medians agree to within about 0.07 in log10 E_rms. At T = 2, `U`, `TUR`
 and `S-orc` match too (0, 0 and 6 successes). Which networks succeed is
 therefore set by the initial condition, the seed and the weighting, not by
 the hardware.
+
+### Causal weighting and Turinici's benchmark (side, exploratory)
+
+`yess16/mw-side-causal-bench` finished all 15 jobs (one GPU, 3 hours).
+
+**Causal weighting on Lorenz-63** (ρ_i ∝ exp(−ε h Σ_{j<i} ‖r_j‖²), with ε
+fixed). Successes of 36, with the median log10 E_rms:
+
+| T | ε = 0.1 | ε = 1 | ε = 10 |
+|---|---|---|---|
+| 0.5 | 36, −3.28 | 36, −3.27 | 36, −3.17 |
+| 1 | 20, −1.37 | 25, −2.18 | 21, −0.91 |
+| 2 | 3 | 3 | 0 |
+
+**Comparison with the Gramian weights.**
+
+- At T = 1, well-tuned causal weighting (ε = 1) is about as good as the
+  self-consistent Gramian weights: 25 successes, against 27 for `M-self` and
+  24 for `S-self`. Uniform gets 7 and Turinici's weighting 5.
+- At T = 2, causal weighting gets 0–3 successes; on the GPU replicate,
+  `M-self` gets 8.
+
+This fits the reading that on plain Lorenz-63 much of the self-consistent
+weights' benefit is a causal time schedule, found without tuning ε.
+
+**Turinici's own benchmark** (initial state (1, 1, 1), T = 0.5, 5 × 20 tanh,
+learning rate 0.01, 2,000 steps, 256 grid times, 10 seeds). Successes of 10,
+with the median log10 E_rms:
+
+| method | `U` | `TUR` | `S-orc` | `M-orc` | `S-self` | `M-self` |
+|---|---|---|---|---|---|---|
+| successes | 0 | 0 | 8 | 1 | 10 | 9 |
+| median | 1.50 | 1.50 | −1.18 | 1.53 | −1.46 | −0.93 |
+
+**Caveat.** This is not his code. We use the initial-condition form
+x0 + (t/T)(raw − x0), PyTorch, and our own initialization; he shifts the
+output by U(0). So "Turinici's weighting fails here" holds for this
+implementation only.
