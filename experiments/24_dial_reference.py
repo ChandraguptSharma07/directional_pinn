@@ -82,18 +82,20 @@ def reference_window(system, window: int, t: np.ndarray) -> tuple[np.ndarray, np
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--out", type=Path, default=REPO_ROOT / "results/dial_study/reference")
+    parser.add_argument("--settings", nargs="*", default=None, help="setting names (default: all eight)")
+    parser.add_argument("--windows", nargs="*", type=int, default=list(WINDOWS))
     args = parser.parse_args()
     start = time.perf_counter()
     t = np.round(np.arange(0.0, T_FINAL + H / 2, H), 10)
     summary = {"t_final": T_FINAL, "h": H, "horizons": list(HORIZONS), "settings": {}}
     all_ok = True
-    for system in dial_settings():
+    for system in [s for s in dial_settings() if args.settings is None or s.name in args.settings]:
         setting_dir = args.out / system.name
         (setting_dir / "data").mkdir(parents=True, exist_ok=True)
         ratios = {dt: [] for dt in HORIZONS}
         k_ratios = {dt: [] for dt in HORIZONS}
         window_checks, scale_states = {}, []
-        for window in WINDOWS:
+        for window in args.windows:
             states, steps, checks = reference_window(system, window, t)
             window_checks[str(window)] = checks
             all_ok &= all(v for k, v in checks.items() if k.endswith("_ok"))
@@ -125,7 +127,7 @@ def main() -> None:
             "system": system.to_dict(), "dial": system.dial,
             "out_mean": stacked.mean(axis=0).tolist(), "out_scale": out_scale.tolist(),
             "max_state_norm_by_window": {str(w): float(np.linalg.norm(s, axis=1).max())
-                                         for w, s in zip(WINDOWS, scale_states)},
+                                         for w, s in zip(args.windows, scale_states)},
             "checks": window_checks, "descriptives": descriptives,
         }
         d01 = descriptives["0.1"]

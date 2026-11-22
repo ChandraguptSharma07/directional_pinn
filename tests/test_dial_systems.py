@@ -22,7 +22,7 @@ from src.systems.dial_systems import (
 def test_dial_settings_cover_the_planned_rate_differences():
     dials = [system.dial for system in dial_settings()]
     assert dials == [2.0, 5.0, 17.0, 65.0, 2.0, 5.0, 17.0, 65.0]
-    assert sorted(SADDLE_WINDOWS) == sorted(DAVIS_SKODJE_WINDOWS) == list(range(9))
+    assert sorted(SADDLE_WINDOWS) == sorted(DAVIS_SKODJE_WINDOWS) == list(range(17))
 
 
 @pytest.mark.parametrize("kappa", [1.0, 64.0])
@@ -143,3 +143,24 @@ def test_integrated_propagator_matches_the_closed_form_for_a_linear_system():
     exact = np.linalg.solve(A, expm(A * m * h) - np.eye(2))  # integral of expm(A s) over [0, m h]
     assert K.shape == (n - m + 1, 2, 2)
     assert np.allclose(K, exact, rtol=1e-5, atol=1e-7)
+
+
+def test_pinn_path_propagators_reproduce_the_reference_ones_on_the_exact_path():
+    from src.dynamics.tangent_dynamics import (
+        frozen_jacobian_propagators,
+        pinn_path_step_propagators,
+        propagators_over,
+        step_propagators,
+    )
+
+    system = DavisSkodje(18.0)
+    t = np.round(np.arange(0.0, 0.6 + 1e-9, 0.002), 10)
+    sol = integrate(system.rhs, system.initial_state(3), t, rtol=1e-12, atol=1e-14, dense_output=True)
+    reference = step_propagators(lambda times: system.jacobian(sol.at(times)), t)
+    estimate = pinn_path_step_propagators(t, sol.y, system.jacobian)
+    assert np.allclose(propagators_over(estimate, 50), propagators_over(reference, 50), rtol=1e-6, atol=1e-8)
+    saddle = StiffSaddle(16.0)
+    frozen = frozen_jacobian_propagators(saddle.exact_solution(t[:5], 1), saddle.jacobian, 0.1)
+    from scipy.linalg import expm
+
+    assert np.allclose(frozen, expm(saddle.matrix * 0.1))

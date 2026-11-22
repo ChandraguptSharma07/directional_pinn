@@ -1,0 +1,499 @@
+{
+  "t_final": 2.0,
+  "h": 0.002,
+  "horizons": [
+    0.05,
+    0.1,
+    0.25,
+    0.5
+  ],
+  "settings": {
+    "saddle_k1": {
+      "system": {
+        "family": "L",
+        "kappa": 1.0,
+        "angle": 0.5235987755982988
+      },
+      "dial": 2.0,
+      "out_mean": [
+        2.7792989824455687,
+        1.6171132828941404
+      ],
+      "out_scale": [
+        1.734496267525096,
+        1.0182519709621034
+      ],
+      "max_state_norm_by_window": {
+        "9": 8.128141979710168,
+        "10": 5.542386942793112,
+        "11": 9.237123204455365,
+        "12": 4.803058067159237,
+        "13": 7.02007293658069,
+        "14": 9.97596933149382,
+        "15": 6.280730491019474,
+        "16": 8.497632748931212
+      },
+      "checks": {
+        "9": {
+          "exact_vs_dop853_max_rel": 1.3078659596783971e-12,
+          "exact_vs_dop853_ok": true
+        },
+        "10": {
+          "exact_vs_dop853_max_rel": 1.262725223769527e-12,
+          "exact_vs_dop853_ok": true
+        },
+        "11": {
+          "exact_vs_dop853_max_rel": 1.3556646791703708e-12,
+          "exact_vs_dop853_ok": true
+        },
+        "12": {
+          "exact_vs_dop853_max_rel": 1.2924237075067073e-12,
+          "exact_vs_dop853_ok": true
+        },
+        "13": {
+          "exact_vs_dop853_max_rel": 1.5381194729373205e-12,
+          "exact_vs_dop853_ok": true
+        },
+        "14": {
+          "exact_vs_dop853_max_rel": 1.2710897541024296e-12,
+          "exact_vs_dop853_ok": true
+        },
+        "15": {
+          "exact_vs_dop853_max_rel": 1.3174210390875818e-12,
+          "exact_vs_dop853_ok": true
+        },
+        "16": {
+          "exact_vs_dop853_max_rel": 1.2941168049623206e-12,
+          "exact_vs_dop853_ok": true
+        }
+      },
+      "descriptives": {
+        "0.05": {
+          "sigma_ratio_p10_p50_p90": [
+            1.1051709180756468,
+            1.1051709180756468,
+            1.1051709180756468
+          ],
+          "integrated_lever_p10_p50_p90": [
+            1.0512710963760241,
+            1.0512710963760241,
+            1.0512710963760241
+          ]
+        },
+        "0.1": {
+          "sigma_ratio_p10_p50_p90": [
+            1.221402758160168,
+            1.221402758160168,
+            1.221402758160168
+          ],
+          "integrated_lever_p10_p50_p90": [
+            1.1051709180756475,
+            1.1051709180756475,
+            1.1051709180756475
+          ]
+        },
+        "0.25": {
+          "sigma_ratio_p10_p50_p90": [
+            1.6487212707001235,
+            1.6487212707001235,
+            1.6487212707001235
+          ],
+          "integrated_lever_p10_p50_p90": [
+            1.2840254166877403,
+            1.2840254166877403,
+            1.2840254166877403
+          ]
+        },
+        "0.5": {
+          "sigma_ratio_p10_p50_p90": [
+            2.7182818284590295,
+            2.7182818284590295,
+            2.7182818284590295
+          ],
+          "integrated_lever_p10_p50_p90": [
+            1.6487212707001253,
+            1.6487212707001253,
+            1.6487212707001253
+          ]
+        }
+      }
+    },
+    "saddle_k64": {
+      "system": {
+        "family": "L",
+        "kappa": 64.0,
+        "angle": 0.5235987755982988
+      },
+      "dial": 65.0,
+      "out_mean": [
+        2.784600893114637,
+        1.6079301042381173
+      ],
+      "out_scale": [
+        1.7233973916540637,
+        0.9952078571022686
+      ],
+      "max_state_norm_by_window": {
+        "9": 8.127961708823715,
+        "10": 5.541792074197987,
+        "11": 9.236320123663313,
+        "12": 4.8028864643049225,
+        "13": 7.019603293984118,
+        "14": 9.975225733556378,
+        "15": 6.280697684091053,
+        "16": 8.497414513770247
+      },
+      "checks": {
+        "9": {
+          "exact_vs_dop853_max_rel": 2.2080238470905852e-08,
+          "exact_vs_dop853_ok": true
+        },
+        "10": {
+          "exact_vs_dop853_max_rel": 7.297678144462508e-09,
+          "exact_vs_dop853_ok": true
+        },
+        "11": {
+          "exact_vs_dop853_max_rel": 8.99592520212018e-09,
+          "exact_vs_dop853_ok": true
+        },
+        "12": {
+          "exact_vs_dop853_max_rel": 5.711482725575178e-09,
+          "exact_vs_dop853_ok": true
+        },
+        "13": {
+          "exact_vs_dop853_max_rel": 3.588877646327447e-08,
+          "exact_vs_dop853_ok": true
+        },
+        "14": {
+          "exact_vs_dop853_max_rel": 6.856429968489158e-09,
+          "exact_vs_dop853_ok": true
+        },
+        "15": {
+          "exact_vs_dop853_max_rel": 2.505745986991471e-09,
+          "exact_vs_dop853_ok": true
+        },
+        "16": {
+          "exact_vs_dop853_max_rel": 6.545215663360309e-09,
+          "exact_vs_dop853_ok": true
+        }
+      },
+      "descriptives": {
+        "0.05": {
+          "sigma_ratio_p10_p50_p90": [
+            25.790339917193002,
+            25.790339917193002,
+            25.790339917193002
+          ],
+          "integrated_lever_p10_p50_p90": [
+            3.416127330775037,
+            3.416127330775037,
+            3.416127330775037
+          ]
+        },
+        "0.1": {
+          "sigma_ratio_p10_p50_p90": [
+            665.141633044369,
+            665.141633044369,
+            665.141633044369
+          ],
+          "integrated_lever_p10_p50_p90": [
+            6.732953241742301,
+            6.732953241742301,
+            6.732953241742301
+          ]
+        },
+        "0.25": {
+          "sigma_ratio_p10_p50_p90": [
+            11409991.754521906,
+            11409991.754521906,
+            11409991.754521906
+          ],
+          "integrated_lever_p10_p50_p90": [
+            18.152856837548324,
+            18.152856837548324,
+            18.152856837548324
+          ]
+        },
+        "0.5": {
+          "sigma_ratio_p10_p50_p90": [
+            130400911351058.8,
+            130400911351058.8,
+            130400911351058.8
+          ],
+          "integrated_lever_p10_p50_p90": [
+            41.4615817365679,
+            41.4615817365679,
+            41.4615817365679
+          ]
+        }
+      }
+    },
+    "davis_skodje_g18": {
+      "system": {
+        "family": "D",
+        "gamma": 18.0
+      },
+      "dial": 17.0,
+      "out_mean": [
+        0.8838558668446963,
+        0.40409154992008567
+      ],
+      "out_scale": [
+        0.7301617587510599,
+        0.18221202220117097
+      ],
+      "max_state_norm_by_window": {
+        "9": 0.8014143619815478,
+        "10": 1.4870843127026858,
+        "11": 1.7921430912469385,
+        "12": 2.385424800594213,
+        "13": 2.8219870855677405,
+        "14": 3.39015596093253,
+        "15": 3.796047842740754,
+        "16": 0.903119593409422
+      },
+      "checks": {
+        "9": {
+          "tolerance_max_abs_diff": 3.478367038844965e-10,
+          "tolerance_ok": true,
+          "dense_vs_grid_max_abs_diff": 0.0,
+          "propagator_vs_finite_difference_max_rel": 4.1846516429390984e-07,
+          "propagator_ok": true
+        },
+        "10": {
+          "tolerance_max_abs_diff": 8.057232658842395e-11,
+          "tolerance_ok": true,
+          "dense_vs_grid_max_abs_diff": 0.0,
+          "propagator_vs_finite_difference_max_rel": 3.468038809673576e-07,
+          "propagator_ok": true
+        },
+        "11": {
+          "tolerance_max_abs_diff": 3.0828384289804944e-10,
+          "tolerance_ok": true,
+          "dense_vs_grid_max_abs_diff": 0.0,
+          "propagator_vs_finite_difference_max_rel": 2.89380452175602e-07,
+          "propagator_ok": true
+        },
+        "12": {
+          "tolerance_max_abs_diff": 7.27843341152834e-11,
+          "tolerance_ok": true,
+          "dense_vs_grid_max_abs_diff": 0.0,
+          "propagator_vs_finite_difference_max_rel": 2.4252071190839896e-07,
+          "propagator_ok": true
+        },
+        "13": {
+          "tolerance_max_abs_diff": 4.344848925086353e-10,
+          "tolerance_ok": true,
+          "dense_vs_grid_max_abs_diff": 0.0,
+          "propagator_vs_finite_difference_max_rel": 2.0498090345203218e-07,
+          "propagator_ok": true
+        },
+        "14": {
+          "tolerance_max_abs_diff": 9.252332233700145e-11,
+          "tolerance_ok": true,
+          "dense_vs_grid_max_abs_diff": 0.0,
+          "propagator_vs_finite_difference_max_rel": 1.745345665110853e-07,
+          "propagator_ok": true
+        },
+        "15": {
+          "tolerance_max_abs_diff": 6.662775886567829e-10,
+          "tolerance_ok": true,
+          "dense_vs_grid_max_abs_diff": 0.0,
+          "propagator_vs_finite_difference_max_rel": 1.4892873096587842e-07,
+          "propagator_ok": true
+        },
+        "16": {
+          "tolerance_max_abs_diff": 6.874711910853648e-11,
+          "tolerance_ok": true,
+          "dense_vs_grid_max_abs_diff": 0.0,
+          "propagator_vs_finite_difference_max_rel": 4.432322783905727e-07,
+          "propagator_ok": true
+        }
+      },
+      "descriptives": {
+        "0.05": {
+          "sigma_ratio_p10_p50_p90": [
+            2.3542202356386186,
+            2.4815894066035966,
+            2.8051052560260388
+          ],
+          "integrated_lever_p10_p50_p90": [
+            1.4836714827777173,
+            1.52238024196477,
+            1.6169542670982728
+          ]
+        },
+        "0.1": {
+          "sigma_ratio_p10_p50_p90": [
+            5.536705860678159,
+            6.05690829827325,
+            7.399927871532655
+          ],
+          "integrated_lever_p10_p50_p90": [
+            2.0639888235260577,
+            2.161451029448383,
+            2.4019588915898717
+          ]
+        },
+        "0.25": {
+          "sigma_ratio_p10_p50_p90": [
+            71.56762630103822,
+            81.37451139136576,
+            105.5488282982353
+          ],
+          "integrated_lever_p10_p50_p90": [
+            4.079591325321644,
+            4.432373676451077,
+            5.278028449573679
+          ]
+        },
+        "0.5": {
+          "sigma_ratio_p10_p50_p90": [
+            5083.034451249051,
+            5829.306586591543,
+            7577.819421136688
+          ],
+          "integrated_lever_p10_p50_p90": [
+            7.268646586242649,
+            8.08452314816239,
+            9.970036984849857
+          ]
+        }
+      }
+    },
+    "davis_skodje_g66": {
+      "system": {
+        "family": "D",
+        "gamma": 66.0
+      },
+      "dial": 65.0,
+      "out_mean": [
+        0.8838558668446965,
+        0.4037132902423187
+      ],
+      "out_scale": [
+        0.7301617587510599,
+        0.1816606943700868
+      ],
+      "max_state_norm_by_window": {
+        "9": 0.8308705621114169,
+        "10": 1.4870843127026858,
+        "11": 1.8066076520133396,
+        "12": 2.385424800594213,
+        "13": 2.8219870855677405,
+        "14": 3.39015596093253,
+        "15": 3.796047842740754,
+        "16": 0.903119593409422
+      },
+      "checks": {
+        "9": {
+          "tolerance_max_abs_diff": 1.5497347849446896e-10,
+          "tolerance_ok": true,
+          "dense_vs_grid_max_abs_diff": 0.0,
+          "propagator_vs_finite_difference_max_rel": 4.8637362014177e-07,
+          "propagator_ok": true
+        },
+        "10": {
+          "tolerance_max_abs_diff": 6.21404039335971e-11,
+          "tolerance_ok": true,
+          "dense_vs_grid_max_abs_diff": 0.0,
+          "propagator_vs_finite_difference_max_rel": 4.0646340400325045e-07,
+          "propagator_ok": true
+        },
+        "11": {
+          "tolerance_max_abs_diff": 1.576120345347931e-10,
+          "tolerance_ok": true,
+          "dense_vs_grid_max_abs_diff": 0.0,
+          "propagator_vs_finite_difference_max_rel": 3.4087569155366404e-07,
+          "propagator_ok": true
+        },
+        "12": {
+          "tolerance_max_abs_diff": 5.682199155643275e-11,
+          "tolerance_ok": true,
+          "dense_vs_grid_max_abs_diff": 0.0,
+          "propagator_vs_finite_difference_max_rel": 3.6403487491302937e-07,
+          "propagator_ok": true
+        },
+        "13": {
+          "tolerance_max_abs_diff": 2.0219281804401135e-10,
+          "tolerance_ok": true,
+          "dense_vs_grid_max_abs_diff": 0.0,
+          "propagator_vs_finite_difference_max_rel": 9.793458284452608e-07,
+          "propagator_ok": true
+        },
+        "14": {
+          "tolerance_max_abs_diff": 6.654410356077278e-11,
+          "tolerance_ok": true,
+          "dense_vs_grid_max_abs_diff": 0.0,
+          "propagator_vs_finite_difference_max_rel": 1.0089711672199473e-06,
+          "propagator_ok": true
+        },
+        "15": {
+          "tolerance_max_abs_diff": 2.2766044605049274e-10,
+          "tolerance_ok": true,
+          "dense_vs_grid_max_abs_diff": 0.0,
+          "propagator_vs_finite_difference_max_rel": 2.924912349527011e-07,
+          "propagator_ok": true
+        },
+        "16": {
+          "tolerance_max_abs_diff": 5.7102989003965376e-11,
+          "tolerance_ok": true,
+          "dense_vs_grid_max_abs_diff": 0.0,
+          "propagator_vs_finite_difference_max_rel": 5.135838289207278e-07,
+          "propagator_ok": true
+        }
+      },
+      "descriptives": {
+        "0.05": {
+          "sigma_ratio_p10_p50_p90": [
+            26.130137360088206,
+            29.256227953655646,
+            37.78657112535743
+          ],
+          "integrated_lever_p10_p50_p90": [
+            3.3631124767389426,
+            3.5980957424223226,
+            4.225385154010724
+          ]
+        },
+        "0.1": {
+          "sigma_ratio_p10_p50_p90": [
+            675.5695842428566,
+            764.3431171812294,
+            1000.9978648133491
+          ],
+          "integrated_lever_p10_p50_p90": [
+            6.352268144998636,
+            6.962574499149316,
+            8.574970715892956
+          ]
+        },
+        "0.25": {
+          "sigma_ratio_p10_p50_p90": [
+            11652915.850714188,
+            13287528.35915887,
+            17332099.077840857
+          ],
+          "integrated_lever_p10_p50_p90": [
+            14.849229430415757,
+            16.67098584999117,
+            21.167740240964488
+          ]
+        },
+        "0.5": {
+          "sigma_ratio_p10_p50_p90": [
+            134646087214485.92,
+            154419809574548.06,
+            200753857144983.34
+          ],
+          "integrated_lever_p10_p50_p90": [
+            26.75448126089104,
+            30.402247166562475,
+            38.941181271549354
+          ]
+        }
+      }
+    }
+  },
+  "all_checks_passed": true
+}

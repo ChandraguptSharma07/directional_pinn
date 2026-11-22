@@ -1,0 +1,39 @@
+{
+  "created_utc": "2026-11-22T14:25:11+00:00",
+  "command": [
+    "experiments/24_dial_reference.py",
+    "--out",
+    "results/reference_free/reference",
+    "--settings",
+    "saddle_k1",
+    "saddle_k64",
+    "davis_skodje_g18",
+    "davis_skodje_g66",
+    "--windows",
+    "9",
+    "10",
+    "11",
+    "12",
+    "13",
+    "14",
+    "15",
+    "16"
+  ],
+  "runtime_seconds": 5.949,
+  "git": {
+    "commit": "bf1063bb42142d6df560d5c958503a1c84b8f961",
+    "dirty": true
+  },
+  "environment": {
+    "python": "3.12.11",
+    "platform": "Linux-7.3.4-1-cachyos-x86_64-with-glibc2.44",
+    "packages": {
+      "numpy": "2.5.4",
+      "scipy": "1.18.1",
+      "matplotlib": "3.11.2",
+      "PyYAML": "6.0.3",
+      "pytest": "9.2.0",
+      "torch": "2.15.0+cpu"
+    }
+  }
+}

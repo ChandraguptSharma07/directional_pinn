@@ -36,15 +36,23 @@ from dataclasses import dataclass
 import numpy as np
 import torch
 
-# Initial-condition windows of docs/dial_study_plan.md, section 3. Window 0 is the pilot.
+# Initial-condition windows of docs/dial_study_plan.md, section 3. Window 0 is the pilot,
+# windows 1-8 the dial-study analysis set, and windows 9-16 the fresh starting points of
+# docs/reference_free_plan.md.
 SADDLE_WINDOWS = {
     0: (1.0, 0.6), 1: (1.0, 0.5), 2: (0.6, -0.5), 3: (1.4, 0.25), 4: (0.8, -1.0),
     5: (1.2, 1.0), 6: (0.7, -0.25), 7: (1.3, -0.75), 8: (0.9, 0.75),
+    9: (1.1, -0.4), 10: (0.75, 0.6), 11: (1.25, -0.9), 12: (0.65, 0.3),
+    13: (0.95, -0.6), 14: (1.35, 0.9), 15: (0.85, -0.15), 16: (1.15, 0.45),
 }
 DAVIS_SKODJE_WINDOWS = {
     0: (1.25, 0.15), 1: (0.5, 0.1), 2: (1.0, -0.1), 3: (1.5, 0.2), 4: (2.0, -0.2),
     5: (2.5, 0.3), 6: (3.0, -0.3), 7: (3.5, 0.15), 8: (4.0, -0.15),
+    9: (0.75, -0.15), 10: (1.25, 0.25), 11: (1.75, -0.25), 12: (2.25, 0.1),
+    13: (2.75, -0.1), 14: (3.25, 0.2), 15: (3.75, -0.2), 16: (0.6, 0.3),
 }
+DIAL_WINDOWS = tuple(range(9))  # windows used by the dial study (0 = pilot)
+FRESH_WINDOWS = tuple(range(9, 17))
 
 
 @dataclass(frozen=True)

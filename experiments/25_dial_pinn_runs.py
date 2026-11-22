@@ -42,7 +42,10 @@ PILOT_SETTINGS = (StiffSaddle(64.0), DavisSkodje(66.0))
 PILOT_TOLERANCE = 0.05  # max error <= 5% of the max reference state norm
 
 
-def make_job(system, window: int, seed: int, iterations: int, device: str, out: Path) -> dict:
+def make_job(system, window: int, seed: int, iterations: int, device: str, out: Path,
+             reference_dir: Path = REFERENCE) -> dict:
+    # Output scaling always comes from the dial-study reference (windows 0-8), so runs on
+    # other windows use exactly the same network setup.
     scaling = json.loads((REFERENCE / "metrics.json").read_text())["settings"][system.name]
     cfg = TrainConfig(
         t_final=2.0, x0=system.initial_state(window).tolist(), seed=seed, hidden=[64, 64, 64, 64],
@@ -53,7 +56,7 @@ def make_job(system, window: int, seed: int, iterations: int, device: str, out: 
     return {
         "run_dir": str(out / system.name / "runs" / f"w{window}_s{seed}"),
         "window": window,
-        "reference_file": str(REFERENCE / system.name / "data" / f"window_{window}.npz"),
+        "reference_file": str(reference_dir / system.name / "data" / f"window_{window}.npz"),
         "system": system.to_dict(),
         "train": asdict(cfg),
     }
@@ -78,9 +81,11 @@ def pilot(args) -> None:
 
 def main_runs(args) -> None:
     start = time.perf_counter()
-    settings = [s for s in dial_settings() if args.family is None or s.to_dict()["family"] == args.family]
+    settings = [s for s in dial_settings() if (args.family is None or s.to_dict()["family"] == args.family)
+                and (args.settings is None or s.name in args.settings)]
     for system in settings:
-        jobs = [make_job(system, w, s, args.iterations, args.device, args.out) for w in ANALYSIS_WINDOWS for s in SEEDS]
+        jobs = [make_job(system, w, s, args.iterations, args.device, args.out, args.reference_dir)
+                for w in args.windows for s in SEEDS]
         todo = [job for job in jobs if not (Path(job["run_dir"]) / "metrics.json").exists()]
         print(f"{system.name}: {len(todo)}/{len(jobs)} runs to train", flush=True)
         if todo:
@@ -113,6 +118,9 @@ def main() -> None:
     parser.add_argument("--device", default="cpu")
     parser.add_argument("--family", choices=["L", "D"], default=None, help="train only this family")
     parser.add_argument("--workers", type=int, default=1, help="CPU processes, one run each (default: stacked)")
+    parser.add_argument("--settings", nargs="*", default=None, help="setting names (default: all eight)")
+    parser.add_argument("--windows", nargs="*", type=int, default=list(ANALYSIS_WINDOWS))
+    parser.add_argument("--reference-dir", type=Path, default=REFERENCE)
     parser.add_argument("--out", type=Path, default=REPO_ROOT / "results/dial_study")
     args = parser.parse_args()
     pilot(args) if args.pilot else main_runs(args)

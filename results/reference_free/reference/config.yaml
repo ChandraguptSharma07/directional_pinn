@@ -1,0 +1,2 @@
+script: experiments/24_dial_reference.py
+out: results/reference_free/reference

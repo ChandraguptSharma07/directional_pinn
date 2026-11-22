@@ -110,3 +110,25 @@ def integrated_propagators(step_props: np.ndarray, m: int, h: float) -> np.ndarr
         P = P @ step_props[ends - i]  # Phi(t_k, t_{k-i})
         total += (0.5 if i == m else 1.0) * P
     return h * total
+
+
+def pinn_path_step_propagators(t: np.ndarray, states: np.ndarray,
+                               jacobian: Callable[[np.ndarray], np.ndarray]) -> np.ndarray:
+    """Step propagators along an approximate trajectory, such as a PINN's own output.
+
+    ``states`` are the approximate states on the uniform grid ``t``; between grid
+    points they are taken from a cubic spline. No reference solution is used, so
+    the result is a reference-free estimate of Phi(t_{i+1}, t_i).
+    """
+    from scipy.interpolate import CubicSpline
+
+    spline = CubicSpline(np.asarray(t, dtype=float), np.asarray(states, dtype=float), axis=0)
+    return step_propagators(lambda times: jacobian(spline(times)), t)
+
+
+def frozen_jacobian_propagators(states: np.ndarray, jacobian: Callable[[np.ndarray], np.ndarray],
+                                dt: float) -> np.ndarray:
+    """expm(J(x) dt) for every state x (shape (N, d) -> (N, d, d)): the Jacobian held fixed over dt."""
+    from scipy.linalg import expm
+
+    return expm(jacobian(np.asarray(states, dtype=float)) * dt)
