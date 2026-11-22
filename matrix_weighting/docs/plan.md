@@ -323,3 +323,29 @@ The residual weights are unchanged. The settings are saddle κ ∈ {16, 64}
 methods), on Kaggle GPU.
 
 **Reported.** The same paired contrasts as Gate 0, labelled exploratory.
+
+## Amendment 4 (22 November 2026, night): causal weighting where direction mattered
+
+*Written before these runs, but after seeing the causal side results on
+Lorenz-63. Exploratory, with no decision rule.*
+
+**Question.** Is the matrix weight's advantage, where it was large, more than
+a causal time schedule? The causal side run showed that a well-tuned causal
+weight (ε = 1) matches the Gramian weights on plain Lorenz-63 at T = 1.
+
+**Setup.** Causal weighting with ε = 1 is run on the settings where `M-self`
+clearly beat `S-self`:
+
+- Gate 2: k = 3, 9 and 29 (T = 1);
+- Rössler: T = 5 and 10;
+- Lorenz-96: T = 1 and 2.
+
+Initial conditions, seeds and training settings are the same as in those
+gates.
+
+**Bias.** ε = 1 was the best of three values on Lorenz T = 1, chosen after
+seeing those results. This favours the causal baseline, so the comparison is
+conservative for the matrix weight.
+
+**Reported.** Paired contrasts of `M-self` against causal ε = 1, with success
+counts.
