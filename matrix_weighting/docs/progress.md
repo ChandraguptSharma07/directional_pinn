@@ -379,3 +379,29 @@ owner's programs. Training is unaffected.
 `nikita245678k/mw-gate3-l96-dir-b` stayed queued for about 45 minutes. The same
 job files went to `hy1069/mw-gate3-l96-dir-c`, and the queued copy was
 replaced by a no-op. The Lorenz-96 results come from `-c`.
+
+### Time-marching side run (plan amendment 2) complete
+
+`hy1069/mw-side-sequential`: Lorenz-63 to horizon 4 from the 12 Gate 1
+states, 3 seeds. Each segment had 20,000 steps.
+
+| segment length | method | success (E_max < 1 on [0, 4]) | median log10 E_rms | GPU time |
+|---|---|---|---|---|
+| 0.5 (8 segments) | `U` | **27/36** | −1.49 | 1,641 s |
+| 0.5 | `S-self` | 24/36 | −0.66 | 3,783 s |
+| 0.5 | `M-self` | 25/36 | −0.85 | 3,655 s |
+| 1.0 (4 segments) | `U` | 0/36 | 1.42 | 816 s |
+| 1.0 | `S-self` | 4/36 | 1.24 | 2,741 s |
+| 1.0 | `M-self` | 15/36 | −0.30 | 2,483 s |
+
+**The expectation stated in advance held:** at segment length 1.0,
+`M-self` succeeds in more runs than `U` (15 against 0).
+
+**But the simplest option is still the most reliable:** uniform weighting
+with short segments of 0.5 reaches the 4-unit horizon in 27/36 runs, with
+the lowest error and the least GPU time.
+
+**Interpretation.** The matrix weight makes longer windows trainable, but at
+this budget fewer, longer segments do not beat more, shorter ones. Its
+practical value is where a long single window is needed, not as a drop-in
+replacement for time-marching.
