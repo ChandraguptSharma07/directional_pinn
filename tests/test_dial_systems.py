@@ -158,7 +158,14 @@ def test_pinn_path_propagators_reproduce_the_reference_ones_on_the_exact_path():
     sol = integrate(system.rhs, system.initial_state(3), t, rtol=1e-12, atol=1e-14, dense_output=True)
     reference = step_propagators(lambda times: system.jacobian(sol.at(times)), t)
     estimate = pinn_path_step_propagators(t, sol.y, system.jacobian)
-    assert np.allclose(propagators_over(estimate, 50), propagators_over(reference, 50), rtol=1e-6, atol=1e-8)
+    assert np.allclose(propagators_over(estimate, 50), propagators_over(reference, 50), rtol=1e-5, atol=1e-7)
+    def singular_jacobian(x):  # a Jacobian that is infinite somewhere along the path
+        J = system.jacobian(x)
+        J[np.abs(x[..., 0] - x[100, 0]) < 1e-3] = np.inf
+        return J
+
+    steps = pinn_path_step_propagators(t, sol.y, singular_jacobian)
+    assert np.isnan(steps).any() and np.isfinite(steps[0]).all()  # NaN where J is not finite, no exception
     saddle = StiffSaddle(16.0)
     frozen = frozen_jacobian_propagators(saddle.exact_solution(t[:5], 1), saddle.jacobian, 0.1)
     from scipy.linalg import expm

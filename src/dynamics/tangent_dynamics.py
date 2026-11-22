@@ -116,14 +116,28 @@ def pinn_path_step_propagators(t: np.ndarray, states: np.ndarray,
                                jacobian: Callable[[np.ndarray], np.ndarray]) -> np.ndarray:
     """Step propagators along an approximate trajectory, such as a PINN's own output.
 
-    ``states`` are the approximate states on the uniform grid ``t``; between grid
-    points they are taken from a cubic spline. No reference solution is used, so
-    the result is a reference-free estimate of Phi(t_{i+1}, t_i).
+    ``states`` are the approximate states on the uniform grid ``t``. Each step uses
+    the exponential midpoint rule, Phi(t_{i+1}, t_i) ~ expm(J(x(t_i + h/2)) h), with
+    the midpoint state from a cubic spline through the grid states. The rule is
+    second order and exact for a constant Jacobian. Unlike an adaptive integrator
+    it does not fail when an inaccurate path comes near a singularity of the
+    equations; steps whose Jacobian is not finite are returned as NaN. No
+    reference solution is used, so the result is a reference-free estimate.
     """
     from scipy.interpolate import CubicSpline
+    from scipy.linalg import expm
 
-    spline = CubicSpline(np.asarray(t, dtype=float), np.asarray(states, dtype=float), axis=0)
-    return step_propagators(lambda times: jacobian(spline(times)), t)
+    t = np.asarray(t, dtype=float)
+    h = t[1] - t[0]
+    spline = CubicSpline(t, np.asarray(states, dtype=float), axis=0)
+    with np.errstate(all="ignore"):
+        J = jacobian(spline(t[:-1] + 0.5 * h)) * h
+    steps = np.full(J.shape, np.nan)
+    ok = np.all(np.isfinite(J), axis=(-2, -1))
+    if ok.any():
+        with np.errstate(all="ignore"):
+            steps[ok] = expm(J[ok])
+    return steps
 
 
 def frozen_jacobian_propagators(states: np.ndarray, jacobian: Callable[[np.ndarray], np.ndarray],
@@ -131,4 +145,11 @@ def frozen_jacobian_propagators(states: np.ndarray, jacobian: Callable[[np.ndarr
     """expm(J(x) dt) for every state x (shape (N, d) -> (N, d, d)): the Jacobian held fixed over dt."""
     from scipy.linalg import expm
 
-    return expm(jacobian(np.asarray(states, dtype=float)) * dt)
+    with np.errstate(all="ignore"):
+        J = jacobian(np.asarray(states, dtype=float)) * dt
+    out = np.full(J.shape, np.nan)
+    ok = np.all(np.isfinite(J), axis=(-2, -1))
+    if ok.any():
+        with np.errstate(all="ignore"):
+            out[ok] = expm(J[ok])
+    return out
