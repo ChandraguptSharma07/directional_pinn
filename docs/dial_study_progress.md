@@ -108,3 +108,11 @@ direction statistic was computed in the pilot. Output is in
 - **An aborted first launch.** A single GPU process for all settings was
   stopped after about two minutes, before it had saved any run, and replaced
   by this split.
+- **Device change for family D (about 18:37 IST).** On this machine the
+  ten-process CPU run was much slower than the single-run pilot: 20 of the
+  first setting's 40 runs took about 30 minutes, which projected to about four
+  hours for the family. The likely cause is that six physical cores were
+  shared by ten processes. The CPU job was stopped and its 20 finished runs of
+  gamma = 3 were set aside unused. Family D is retrained on the GPU after
+  family L, as one stacked model per setting, so all 320 runs share one device
+  and training method. No outcome of the set-aside runs was looked at.
