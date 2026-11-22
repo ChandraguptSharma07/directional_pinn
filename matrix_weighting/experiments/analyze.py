@@ -266,6 +266,9 @@ def write(gate: str, res: dict, lines: list[str]) -> None:
     (d / "analysis.json").write_text(json.dumps(res, indent=1) + "\n")
     (d / "analysis.md").write_text("\n".join(lines) + "\n")
     print("\n".join(lines[:60]))
+    verdicts = [line for line in lines[60:] if line.startswith("**H")]
+    if verdicts:  # verdict lines further down the report are always shown
+        print("\n".join(verdicts))
 
 
 def main() -> None:
