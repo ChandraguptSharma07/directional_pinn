@@ -1,0 +1,58 @@
+{
+ "system": {
+  "kind": "lorenz",
+  "k": 0,
+  "gamma_min": 5.0,
+  "gamma_max": 50.0,
+  "sigma": 10.0,
+  "rho": 28.0,
+  "beta": 2.6666666666666665
+ },
+ "method": "M-self",
+ "settings": {
+  "t_final": 2.0,
+  "hidden": [
+   64,
+   64,
+   64,
+   64
+  ],
+  "n_grid": 512,
+  "iterations": 20000,
+  "lr": 0.001,
+  "lr_final": 1e-05,
+  "weight_every": 10,
+  "causal_eps": 1.0,
+  "dtype": "float32",
+  "device": "cpu",
+  "log_every": 500,
+  "n_eval": 2001
+ },
+ "ics": [
+  {
+   "id": 1,
+   "x0": [
+    15.27099982504963,
+    19.806633237570765,
+    31.346392901410084
+   ]
+  }
+ ],
+ "seeds": [
+  0,
+  1,
+  2
+ ],
+ "out_dir": "results/pilot/lorenz63_T2/M-self",
+ "out_mean": [
+  0.0,
+  0.0,
+  25.0
+ ],
+ "out_scale": [
+  10.0,
+  10.0,
+  10.0
+ ],
+ "threads": 1
+}

@@ -1,0 +1,51 @@
+{
+ "system": {
+  "kind": "saddle",
+  "kappa": 64.0,
+  "angle": 0.5235987755982988
+ },
+ "method": "U",
+ "settings": {
+  "t_final": 2.0,
+  "hidden": [
+   64,
+   64,
+   64,
+   64
+  ],
+  "n_grid": 512,
+  "iterations": 20000,
+  "lr": 0.001,
+  "lr_final": 1e-05,
+  "weight_every": 10,
+  "causal_eps": 1.0,
+  "dtype": "float32",
+  "device": "cpu",
+  "log_every": 500,
+  "n_eval": 2001
+ },
+ "ics": [
+  {
+   "id": 0,
+   "x0": [
+    0.5660254037844388,
+    1.0196152422706632
+   ]
+  }
+ ],
+ "seeds": [
+  0,
+  1,
+  2
+ ],
+ "out_dir": "results/pilot/saddle_k64/U",
+ "out_mean": [
+  4.681588635866597,
+  2.3531569327335076
+ ],
+ "out_scale": [
+  4.277165772460603,
+  2.8191823365179465
+ ],
+ "threads": 1
+}
