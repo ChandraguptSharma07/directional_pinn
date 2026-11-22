@@ -69,7 +69,7 @@ PINN's own current path, with no reference solution (`M-self`).
 | hypothesis | where | verdict |
 |---|---|---|
 | H1: mechanism, known directions | Gate 0, dial systems | **partial** |
-| H2: usable method | Gate 1, Lorenz-63 on nixxa | *pending* (GPU replicate preview: partial) |
+| H2: usable method | Gate 1, Lorenz-63 on nixxa | **partial**: beats `U` and `TUR` at T = 1 and 2; never beats `S-self` |
 | H3: gain over uniform grows with dimension | Gate 2 | **not supported** (the gain is already ≈ ×0.01 at k = 0) |
 | H4: same rule on more systems | Gate 3 | **supported** for both Rössler and Lorenz-96 |
 

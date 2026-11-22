@@ -348,7 +348,7 @@ means it uses the true solution.
 \begin{tabular}{p{5.2cm}p{4.0cm}p{6.0cm}}\toprule
 Hypothesis & Systems & Result\\\midrule
 H1: direction helps when true directions are known & 2D test systems & partly true: helps only for the stiffest saddle\\
-H2: the method works on Lorenz-63 & Lorenz-63 & \pending{laptop runs; GPU repeat says partly true}\\
+H2: the method works on Lorenz-63 & Lorenz-63 & partly true: beats uniform and Turinici, but not the scalar weight\\
 H3: advantage over equal weights grows with more variables & Lorenz-63 with extra variables & not true as stated (the advantage is already very large at the start)\\
 H4: the method works on other chaotic systems & Rössler, Lorenz-96 & \textbf{true for both}\\\bottomrule
 \end{tabular}
@@ -449,8 +449,8 @@ $k$ & uniform & Turinici & scalar (oracle) & matrix (oracle) & scalar (self) & \
 \end{figure}
 
 \subsection{Plain Lorenz-63}
-The repeat on GPUs is complete. The laptop runs, which decide H2, are half done and agree
-exactly with the repeat so far. For the window of length 1:
+All laptop runs, which decide H2, are complete. They agree exactly with the repeat on GPUs.
+For the window of length 1:
 
 \begin{center}\small
 \begin{tabular}{lcc}\toprule
@@ -471,7 +471,10 @@ Turinici & 5 & no\\\bottomrule
 \item \textbf{Window 2:} every method mostly fails. The matrix weight does best, with 8 of
   36 accurate networks against 0 for uniform and Turinici.
 \end{itemize}
-\pending{final result of the laptop runs; the GPU repeat says H2 is partly true}
+By the rule fixed in advance, H2 is therefore only \emph{partly} true. The matrix weight beats
+uniform weights (about 100 times lower error at window 1 and 5 times at window 2) and
+Turinici's weights. It is never worse than any method. But it does not beat the scalar weight
+on plain Lorenz-63.
 
 \paragraph{Why scalar works as well as matrix here.} Early in training, the weights computed
 from the network's own solution give almost no importance to late times. The network first
@@ -637,8 +640,8 @@ Changes along the way, all recorded with dates in \texttt{docs/progress.md}:
   Each experiment still runs on a single kind of computer.
 \item One GPU routine ran out of memory. It now runs on the CPU, and the affected runs were
   repeated.
-\item Nine laptop runs were stopped by the system when memory ran out. They are being
-  repeated unchanged.
+\item Nine laptop runs were stopped by the system when memory ran out. They were repeated
+  unchanged, and all finished.
 \end{itemize}
 
 \section{More figures}
