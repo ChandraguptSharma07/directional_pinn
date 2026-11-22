@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+import gc
 import time
+from pathlib import Path
 from dataclasses import asdict, dataclass, field
 
 import numpy as np
@@ -44,13 +46,19 @@ def grid(T: float, n: int) -> np.ndarray:
 
 
 def train_batch(system: System, method: str, x0: np.ndarray, init_seeds: list[int], out_mean, out_scale,
-                settings: Settings, ref_grid: np.ndarray | None = None, ref_eval: np.ndarray | None = None) -> dict:
+                settings: Settings, ref_grid: np.ndarray | None = None, ref_eval: np.ndarray | None = None,
+                checkpoint: Path | None = None) -> dict:
     """Train len(x0) independent networks with one weighting method.
 
     ref_grid (batch, n_grid, n) is the reference on the collocation grid. Oracle
     methods use it for their weights. All methods use it only to log
     trajectory error, never in the loss. ref_eval (batch, n_eval, n) is used
     for the final metrics.
+
+    If ``checkpoint`` is given, the trained parameters and history are saved
+    there before the final evaluation, and an existing checkpoint is loaded
+    instead of training again (a run stopped during evaluation then resumes
+    without retraining).
     """
     if method not in wt.METHODS:
         raise ValueError(f"unknown method {method!r}")
@@ -77,7 +85,12 @@ def train_batch(system: System, method: str, x0: np.ndarray, init_seeds: list[in
     hist = {"iteration": [], "loss_weighted": [], "residual_rms": [], "grid_error_rms": [], "weight_time_profile": [],
             "ic_error": []}
     start = time.perf_counter()
-    for it in range(s.iterations + 1):
+    resumed = checkpoint is not None and Path(checkpoint).exists()
+    if resumed:
+        saved = torch.load(checkpoint, map_location=device, weights_only=False)
+        model.load_state_dict(saved["state"])
+        hist, runtime_saved = saved["history"], saved["runtime_seconds"]
+    for it in range(0 if resumed else s.iterations + 1):
         x, dx = model(t)
         r = dx - system.rhs(x)
         if method in TANGENT_SELF and it % s.weight_every == 0:
@@ -114,16 +127,26 @@ def train_batch(system: System, method: str, x0: np.ndarray, init_seeds: list[in
         per_net.sum().backward()
         opt.step()
         sched.step()
-    runtime = time.perf_counter() - start
+    runtime = runtime_saved if resumed else time.perf_counter() - start
+    if checkpoint is not None and not resumed:
+        torch.save({"state": model.state_dict(), "history": hist, "runtime_seconds": runtime}, checkpoint)
+    # Free the training graph and optimizer state before evaluating (memory is tight on shared machines).
+    if not resumed:
+        del x, dx, r, per_net, ic_err
+    del opt, sched
+    gc.collect()
 
-    # Final evaluation in float64 on the evaluation grid.
+    # Final evaluation in float64 on the evaluation grid, in time chunks (each time is independent).
     model64 = model.to(torch.float64)
     te = torch.tensor(grid(T, s.n_eval), dtype=torch.float64, device=device)
+    xs, rs = [], []
     with torch.no_grad():
-        xe, dxe = model64(te)
-        re = dxe - system.rhs(xe)
-    out = {"x_eval": xe.cpu().numpy(), "r_eval": re.cpu().numpy(), "history": hist, "runtime_seconds": runtime,
-           "settings": asdict(s), "method": method}
+        for chunk in torch.split(te, 256):
+            xe, dxe = model64(chunk)
+            xs.append(xe.cpu().numpy())
+            rs.append((dxe - system.rhs(xe)).cpu().numpy())
+    out = {"x_eval": np.concatenate(xs, axis=1), "r_eval": np.concatenate(rs, axis=1), "history": hist,
+           "runtime_seconds": runtime, "settings": asdict(s), "method": method, "resumed_from_checkpoint": resumed}
     if ref_eval is not None:
         out["metrics"] = trajectory_metrics(out["x_eval"], ref_eval, out["r_eval"])
     return out

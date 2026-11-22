@@ -213,3 +213,16 @@ def test_soft_initial_condition_trains_and_reports_initial_error():
     t = torch.linspace(0, 1, 9)
     x, dx = m(t)
     assert not torch.allclose(x[:, 0], torch.tensor(x0, dtype=x.dtype))
+
+
+def test_checkpoint_resume_reproduces_the_evaluation(tmp_path):
+    s = LinearSaddle(4.0)
+    x0 = np.stack([s.initial_state(1), s.initial_state(2)])
+    st = Settings(t_final=1.0, hidden=[8, 8], n_grid=33, iterations=25, n_eval=601, log_every=10)
+    ck = tmp_path / "model.pt"
+    first = train_batch(s, "U", x0, [1, 2], [0, 0], [2, 2], st, checkpoint=ck)
+    assert ck.exists() and not first["resumed_from_checkpoint"]
+    again = train_batch(s, "U", x0, [1, 2], [0, 0], [2, 2], st, checkpoint=ck)
+    assert again["resumed_from_checkpoint"]
+    np.testing.assert_array_equal(first["x_eval"], again["x_eval"])
+    assert first["history"] == again["history"]

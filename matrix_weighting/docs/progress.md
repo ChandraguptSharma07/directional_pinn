@@ -439,3 +439,35 @@ mostly fails: median log10 E_rms is between 1.15 and 1.40 for all six.
 
 A single two-unit Lorenz window stays out of reach at this budget for every
 weighting. `M-self` gives the most successes.
+
+### Gate 1 on nixxa: nine jobs lost to the out-of-memory killer; checkpointing added
+
+By 21:10 the pool reported 9 of its first 11 finished jobs as `FAILED (exit -9)`.
+
+- **What happened.** The owner's programs left about 250 MB free. Our jobs had
+  `oom_score_adj` 1000, so the kernel stopped them rather than the owner's
+  programs, as intended.
+- **When.** Eight of them had completed all 20,000 training steps. They were
+  stopped in the final float64 evaluation, whose memory briefly rises. The
+  ninth (T = 2 `M-orc`) was stopped during training.
+- **What was lost.** No results were saved for the nine, and none were
+  selected or dropped.
+- **Jobs lost:**
+  - T = 0.5: all six methods;
+  - T = 2: `M-self`, `S-self` and `M-orc`.
+- **Unaffected.** T = 1 `M-self` and `S-self` finished. Seven jobs (T = 1 and
+  T = 2 `U`, `TUR` and `S-orc`, plus T = 1 `M-orc`) kept running.
+
+**Fix (`mw/train.py`, tests 36/36).**
+
+- The trained parameters and history are saved to `model.pt` (ignored by git)
+  before evaluation. A job stopped during evaluation then resumes from the
+  checkpoint instead of retraining. `summary.json` records
+  `resumed_from_checkpoint`.
+- The training graph and optimizer state are freed before evaluation.
+- Evaluation runs in time chunks of 256 points. Each time is evaluated
+  independently, so the values do not change.
+
+**Rerun.** The nine lost jobs are queued on nixxa (`jobs/gate1_rerun` there:
+same job files, 9 workers). They start automatically when the first pool
+ends. Settings, seeds and initial conditions are unchanged.

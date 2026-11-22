@@ -50,7 +50,7 @@ def run(job: dict, root: Path = ROOT, device: str | None = None) -> dict | None:
 
     wall = time.perf_counter()
     res = train_batch(system, job["method"], x0, seeds, job["out_mean"], job["out_scale"], settings,
-                      ref_grid=ref_grid, ref_eval=ref_eval)
+                      ref_grid=ref_grid, ref_eval=ref_eval, checkpoint=out / "model.pt")
     metrics = res["metrics"]
     extra = {}
     if isinstance(system, Lorenz63) and system.k > 0:
@@ -62,6 +62,7 @@ def run(job: dict, root: Path = ROOT, device: str | None = None) -> dict | None:
         **extra,
         "history": res["history"],
         "runtime_seconds": res["runtime_seconds"],
+        "resumed_from_checkpoint": res["resumed_from_checkpoint"],
         "wall_seconds": time.perf_counter() - wall,
         "device": settings.device,
         "torch_version": torch.__version__,
