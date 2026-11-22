@@ -373,3 +373,9 @@ no swap. Our 10 Gate 1 jobs were stable at about 3.9 GB. Their
 `oom_score_adj`, and the pool's, was raised to 1000. If memory runs out, the
 kernel then stops one of our jobs (to be rerun) rather than one of the
 owner's programs. Training is unaffected.
+
+### Lorenz-96 kernel moved again
+
+`nikita245678k/mw-gate3-l96-dir-b` stayed queued for about 45 minutes. The same
+job files went to `hy1069/mw-gate3-l96-dir-c`, and the queued copy was
+replaced by a no-op. The Lorenz-96 results come from `-c`.
