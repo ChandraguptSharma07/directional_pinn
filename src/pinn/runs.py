@@ -31,10 +31,19 @@ from src.utils.reproducibility import save_json, write_run_record
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
 
+def job_system(job: dict):
+    """The ODE of a job: Lorenz-63 from ``params``, or a dial-study system from ``system``."""
+    if "system" in job:
+        from src.systems.dial_systems import system_from_dict
+
+        return system_from_dict(job["system"])
+    return LorenzParams.from_dict(job["params"])
+
+
 def run_job(job: dict) -> dict:
     """Train one PINN, evaluate it on the reference grid inside [0, T], save, and return the summary."""
     cfg = TrainConfig.from_dict(job["train"])
-    model, history = train_pinn(cfg, LorenzParams.from_dict(job["params"]))
+    model, history = train_pinn(cfg, job_system(job))
     return finish_run(job, model, history)
 
 
@@ -44,12 +53,13 @@ def run_jobs_together(jobs: list[dict]) -> list[dict]:
     The jobs may differ only in their seed and initial condition (window).
     """
     settings = [{**job["train"], "seed": None, "x0": None} for job in jobs]
-    if any(s != settings[0] for s in settings) or len({str(job["params"]) for job in jobs}) != 1:
+    systems = {str(job.get("params")) + str(job.get("system")) for job in jobs}
+    if any(s != settings[0] for s in settings) or len(systems) != 1:
         raise ValueError("jobs trained together may differ only in their seed and initial condition")
     cfg = TrainConfig.from_dict(jobs[0]["train"])
     seeds = [int(job["train"]["seed"]) for job in jobs]
     x0s = [job["train"]["x0"] for job in jobs]
-    models, histories = train_pinns(cfg, seeds, LorenzParams.from_dict(jobs[0]["params"]), x0s=x0s)
+    models, histories = train_pinns(cfg, seeds, job_system(jobs[0]), x0s=x0s)
     return [finish_run(job, model, history) for job, model, history in zip(jobs, models, histories)]
 
 
@@ -58,7 +68,7 @@ def finish_run(job: dict, model: PINN, history: dict) -> dict:
     run_dir = Path(job["run_dir"])
     run_dir.mkdir(parents=True, exist_ok=True)
     cfg = TrainConfig.from_dict(job["train"])
-    params = LorenzParams.from_dict(job["params"])
+    params = job_system(job)
 
     reference = np.load(job["reference_file"])
     inside = reference["t"] <= cfg.t_final + 1e-9
@@ -90,6 +100,7 @@ def finish_run(job: dict, model: PINN, history: dict) -> dict:
         "final_error": float(size[-1]),
         "fraction_error_below_1": float(np.mean(size < 1.0)),
         "median_residual": float(np.median(residual_size)),
+        "max_reference_norm": float(np.linalg.norm(x_ref, axis=1).max()),
         "runtime_seconds": history["runtime_seconds"],
     }
     save_json(summary, run_dir / "metrics.json")

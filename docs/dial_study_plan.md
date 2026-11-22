@@ -145,6 +145,23 @@ right-hand side is now general:
   runs in all. Every run is kept and reported. Runs with non-finite outputs
   are excluded from the samples and listed.
 
+**Amendment made before any training (22 November 2026).** Two settings above
+are changed, before any PINN of this study was trained.
+
+1. **Soft initial condition.** The initial condition is enforced by the
+   penalty lambda_IC = 100, as in the original Lorenz runs, instead of the
+   hard form. With x_hat = x0 + (t/T)(g − x0), a fast transient of rate kappa
+   from an offset d forces the raw output g to reach about T · kappa · d near
+   t = 0. For kappa = 64 and d = 1 that is about 128, which would make the
+   stiff settings mostly a test of representing that spike.
+2. **Output scaling from all nine windows.** out_mean and out_scale are the
+   per-component mean and standard deviation (floored at 0.1) of the
+   reference states of all nine windows of the setting, rather than of
+   window 0 alone. For family D, window 8 starts at y1 = 4, far outside
+   window 0's range.
+
+The scaling uses only reference solutions, never PINN outcomes.
+
 **Pilot rule (accuracy only, decided now).** Window 0, seed 0, is trained at the
 stiffest setting of each family (kappa = 64, gamma = 66) with 20,000
 iterations. The pilot passes if the maximum trajectory error is at most 5% of

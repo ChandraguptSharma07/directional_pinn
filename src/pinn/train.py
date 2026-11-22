@@ -1,4 +1,7 @@
-"""Training a PINN on one Lorenz-63 window with the standard (non-directional) loss (Phase 4).
+"""Training a PINN on one window with the standard (non-directional) loss (Phase 4).
+
+The ODE is Lorenz-63 by default; any system with ``rhs_torch`` can be passed instead
+(see ``system_rhs``).
 
     L = L_ODE + lambda_IC * L_IC
     L_ODE = mean over collocation times t_i of |r(t_i)|^2
@@ -22,13 +25,14 @@ from __future__ import annotations
 import copy
 import time
 from dataclasses import asdict, dataclass, field
+from typing import Callable
 
 import numpy as np
 import torch
 from torch import nn
 
 from src.pinn.model import PINN
-from src.pinn.residual import lorenz_residual, lorenz_rhs_torch
+from src.pinn.residual import lorenz_rhs_torch, ode_residual
 from src.systems.lorenz63 import LorenzParams
 from src.utils.seed import set_seed
 
@@ -63,6 +67,19 @@ class TrainConfig:
     @classmethod
     def from_dict(cls, values: dict) -> TrainConfig:
         return cls(**values)
+
+
+def system_rhs(params) -> Callable[[torch.Tensor], torch.Tensor]:
+    """Right-hand side f used in the residual r = dx_hat/dt - f(x_hat).
+
+    ``params`` is either LorenzParams (Lorenz-63) or any system object with a
+    ``rhs_torch(x)`` method, such as those in src/systems/dial_systems.py.
+    """
+    if isinstance(params, LorenzParams):
+        return lambda x: lorenz_rhs_torch(x, params)
+    if not hasattr(params, "rhs_torch"):
+        raise TypeError("params must be LorenzParams or provide rhs_torch(x)")
+    return params.rhs_torch
 
 
 def training_interval(cfg: TrainConfig, iteration: int) -> float:
@@ -123,6 +140,9 @@ def train_pinn(cfg: TrainConfig, params: LorenzParams) -> tuple[PINN, dict]:
         raise ValueError("collocation_scheme must be stratified or fixed")
     if cfg.time_weighting != "uniform" and (cfg.collocation_scheme != "fixed" or cfg.curriculum_start is not None):
         raise ValueError("Turinici weighting requires a fixed full-window grid")
+    if cfg.time_weighting != "uniform" and not isinstance(params, LorenzParams):
+        raise ValueError("Turinici weighting is implemented for Lorenz-63 only")
+    rhs = system_rhs(params)
     dtype = DTYPES[cfg.dtype]
     torch.set_num_threads(cfg.threads)
     set_seed(cfg.seed)
@@ -146,7 +166,7 @@ def train_pinn(cfg: TrainConfig, params: LorenzParams) -> tuple[PINN, dict]:
     start = time.perf_counter()
     for iteration in range(1, cfg.iterations + 1):
         t = fixed_t if fixed_t is not None else collocation_times(cfg.n_collocation, training_interval(cfg, iteration), generator, dtype)
-        _, _, residual = lorenz_residual(model, t, params)
+        _, _, residual = ode_residual(model, t, rhs)
         loss_ode = weighted_residual_loss(residual, t, cfg, time_weights)
         loss_ic = (model(t0) - x0).pow(2).sum()
         loss = loss_ode + cfg.lambda_ic * loss_ic
@@ -240,6 +260,7 @@ def train_pinns(
         raise ValueError(f"dtype must be one of {sorted(DTYPES)}")
     if cfg.time_weighting != "uniform" or cfg.collocation_scheme != "stratified":
         raise ValueError("adaptive or fixed-grid training currently supports train_pinn only")
+    rhs = system_rhs(params)
     dtype = DTYPES[cfg.dtype]
     torch.set_num_threads(cfg.threads)
     previous_dtype = torch.get_default_dtype()
@@ -268,7 +289,7 @@ def train_pinns(
     for iteration in range(1, cfg.iterations + 1):
         interval = training_interval(cfg, iteration)
         t = torch.stack([collocation_times(cfg.n_collocation, interval, g, dtype) for g in generators]).to(device)
-        _, _, residual = lorenz_residual(stack, t, params)
+        _, _, residual = ode_residual(stack, t, rhs)
         loss_ode = weighted_residual_loss(residual, t, cfg)
         loss_ic = (stack(t0) - x0).pow(2).sum(dim=-1).squeeze(-1)
         losses = loss_ode + cfg.lambda_ic * loss_ic
@@ -301,5 +322,5 @@ def evaluate(model: PINN, t: np.ndarray, params: LorenzParams, dtype: str = "flo
     """
     model = copy.deepcopy(model).to(DTYPES[dtype])  # leave the caller's model unchanged
     t_tensor = torch.tensor(np.asarray(t, dtype=float), dtype=DTYPES[dtype]).unsqueeze(1)
-    x, dxdt, residual = lorenz_residual(model, t_tensor, params, create_graph=False)
+    x, dxdt, residual = ode_residual(model, t_tensor, system_rhs(params), create_graph=False)
     return {"state": x.detach().numpy(), "derivative": dxdt.detach().numpy(), "residual": residual.detach().numpy()}

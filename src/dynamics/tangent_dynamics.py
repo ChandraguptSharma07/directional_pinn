@@ -89,3 +89,24 @@ def propagators_over(step_props: np.ndarray, m: int) -> np.ndarray:
         count = n - 2 * length + 1
         power = power[length : length + count] @ power[:count]
         length *= 2
+
+
+def integrated_propagators(step_props: np.ndarray, m: int, h: float) -> np.ndarray:
+    """K(t_j; m h) = integral of Phi(t_{j+m}, s) ds over s in [t_j, t_{j+m}], for j = 0, ..., n - m.
+
+    K maps a constant residual r on [t_j, t_{j+m}] to the (linearized) error it
+    creates by t_{j+m}: e_created = K r. Computed by the trapezoidal rule on the
+    grid, with Phi(t_k, t_{k-i}) built for every end index k at once by the
+    recursion Phi(t_k, t_{k-i}) = Phi(t_k, t_{k-i+1}) Phi(t_{k-i+1}, t_{k-i}).
+    Returns shape (n - m + 1, d, d), indexed by the start j.
+    """
+    n, d, _ = step_props.shape
+    if not 1 <= m <= n:
+        raise ValueError(f"need 1 <= m <= {n}, got {m}")
+    ends = np.arange(m, n + 1)  # end grid index k of every interval
+    P = np.broadcast_to(np.eye(d), (len(ends), d, d)).copy()  # Phi(t_k, t_k)
+    total = 0.5 * P
+    for i in range(1, m + 1):
+        P = P @ step_props[ends - i]  # Phi(t_k, t_{k-i})
+        total += (0.5 if i == m else 1.0) * P
+    return h * total
