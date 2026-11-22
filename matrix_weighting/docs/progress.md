@@ -256,3 +256,19 @@ silently dropped. Two job files from different folders share the name
 `remote/kaggle_kernel.py` now prefixes each packed job file with its folder
 name. No earlier kernel mixed folders with clashing names. The dropped job
 goes in `mw-rerun-2` when a GPU slot frees.
+
+### Sensitivity side run (Lorenz T = 1, exploratory)
+
+`nikita245678k/mw-side-sens` finished 9 of 12 jobs. Its three `S-self` jobs
+hit the eigenvalue out-of-memory failure (old code) and were added to
+`mw-rerun-2`. Median log10 E_rms over 36 networks:
+
+| variant | `U` | `TUR` | `M-self` |
+|---|---|---|---|
+| 50,000 steps (2.5 times the budget) | 1.29 | 1.29 | −2.65 |
+| width 128 | 1.29 | 1.29 | −2.45 |
+| grid of 1,024 times | 1.29 | 1.29 | −2.25 |
+
+The uniform and Turinici failures at T = 1 do not go away with 2.5 times more
+steps, a wider network or a denser grid. The `M-self` result holds under all
+three changes.
