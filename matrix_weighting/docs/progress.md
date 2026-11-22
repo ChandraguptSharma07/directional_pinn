@@ -225,3 +225,14 @@ reference, so diagnostic only).
 
 The matrix weight moves the residual into the directions that the dynamics
 erase, as the theory predicts.
+
+### Two kernels moved (still before any Gate 0 or k = 29 result)
+
+`duoshingaming/mw-gate0-dial` and `chandraguptsharma/mw-g2-k29` stayed
+queued for over 30 minutes while other accounts' kernels started at once.
+
+- The same job files, now with the eigenvalue fix, were pushed as
+  `hy1069/mw-gate0-dial-b` and `nikita245678k/mw-g2-k29-b`.
+- The queued first copies were replaced by a no-op version so they cannot
+  run as well.
+- Gate 0 and the k = 29 results come from the `-b` kernels.
