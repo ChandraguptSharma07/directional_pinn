@@ -19,8 +19,8 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "experiments"))
 from analyze import load, log_err  # noqa: E402
 
-COLORS = {"U": "#7f7f7f", "TUR": "#9467bd", "S-orc": "#ff7f0e", "M-orc": "#1f77b4", "S-self": "#ffbb78",
-          "M-self": "#aec7e8"}
+COLORS = {"U": "#7f7f7f", "TUR": "#9467bd", "S-orc": "#ff7f0e", "M-orc": "#1f77b4", "S-self": "#ff7f0e",
+          "M-self": "#1f77b4", "D-self": "#2ca02c"}
 ORDER = ["U", "TUR", "S-orc", "S-self", "M-orc", "M-self"]
 
 
@@ -75,14 +75,37 @@ def gate2(out: Path):
     fig.savefig(out / "gate2_errors.pdf")
 
 
+def gate3(out: Path):
+    runs = load("gate3")
+    panels = [("rossler", "T5", "Rössler, window 5"), ("rossler", "T10", "Rössler, window 10"),
+              ("lorenz96_n8", "T1", "Lorenz-96 (N=8), window 1"), ("lorenz96_n8", "T2", "Lorenz-96 (N=8), window 2")]
+    methods = ["U", "TUR", "S-self", "D-self", "M-self"]
+    labels = ["uniform", "Turinici", "scalar\n(no direction)", "direction\nonly", "matrix\n(Lyapunov dir.)"]
+    fig, axes = plt.subplots(1, 4, figsize=(15, 4.2))
+    for ax, (system, T, title) in zip(axes, panels):
+        keys = [(system, T, m) for m in methods]
+        strip(ax, runs, keys, labels, title)
+        ax.set_title(title, fontsize=9, pad=16)
+        for i, k in enumerate(keys):
+            d = runs.get(k)
+            if d:
+                n_ok = sum(v["success"] for v in d.values())
+                ax.annotate(f"{n_ok}/{len(d)}", (i, ax.get_ylim()[1]), ha="center", va="bottom", fontsize=8)
+    fig.suptitle("Trajectory error per network (36 each); black bar = median; numbers = runs with error < 1 throughout",
+                 fontsize=9, y=1.02)
+    fig.tight_layout()
+    fig.savefig(out / "gate3_errors.png", dpi=150, bbox_inches="tight")
+    fig.savefig(out / "gate3_errors.pdf", bbox_inches="tight")
+
+
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("gates", nargs="+", choices=["gate0", "gate1", "gate2"])
+    ap.add_argument("gates", nargs="+", choices=["gate0", "gate1", "gate2", "gate3"])
     args = ap.parse_args()
     out = ROOT / "results" / "figures"
     out.mkdir(parents=True, exist_ok=True)
     for g in args.gates:
-        {"gate0": gate0, "gate1": gate1, "gate2": gate2}[g](out)
+        {"gate0": gate0, "gate1": gate1, "gate2": gate2, "gate3": gate3}[g](out)
         print(f"wrote {g} figures to {out.relative_to(ROOT)}")
 
 
