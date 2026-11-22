@@ -1,0 +1,39 @@
+run_dir: /home/shin/Projects/directional_pinn/results/dial_study/davis_skodje_g3/runs/w7_s4
+window: 7
+reference_file: /home/shin/Projects/directional_pinn/results/dial_study/reference/davis_skodje_g3/data/window_7.npz
+system:
+  family: D
+  gamma: 3.0
+train:
+  t_final: 2.0
+  x0:
+  - 3.5
+  - 0.9277777777777778
+  seed: 4
+  hidden:
+  - 64
+  - 64
+  - 64
+  - 64
+  activation: tanh
+  out_mean:
+  - 0.9250003635343739
+  - 0.41675044295328056
+  out_scale:
+  - 0.7610797155382252
+  - 0.1866593816995867
+  iterations: 20000
+  lr: 0.001
+  lr_final: 1.0e-05
+  n_collocation: 1024
+  lambda_ic: 100.0
+  hard_ic: false
+  early_weight: 0.0
+  time_weighting: uniform
+  collocation_scheme: stratified
+  dtype: float32
+  threads: 1
+  log_every: 100
+  curriculum_start: null
+  curriculum_fraction: 0.6
+  device: cuda

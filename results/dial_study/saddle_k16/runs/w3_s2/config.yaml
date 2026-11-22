@@ -1,0 +1,40 @@
+run_dir: /home/shin/Projects/directional_pinn/results/dial_study/saddle_k16/runs/w3_s2
+window: 3
+reference_file: /home/shin/Projects/directional_pinn/results/dial_study/reference/saddle_k16/data/window_3.npz
+system:
+  family: L
+  kappa: 16.0
+  angle: 0.5235987755982988
+train:
+  t_final: 2.0
+  x0:
+  - 1.0874355652982142
+  - 0.9165063509461095
+  seed: 2
+  hidden:
+  - 64
+  - 64
+  - 64
+  - 64
+  activation: tanh
+  out_mean:
+  - 2.735602176970087
+  - 1.581842532806027
+  out_scale:
+  - 1.7352902745767573
+  - 1.0027924433832043
+  iterations: 20000
+  lr: 0.001
+  lr_final: 1.0e-05
+  n_collocation: 1024
+  lambda_ic: 100.0
+  hard_ic: false
+  early_weight: 0.0
+  time_weighting: uniform
+  collocation_scheme: stratified
+  dtype: float32
+  threads: 1
+  log_every: 100
+  curriculum_start: null
+  curriculum_fraction: 0.6
+  device: cuda
