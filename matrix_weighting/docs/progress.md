@@ -427,3 +427,15 @@ is met for both Gate 3 systems.
 
 So direction alone already helps a lot when it is self-consistent.
 Uniform weighting succeeds in 7/36 and Turinici's in 5/36.
+
+### GPU replicate of Gate 1 at T = 2 (side)
+
+`yess16/mw-g1-gpu-b` ran on one GPU and took 2.2 hours. At T = 2 every method
+mostly fails: median log10 E_rms is between 1.15 and 1.40 for all six.
+
+| method | `M-self` | `S-orc` | `S-self` | `M-orc` | `U` | `TUR` |
+|---|---|---|---|---|---|---|
+| successes (of 36) | 8 | 6 | 5 | 3 | 0 | 0 |
+
+A single two-unit Lorenz window stays out of reach at this budget for every
+weighting. `M-self` gives the most successes.
