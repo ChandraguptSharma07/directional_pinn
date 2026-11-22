@@ -33,6 +33,15 @@ information at longer horizons. See the
 [chronological model record](docs/model_improvement_progress.md). The
 [earlier research update](docs/piecewise_pinn_research_update.pdf) describes
 the development set; the professor briefing below contains the latest result.
+The reference paper's adaptive time-weighting rule has now been ported and
+tested in matched fixed-grid Lorenz runs. On eight seed-0 sequential windows,
+the equation-based time scale lowered median trajectory error in 1/8 and
+stayed below error 1 throughout in 7/8, the same count as uniform weighting.
+The author's literal code time scale lowered median error in 0/8 and kept
+6/8 below error 1 throughout. See the
+[complete LaTeX report](docs/final_project_report.pdf),
+[source](docs/final_project_report.tex), and
+[adaptive-weighting run log](docs/adaptive_weighting_progress_2026-11-22.md).
 For a short third-person explanation of the original goal, failed hypothesis,
 current result, and next conclusion milestone, use the
 [professor briefing](docs/professor_project_brief_2026-11-22.pdf)

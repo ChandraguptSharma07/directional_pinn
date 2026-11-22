@@ -24,6 +24,9 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--iterations", type=int, default=20000)
     parser.add_argument("--early-weight", type=float, default=0.0)
+    parser.add_argument("--time-weighting", choices=["uniform", "turinici", "turinici_code"], default="uniform")
+    parser.add_argument("--collocation-scheme", choices=["stratified", "fixed"], default="stratified")
+    parser.add_argument("--collocation", type=int)
     parser.add_argument("--out", type=Path, default=ROOT / "results" / "hard_ic_pilot" / "w0_t2_s0")
     parser.add_argument("--reference", type=Path,
                         default=ROOT / "results" / "interpolation_rebuild" / "reference" / "data" / "window_0.npz")
@@ -31,7 +34,11 @@ def main() -> None:
     config = load_config(ROOT / "config" / "default.yaml")
     x0 = np.load(args.reference)["x0"].tolist()
     train = {**config["pinn"], "t_final": 2.0, "x0": x0, "seed": 0,
-             "iterations": args.iterations, "hard_ic": True, "early_weight": args.early_weight}
+             "iterations": args.iterations, "hard_ic": True, "early_weight": args.early_weight,
+             "time_weighting": args.time_weighting, "collocation_scheme": args.collocation_scheme,
+             "curriculum_start": None if args.collocation_scheme == "fixed" else config["pinn"]["curriculum_start"]}
+    if args.collocation is not None:
+        train["n_collocation"] = args.collocation
     job = {"run_dir": str(args.out), "window": 0, "reference_file": str(args.reference),
            "params": config["lorenz"]["params"], "train": train}
     print(json.dumps(run_job(job), indent=2))

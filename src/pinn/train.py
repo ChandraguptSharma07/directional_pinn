@@ -28,7 +28,7 @@ import torch
 from torch import nn
 
 from src.pinn.model import PINN
-from src.pinn.residual import lorenz_residual
+from src.pinn.residual import lorenz_residual, lorenz_rhs_torch
 from src.systems.lorenz63 import LorenzParams
 from src.utils.seed import set_seed
 
@@ -51,6 +51,8 @@ class TrainConfig:
     lambda_ic: float = 10.0
     hard_ic: bool = False
     early_weight: float = 0.0  # normalized linear emphasis on earlier residuals
+    time_weighting: str = "uniform"  # "turinici": Eq. 13; "turinici_code": literal Lorenz-script time scale
+    collocation_scheme: str = "stratified"  # "stratified" or "fixed" regular grid
     dtype: str = "float32"
     threads: int = 1
     log_every: int = 100
@@ -77,10 +79,32 @@ def collocation_times(n: int, t_final: float, generator: torch.Generator, dtype:
     return (torch.arange(n, dtype=dtype).unsqueeze(1) + offsets) * (t_final / n)
 
 
-def weighted_residual_loss(residual: torch.Tensor, t: torch.Tensor, cfg: TrainConfig) -> torch.Tensor:
+def turinici_time_weights(states: torch.Tensor, t_final: float, params: LorenzParams,
+                          code_time_scale: bool = False) -> torch.Tensor:
+    """Discrete Eq. (13) using the paper's on-the-fly state/zero growth proxy.
+
+    The final dimension is state; the preceding one is an ordered fixed time grid.
+    Weights are detached so that training differentiates only the residual loss,
+    just as the paper updates its weights outside the optimizer gradient.
+    """
+    with torch.no_grad():
+        if states.shape[-2] < 2:
+            raise ValueError("adaptive weighting needs at least two time points")
+        rate = (lorenz_rhs_torch(states, params) * states).sum(dim=-1) / (states.square().sum(dim=-1) + 1e-10)
+        dt = (1.0 if code_time_scale else t_final) / (states.shape[-2] - 1)
+        log_weight = -torch.cumsum(rate, dim=-1) * dt
+        return torch.softmax(log_weight, dim=-1)
+
+
+def weighted_residual_loss(residual: torch.Tensor, t: torch.Tensor, cfg: TrainConfig,
+                           time_weights: torch.Tensor | None = None) -> torch.Tensor:
     """Mean squared residual per model, with optional extra weight near t=0."""
     if cfg.early_weight < 0:
         raise ValueError("early_weight must be nonnegative")
+    if time_weights is not None:
+        if cfg.early_weight != 0:
+            raise ValueError("adaptive and fixed early weighting cannot be combined")
+        return (residual.square().sum(dim=-1) * time_weights).sum(dim=-1)
     weight = 1.0 + cfg.early_weight * (1.0 - t.squeeze(-1) / cfg.t_final)
     return (residual.square().sum(dim=-1) * weight).sum(dim=-1) / weight.sum(dim=-1)
 
@@ -93,6 +117,12 @@ def train_pinn(cfg: TrainConfig, params: LorenzParams) -> tuple[PINN, dict]:
     """
     if cfg.dtype not in DTYPES:
         raise ValueError(f"dtype must be one of {sorted(DTYPES)}")
+    if cfg.time_weighting not in ("uniform", "turinici", "turinici_code"):
+        raise ValueError("time_weighting must be uniform, turinici, or turinici_code")
+    if cfg.collocation_scheme not in ("stratified", "fixed"):
+        raise ValueError("collocation_scheme must be stratified or fixed")
+    if cfg.time_weighting != "uniform" and (cfg.collocation_scheme != "fixed" or cfg.curriculum_start is not None):
+        raise ValueError("Turinici weighting requires a fixed full-window grid")
     dtype = DTYPES[cfg.dtype]
     torch.set_num_threads(cfg.threads)
     set_seed(cfg.seed)
@@ -110,28 +140,37 @@ def train_pinn(cfg: TrainConfig, params: LorenzParams) -> tuple[PINN, dict]:
     gamma = (cfg.lr_final / cfg.lr) ** (1.0 / max(cfg.iterations, 1))
     scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer, gamma=gamma)
 
-    history = {"iteration": [], "loss": [], "loss_ode": [], "loss_ic": [], "lr": []}
+    history = {"iteration": [], "loss": [], "loss_ode": [], "loss_ic": [], "lr": [], "weight_contrast": []}
+    fixed_t = torch.linspace(0.0, cfg.t_final, cfg.n_collocation, dtype=dtype).unsqueeze(1) if cfg.collocation_scheme == "fixed" else None
+    time_weights = torch.full((cfg.n_collocation,), 1.0 / cfg.n_collocation, dtype=dtype) if cfg.time_weighting != "uniform" else None
     start = time.perf_counter()
     for iteration in range(1, cfg.iterations + 1):
-        t = collocation_times(cfg.n_collocation, training_interval(cfg, iteration), generator, dtype)
+        t = fixed_t if fixed_t is not None else collocation_times(cfg.n_collocation, training_interval(cfg, iteration), generator, dtype)
         _, _, residual = lorenz_residual(model, t, params)
-        loss_ode = weighted_residual_loss(residual, t, cfg)
+        loss_ode = weighted_residual_loss(residual, t, cfg, time_weights)
         loss_ic = (model(t0) - x0).pow(2).sum()
         loss = loss_ode + cfg.lambda_ic * loss_ic
         optimizer.zero_grad(set_to_none=True)
         loss.backward()
         optimizer.step()
         scheduler.step()
+        if time_weights is not None:
+            with torch.no_grad():
+                time_weights = turinici_time_weights(model(t), cfg.t_final, params,
+                                                      code_time_scale=cfg.time_weighting == "turinici_code")
         if iteration % cfg.log_every == 0 or iteration == cfg.iterations:
             history["iteration"].append(iteration)
             history["loss"].append(loss.item())
             history["loss_ode"].append(loss_ode.item())
             history["loss_ic"].append(loss_ic.item())
             history["lr"].append(scheduler.get_last_lr()[0])
+            history["weight_contrast"].append(float((time_weights.max() / time_weights.min()).item()) if time_weights is not None else 1.0)
             if not np.isfinite(loss.item()):
                 break
     history["runtime_seconds"] = time.perf_counter() - start
     history["config"] = asdict(cfg)
+    if time_weights is not None:
+        history["final_time_weights"] = time_weights.tolist()
     return model, history
 
 
@@ -199,6 +238,8 @@ def train_pinns(
     """
     if cfg.dtype not in DTYPES:
         raise ValueError(f"dtype must be one of {sorted(DTYPES)}")
+    if cfg.time_weighting != "uniform" or cfg.collocation_scheme != "stratified":
+        raise ValueError("adaptive or fixed-grid training currently supports train_pinn only")
     dtype = DTYPES[cfg.dtype]
     torch.set_num_threads(cfg.threads)
     previous_dtype = torch.get_default_dtype()

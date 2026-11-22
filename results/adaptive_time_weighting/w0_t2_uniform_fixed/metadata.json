@@ -1,0 +1,33 @@
+{
+  "created_utc": "2026-11-22T07:31:05+00:00",
+  "command": [
+    "experiments/11_hard_ic_pilot.py",
+    "--iterations",
+    "20000",
+    "--collocation",
+    "256",
+    "--collocation-scheme",
+    "fixed",
+    "--time-weighting",
+    "uniform",
+    "--out",
+    "results/adaptive_time_weighting/w0_t2_uniform_fixed"
+  ],
+  "runtime_seconds": 54.045,
+  "git": {
+    "commit": "ac6e4c7bf6d680693f4b58fddf8168acc1a5b6ba",
+    "dirty": true
+  },
+  "environment": {
+    "python": "3.13.15",
+    "platform": "Linux-6.18.53-x86_64-with-glibc2.42",
+    "packages": {
+      "numpy": "2.5.5",
+      "scipy": "1.18.1",
+      "matplotlib": "3.11.2",
+      "PyYAML": "6.0.4",
+      "pytest": "9.2.0",
+      "torch": "2.15.0+cpu"
+    }
+  }
+}

@@ -31,6 +31,8 @@ def main() -> None:
     parser.add_argument("--segments", type=int, default=8)
     parser.add_argument("--iterations", type=int, default=4000)
     parser.add_argument("--collocation", type=int, default=256)
+    parser.add_argument("--time-weighting", choices=["uniform", "turinici", "turinici_code"], default="uniform")
+    parser.add_argument("--collocation-scheme", choices=["stratified", "fixed"], default="stratified")
     parser.add_argument("--reference", type=Path)
     parser.add_argument("--out", type=Path)
     args = parser.parse_args()
@@ -54,7 +56,8 @@ def main() -> None:
         left, right = k * length, (k + 1) * length
         train = {**config["pinn"], "t_final": length, "x0": x0, "seed": args.seed,
                  "iterations": args.iterations, "n_collocation": args.collocation,
-                 "hard_ic": True, "early_weight": 0.0, "curriculum_start": None}
+                 "hard_ic": True, "early_weight": 0.0, "curriculum_start": None,
+                 "time_weighting": args.time_weighting, "collocation_scheme": args.collocation_scheme}
         cfg = TrainConfig.from_dict(train)
         model, history = train_pinn(cfg, params)
         mask = (full_t >= left - 1e-9) & (full_t <= right + 1e-9)
@@ -84,6 +87,7 @@ def main() -> None:
     metrics = {"experiment": "13_piecewise_pinn_pilot", "window": args.window, "seed": args.seed,
                "t_final": 2.0, "segments": args.segments, "segment_length": length,
                "iterations_per_segment": args.iterations, "collocation_per_segment": args.collocation,
+               "time_weighting": args.time_weighting, "collocation_scheme": args.collocation_scheme,
                "initial_error": float(size[0]), "median_error": float(np.median(size)),
                "max_error": float(size.max()), "final_error": float(size[-1]),
                "fraction_error_below_1": float(np.mean(size < 1)),

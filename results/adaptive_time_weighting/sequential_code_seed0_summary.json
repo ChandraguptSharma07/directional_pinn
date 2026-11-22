@@ -1,0 +1,82 @@
+[
+  {
+    "window": 1,
+    "weighting": "turinici_code",
+    "median_error": 0.13424942821156638,
+    "max_error": 36.86411854928137,
+    "final_error": 36.644337817978986,
+    "fraction_error_below_1": 0.7772227772227772,
+    "runtime_seconds": 96.29682850399968,
+    "metrics_file": "/mnt/d_drive/programs/directional_pinn/results/adaptive_time_weighting/w1_t2_piecewise_turinici_code_fixed/metrics.json"
+  },
+  {
+    "window": 2,
+    "weighting": "turinici_code",
+    "median_error": 0.13275364952926888,
+    "max_error": 0.8258883856804813,
+    "final_error": 0.35378944939073914,
+    "fraction_error_below_1": 1.0,
+    "runtime_seconds": 96.15102707599999,
+    "metrics_file": "/mnt/d_drive/programs/directional_pinn/results/adaptive_time_weighting/w2_t2_piecewise_turinici_code_fixed/metrics.json"
+  },
+  {
+    "window": 3,
+    "weighting": "turinici_code",
+    "median_error": 0.09456756192660498,
+    "max_error": 0.5070894494839352,
+    "final_error": 0.1994185583482902,
+    "fraction_error_below_1": 1.0,
+    "runtime_seconds": 97.34741466600008,
+    "metrics_file": "/mnt/d_drive/programs/directional_pinn/results/adaptive_time_weighting/w3_t2_piecewise_turinici_code_fixed/metrics.json"
+  },
+  {
+    "window": 4,
+    "weighting": "turinici_code",
+    "median_error": 0.07770347780501949,
+    "max_error": 0.40427201122781803,
+    "final_error": 0.31360048049735717,
+    "fraction_error_below_1": 1.0,
+    "runtime_seconds": 97.37977506700008,
+    "metrics_file": "/mnt/d_drive/programs/directional_pinn/results/adaptive_time_weighting/w4_t2_piecewise_turinici_code_fixed/metrics.json"
+  },
+  {
+    "window": 5,
+    "weighting": "turinici_code",
+    "median_error": 0.09132161508017884,
+    "max_error": 0.3597853833057324,
+    "final_error": 0.09952821842566269,
+    "fraction_error_below_1": 1.0,
+    "runtime_seconds": 100.81864223400044,
+    "metrics_file": "/mnt/d_drive/programs/directional_pinn/results/adaptive_time_weighting/w5_t2_piecewise_turinici_code_fixed/metrics.json"
+  },
+  {
+    "window": 6,
+    "weighting": "turinici_code",
+    "median_error": 0.23773673784505522,
+    "max_error": 1.4801877198203703,
+    "final_error": 0.4580081471372136,
+    "fraction_error_below_1": 0.8871128871128872,
+    "runtime_seconds": 100.68086743799995,
+    "metrics_file": "/mnt/d_drive/programs/directional_pinn/results/adaptive_time_weighting/w6_t2_piecewise_turinici_code_fixed/metrics.json"
+  },
+  {
+    "window": 7,
+    "weighting": "turinici_code",
+    "median_error": 0.05422100587678533,
+    "max_error": 0.11377059175349588,
+    "final_error": 0.04988217997853831,
+    "fraction_error_below_1": 1.0,
+    "runtime_seconds": 99.5879691350001,
+    "metrics_file": "/mnt/d_drive/programs/directional_pinn/results/adaptive_time_weighting/w7_t2_piecewise_turinici_code_fixed/metrics.json"
+  },
+  {
+    "window": 8,
+    "weighting": "turinici_code",
+    "median_error": 0.1110974863263483,
+    "max_error": 0.47888954526624633,
+    "final_error": 0.44988165754366327,
+    "fraction_error_below_1": 1.0,
+    "runtime_seconds": 99.63266251300047,
+    "metrics_file": "/mnt/d_drive/programs/directional_pinn/results/adaptive_time_weighting/w8_t2_piecewise_turinici_code_fixed/metrics.json"
+  }
+]

@@ -1,0 +1,162 @@
+[
+  {
+    "window": 1,
+    "weighting": "turinici",
+    "median_error": 0.04331044679514468,
+    "max_error": 7.628144659483035,
+    "final_error": 6.677478221380308,
+    "fraction_error_below_1": 0.8391608391608392,
+    "runtime_seconds": 97.48316793699996,
+    "metrics_file": "/mnt/d_drive/programs/directional_pinn/results/adaptive_time_weighting/w1_t2_piecewise_turinici_fixed/metrics.json"
+  },
+  {
+    "window": 1,
+    "weighting": "uniform",
+    "median_error": 0.044744303504099095,
+    "max_error": 7.36126070010379,
+    "final_error": 6.438081190343807,
+    "fraction_error_below_1": 0.8411588411588412,
+    "runtime_seconds": 88.71089889500035,
+    "metrics_file": "/mnt/d_drive/programs/directional_pinn/results/adaptive_time_weighting/w1_t2_piecewise_uniform_fixed/metrics.json"
+  },
+  {
+    "window": 2,
+    "weighting": "turinici",
+    "median_error": 0.06783409515347356,
+    "max_error": 0.5183629166751531,
+    "final_error": 0.14409397240836938,
+    "fraction_error_below_1": 1.0,
+    "runtime_seconds": 96.95097931800001,
+    "metrics_file": "/mnt/d_drive/programs/directional_pinn/results/adaptive_time_weighting/w2_t2_piecewise_turinici_fixed/metrics.json"
+  },
+  {
+    "window": 2,
+    "weighting": "uniform",
+    "median_error": 0.05781063114582656,
+    "max_error": 0.45141752496315724,
+    "final_error": 0.13102037354416785,
+    "fraction_error_below_1": 1.0,
+    "runtime_seconds": 87.85610239800008,
+    "metrics_file": "/mnt/d_drive/programs/directional_pinn/results/adaptive_time_weighting/w2_t2_piecewise_uniform_fixed/metrics.json"
+  },
+  {
+    "window": 3,
+    "weighting": "turinici",
+    "median_error": 0.05122203845528192,
+    "max_error": 0.2536314600523212,
+    "final_error": 0.10140516809288123,
+    "fraction_error_below_1": 1.0,
+    "runtime_seconds": 97.9766047930002,
+    "metrics_file": "/mnt/d_drive/programs/directional_pinn/results/adaptive_time_weighting/w3_t2_piecewise_turinici_fixed/metrics.json"
+  },
+  {
+    "window": 3,
+    "weighting": "uniform",
+    "median_error": 0.04614675376940658,
+    "max_error": 0.19619635904061478,
+    "final_error": 0.0794904036022995,
+    "fraction_error_below_1": 1.0,
+    "runtime_seconds": 88.1153166879999,
+    "metrics_file": "/mnt/d_drive/programs/directional_pinn/results/adaptive_time_weighting/w3_t2_piecewise_uniform_fixed/metrics.json"
+  },
+  {
+    "window": 4,
+    "weighting": "turinici",
+    "median_error": 0.024365101698243057,
+    "max_error": 0.10498558570562065,
+    "final_error": 0.06132746179289432,
+    "fraction_error_below_1": 1.0,
+    "runtime_seconds": 96.85403552800017,
+    "metrics_file": "/mnt/d_drive/programs/directional_pinn/results/adaptive_time_weighting/w4_t2_piecewise_turinici_fixed/metrics.json"
+  },
+  {
+    "window": 4,
+    "weighting": "uniform",
+    "median_error": 0.02411915068589625,
+    "max_error": 0.08426080924578817,
+    "final_error": 0.029552241285933874,
+    "fraction_error_below_1": 1.0,
+    "runtime_seconds": 89.08486560099982,
+    "metrics_file": "/mnt/d_drive/programs/directional_pinn/results/adaptive_time_weighting/w4_t2_piecewise_uniform_fixed/metrics.json"
+  },
+  {
+    "window": 5,
+    "weighting": "turinici",
+    "median_error": 0.05000697092937717,
+    "max_error": 0.16040970163244406,
+    "final_error": 0.07379456017486853,
+    "fraction_error_below_1": 1.0,
+    "runtime_seconds": 96.59473199100012,
+    "metrics_file": "/mnt/d_drive/programs/directional_pinn/results/adaptive_time_weighting/w5_t2_piecewise_turinici_fixed/metrics.json"
+  },
+  {
+    "window": 5,
+    "weighting": "uniform",
+    "median_error": 0.04291106193872128,
+    "max_error": 0.14924035808841182,
+    "final_error": 0.06631432701336834,
+    "fraction_error_below_1": 1.0,
+    "runtime_seconds": 87.76751936799974,
+    "metrics_file": "/mnt/d_drive/programs/directional_pinn/results/adaptive_time_weighting/w5_t2_piecewise_uniform_fixed/metrics.json"
+  },
+  {
+    "window": 6,
+    "weighting": "turinici",
+    "median_error": 0.052599695410493856,
+    "max_error": 0.318127510449069,
+    "final_error": 0.11165940061634648,
+    "fraction_error_below_1": 1.0,
+    "runtime_seconds": 96.4760175690003,
+    "metrics_file": "/mnt/d_drive/programs/directional_pinn/results/adaptive_time_weighting/w6_t2_piecewise_turinici_fixed/metrics.json"
+  },
+  {
+    "window": 6,
+    "weighting": "uniform",
+    "median_error": 0.04361556301982258,
+    "max_error": 0.2636777372016982,
+    "final_error": 0.10739287905323783,
+    "fraction_error_below_1": 1.0,
+    "runtime_seconds": 88.6511898040003,
+    "metrics_file": "/mnt/d_drive/programs/directional_pinn/results/adaptive_time_weighting/w6_t2_piecewise_uniform_fixed/metrics.json"
+  },
+  {
+    "window": 7,
+    "weighting": "turinici",
+    "median_error": 0.02717666806372114,
+    "max_error": 0.06848261767315145,
+    "final_error": 0.05291732022517408,
+    "fraction_error_below_1": 1.0,
+    "runtime_seconds": 96.38433840599964,
+    "metrics_file": "/mnt/d_drive/programs/directional_pinn/results/adaptive_time_weighting/w7_t2_piecewise_turinici_fixed/metrics.json"
+  },
+  {
+    "window": 7,
+    "weighting": "uniform",
+    "median_error": 0.026119676935167462,
+    "max_error": 0.06720766498879581,
+    "final_error": 0.05304152672524419,
+    "fraction_error_below_1": 1.0,
+    "runtime_seconds": 87.8061077100001,
+    "metrics_file": "/mnt/d_drive/programs/directional_pinn/results/adaptive_time_weighting/w7_t2_piecewise_uniform_fixed/metrics.json"
+  },
+  {
+    "window": 8,
+    "weighting": "turinici",
+    "median_error": 0.04294022445196848,
+    "max_error": 0.16953190646149632,
+    "final_error": 0.16953190646149632,
+    "fraction_error_below_1": 1.0,
+    "runtime_seconds": 96.20556244399995,
+    "metrics_file": "/mnt/d_drive/programs/directional_pinn/results/adaptive_time_weighting/w8_t2_piecewise_turinici_fixed/metrics.json"
+  },
+  {
+    "window": 8,
+    "weighting": "uniform",
+    "median_error": 0.03859723004762643,
+    "max_error": 0.1398130025427068,
+    "final_error": 0.13153062679962893,
+    "fraction_error_below_1": 1.0,
+    "runtime_seconds": 87.57841765900002,
+    "metrics_file": "/mnt/d_drive/programs/directional_pinn/results/adaptive_time_weighting/w8_t2_piecewise_uniform_fixed/metrics.json"
+  }
+]

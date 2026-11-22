@@ -12,6 +12,18 @@
 > [validation plan](independent_validation_plan.md), and
 > [validation log](validation_progress_2026-11-22.md).
 
+> **Later 22 November adaptive-weighting test:** The paper's state-based
+> time-weighting rule was ported to our PyTorch PINN and compared with uniform
+> weighting on the same fixed grid, seed, architecture, and budget. The global
+> two-unit pilot remained inaccurate with either weighting. In eight seed-0
+> sequential windows, the equation-based adaptive scale lowered median error
+> in 1/8; both it and uniform weighting stayed below error 1 throughout in
+> 7/8. The author's literal code time scale lowered median error in 0/8 and
+> kept 6/8 below error 1. See the
+> [run log](adaptive_weighting_progress_2026-11-22.md) and
+> [updated final report](final_project_report.pdf). The chronological text below
+> describes the state before this later test.
+
 ## What this project actually tests
 
 The reference paper, Gabriel Turinici's *Regime-Aware Time Weighting for Physics-Informed Neural Networks* ([arXiv:2407.21642v2](https://arxiv.org/abs/2407.21642v2)), asks how to weight **when** a PINN violates a differential equation. It derives a scalar time weight from a worst-case final-error bound, then estimates the needed growth rate from the evolving PINN. Its Lorenz experiment changes the training loss.
@@ -31,7 +43,7 @@ The standard PINNs could only be studied over windows of length 1. The leading s
 1. Turinici's \(\rho_{\mathrm{opt}}(t)\propto\exp[-\int_0^t\lambda(s)\,ds]\) is optimal **for the paper's stated minimax problem**, which holds a weighted residual-loss budget fixed and assumes the initial condition is satisfied exactly. It is not a universal guarantee of minimum final error for any finite neural-network training run. Our PINN instead uses a soft initial-condition penalty.
 2. The paper's scalar \(\lambda(t)\) bounds the one-sided error growth in Proposition 1; the practical estimator in Eq. (17) substitutes the current PINN state and zero for the unknown exact state. It should not be described as a precisely measured Lyapunov exponent. A scalar bound discards direction because it is a bound, not because direction is physically irrelevant.
 3. The error equation is exact as \(\dot e=f(\hat x)-f(x)+r\). Replacing \(f(\hat x)-f(x)\) by \(J(x)e\) gives the **linearized** Duhamel reconstruction used here. It is an approximation for nonlinear Lorenz-63; its reported median relative mismatch is about 6% across runs, despite some runs having large errors.
-4. The project has now tested sparse linear interpolation plus a trailing residual average as an **exploratory follow-up**; see `docs/interpolation_progress.md`. It has not tested Gaussian-process smoothing, Duhamel-integrated predictors as held-out regressors, or Turinici-style time weighting in training. The report's suggestion that weighting may resolve the cause is a hypothesis, not a result.
+4. The project has now tested sparse linear interpolation plus a trailing residual average as an **exploratory follow-up**; see `docs/interpolation_progress.md`. It has not tested Gaussian-process smoothing or Duhamel-integrated predictors as held-out regressors. The later adaptive-weighting test is documented above; it did not establish an improvement in our setup.
 
 ## Decision for the next study
 
@@ -43,7 +55,7 @@ With all 40 PINNs rebuilt, a width-0.25 linear trailing average improves held-ou
 
 A post-result control that simply averages sampled residual magnitudes, including the current sample, gives similar gains to sample-and-hold. Linear interpolation improves held-out `R²` over this simpler control by about +0.05 to +0.06 at horizons 0.1 and 0.25 for a width-0.25 average. This is a modest exploratory interpolation effect; the stronger finding is that averaging recent residual magnitudes helps at short horizons. Details and the retained invalid look-ahead run are in `docs/interpolation_progress.md`.
 
-Running that study required regenerating the untracked `trajectory.npz` and `residuals.npz` arrays; the committed JSON summaries alone could not support a new time-series analysis. Retraining with Turinici's weights is a separate controlled experiment requiring the same seeds, compute budget, and accuracy metrics as the baseline. That experiment is not needed to state the original conclusion.
+Running that study required regenerating the untracked `trajectory.npz` and `residuals.npz` arrays; the committed JSON summaries alone could not support a new time-series analysis. The subsequent controlled port of Turinici's adaptive rule uses matched seeds, fixed grids, compute budgets, and trajectory-accuracy metrics; its limited one-seed results are in `docs/adaptive_weighting_progress_2026-11-22.md`. It does not change the original directional conclusion.
 
 ## Evidence
 

@@ -1,0 +1,35 @@
+{
+  "created_utc": "2026-11-22T07:45:06+00:00",
+  "command": [
+    "/mnt/d_drive/programs/directional_pinn/experiments/13_piecewise_pinn_pilot.py",
+    "--window",
+    "5",
+    "--seed",
+    "0",
+    "--collocation-scheme",
+    "fixed",
+    "--time-weighting",
+    "turinici",
+    "--reference",
+    "/mnt/d_drive/programs/directional_pinn/results/interpolation_rebuild/reference/data/window_5.npz",
+    "--out",
+    "/mnt/d_drive/programs/directional_pinn/results/adaptive_time_weighting/w5_t2_piecewise_turinici_fixed"
+  ],
+  "runtime_seconds": 96.595,
+  "git": {
+    "commit": "ac6e4c7bf6d680693f4b58fddf8168acc1a5b6ba",
+    "dirty": true
+  },
+  "environment": {
+    "python": "3.13.15",
+    "platform": "Linux-6.18.53-x86_64-with-glibc2.42",
+    "packages": {
+      "numpy": "2.5.5",
+      "scipy": "1.18.1",
+      "matplotlib": "3.11.2",
+      "PyYAML": "6.0.4",
+      "pytest": "9.2.0",
+      "torch": "2.15.0+cpu"
+    }
+  }
+}

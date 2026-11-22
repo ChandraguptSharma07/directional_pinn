@@ -14,6 +14,7 @@ from src.pinn.train import (
     train_pinn,
     train_pinns,
     training_interval,
+    turinici_time_weights,
     weighted_residual_loss,
 )
 from src.systems.lorenz63 import LorenzParams, lorenz_fixed_points, lorenz_rhs
@@ -113,6 +114,33 @@ def test_early_residual_weighting_emphasizes_start_without_changing_default():
     assert weighted_residual_loss(residual, t, weighted) == pytest.approx(41 / 11)
     with pytest.raises(ValueError):
         weighted_residual_loss(residual, t, TrainConfig(t_final=1.0, x0=[0.0] * 3, early_weight=-1))
+
+
+def test_turinici_weights_follow_discrete_growth_proxy_and_normalize():
+    states = torch.tensor([[1.0, 1.0, 1.0], [2.0, 3.0, 4.0], [4.0, 5.0, 6.0]])
+    rate = (lorenz_rhs_torch(states, PARAMS) * states).sum(-1) / (states.square().sum(-1) + 1e-10)
+    expected = torch.softmax(-torch.cumsum(rate, 0) * 0.25, dim=0)
+    weights = turinici_time_weights(states, 0.5, PARAMS)
+    torch.testing.assert_close(weights, expected)
+    code_expected = torch.softmax(-torch.cumsum(rate, 0) * 0.5, dim=0)
+    torch.testing.assert_close(turinici_time_weights(states, 0.5, PARAMS, code_time_scale=True), code_expected)
+    assert weights.sum() == pytest.approx(1.0)
+    assert torch.all(weights > 0)
+
+
+def test_short_adaptive_train_and_fixed_uniform_control():
+    small = dict(t_final=0.5, x0=[1.0, 2.0, 20.0], hidden=[8, 8],
+                 iterations=8, n_collocation=16, hard_ic=True, curriculum_start=None,
+                 collocation_scheme="fixed", log_every=4)
+    adaptive = TrainConfig(**small, time_weighting="turinici")
+    _, history = train_pinn(adaptive, PARAMS)
+    assert len(history["final_time_weights"]) == 16
+    assert all(np.isfinite(history["loss"]))
+    assert any(abs(c - 1.0) > 1e-5 for c in history["weight_contrast"])
+    _, uniform_history = train_pinn(TrainConfig(**small), PARAMS)
+    assert uniform_history["weight_contrast"] == [1.0, 1.0]
+    with pytest.raises(ValueError, match="fixed full-window grid"):
+        train_pinn(TrainConfig(**{**small, "collocation_scheme": "stratified"}, time_weighting="turinici"), PARAMS)
 
 
 SMALL = dict(t_final=0.5, x0=[1.0, 2.0, 20.0], hidden=[16, 16], iterations=30, n_collocation=64, log_every=10)

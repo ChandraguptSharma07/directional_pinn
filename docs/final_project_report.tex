@@ -13,7 +13,7 @@
 \begin{document}
 \maketitle
 \begin{abstract}
-The project asks whether the direction of a physics-informed neural network (PINN) residual, in addition to its magnitude, predicts later trajectory error in a chaotic ordinary differential equation. Turinici's regime-aware time-weighting paper motivated the question: its scalar error bound prioritizes when residuals occur but cannot describe their orientation. A linear saddle verifies that equal-size residuals can have very different effects. We then test two reference-derived expanding directions on Lorenz-63 PINNs with a fixed, held-out prediction rule. Neither direction passes that rule in the original 40 runs, nor in 40 fresh runs of a more accurate sequential PINN. A sparse-residual interpolation and trailing-average study finds exploratory short-horizon predictive value from residual history. Model development improves a two-time-unit pilot from median error 6.052 to 0.0259, but fresh validation shows only 30 of 40 sequential runs remain below error 1 throughout. Full reference-based tangent amplification adds held-out predictive information at longer horizons; it is an oracle diagnostic, not a deployable predictor. The final conclusion is a bounded negative result for one-vector pointwise alignment, accompanied by a useful sequential model and a more precise account of which residual information matters.
+The project asks whether the direction of a physics-informed neural network (PINN) residual, in addition to its magnitude, predicts later trajectory error in a chaotic ordinary differential equation. Turinici's regime-aware time-weighting paper motivated the question: its scalar error bound prioritizes when residuals occur but cannot describe their orientation. A linear saddle verifies that equal-size residuals can have very different effects. We then test two reference-derived expanding directions on Lorenz-63 PINNs with a fixed, held-out prediction rule. Neither direction passes that rule in the original 40 runs, nor in 40 fresh runs of a more accurate sequential PINN. A sparse-residual interpolation and trailing-average study finds exploratory short-horizon predictive value from residual history. Model development improves a two-time-unit pilot from median error 6.052 to 0.0259, but fresh validation shows only 30 of 40 sequential runs remain below error 1 throughout. We also port the reference paper's adaptive time-weighting rule, checking both its equation and source-code time scales. Neither improves our matched global pilot or one-seed eight-window sequential comparison. Full reference-based tangent amplification adds held-out predictive information at longer horizons; it is an oracle diagnostic. The final conclusion is a bounded negative result for one-vector pointwise alignment, accompanied by a useful sequential model and a clearer account of which residual information matters.
 \end{abstract}
 \tableofcontents
 \clearpage
@@ -150,8 +150,23 @@ H_w(t)=\frac1w\int_{t-w}^{t}\norm{\widetilde r(s)}\dd s.
 The held-out regression adds $\log H_w$ to a baseline using pointwise $\log\norm{\widetilde r_{\rm lin}(t)}$ and normalized time. Evaluation is only at observed knots, so the integral uses no residual measured after prediction time. An initial analysis at intermediate fine-grid times accidentally allowed linear interpolation to use a future knot; its predictive scores were invalidated and replaced by this causal-at-evaluation-time design \cite{interpolation}.
 
 For width 0.25 the linear-history feature increased held-out $R^2$ over pointwise magnitude plus time by $+0.474$, $+0.472$, and $+0.312$ for horizons 0.05, 0.1, and 0.25. The direct gain over sample-and-hold was much smaller: $+0.058$, $+0.055$, and $+0.052$. A post-result box control averaging observed knot magnitudes including the current knot gave a similar baseline; the linear gain over it was about $+0.05$ to $+0.06$ at horizons 0.1 and 0.25. At horizon 0.5 the gain of any trailing average over the pointwise-plus-time baseline was uncertain. Linear reconstruction also recovered dense trailing averages more accurately than hold (relative absolute error 0.071 versus 0.079 for width 0.25) \cite{interpolation}.
+\begin{table}[H]\centering\small
+\caption{Exploratory sparse-residual history test at trailing width $w=0.25$. Gains are held-out $R^2$ changes over pointwise residual magnitude plus time, on the same sampled-knot prediction times. The box control averages observed knot magnitudes, including the current knot.}\label{tab:interpolation}
+\begin{tabular}{@{}ccccc@{}}\toprule
+Future horizon & Baseline $R^2$ & Linear gain & Hold gain & Box gain\\\midrule
+0.05 & 0.197 & $+0.474$ & $+0.416$ & $+0.411$\\
+0.10 & 0.279 & $+0.472$ & $+0.417$ & $+0.412$\\
+0.25 & 0.568 & $+0.312$ & $+0.260$ & $+0.261$\\
+0.50 & 0.817 & $+0.043$ & $-0.002$ & $\approx0$\\\bottomrule
+\end{tabular}
+\end{table}
+\begin{figure}[H]\centering
+\includegraphics[width=.82\linewidth]{report_interpolation_gains.pdf}
+\caption{Exploratory held-out prediction gains at trailing width $0.25$, generated from the corrected sampled-knot metrics. All three methods include residual history; the smaller gap between linear reconstruction and the two simpler controls is the interpolation-specific effect. The gain at horizon $0.5$ over the pointwise baseline is uncertain.}\label{fig:interpolation}
+\end{figure}
+At the other explored width, $w=0.10$, linear gains over the same pointwise baseline were $+0.288$, $+0.295$, $+0.216$, and $+0.049$ in increasing horizon order. Linear interpolation better reconstructs the dense history feature than hold, but predictive gains depend on the regression target, window width, and control. For example, the interval for the $w=0.10$, $\Delta=0.05$ linear-minus-box gain includes zero; we therefore do not generalize the modest interpolation-specific effect to every horizon and width. The corrected analysis uses eight window clusters and resamples held-out predictions without refitting in each bootstrap draw, so its intervals describe this dataset rather than a confirmatory guarantee.
 
-The useful signal is principally \emph{recent residual magnitude}; interpolation contributes a smaller, exploratory increment. These widths, horizons, and the box control were explored after the original study, and there are only eight independent initial-condition windows. The interpolation analysis used a restricted prediction-time subset and a time-adjusted baseline, so its $R^2$ values are not directly comparable to Table~\ref{tab:original}. It did not improve the PINN trajectory by changing training. Gaussian-process smoothing, a held-out Duhamel-integrated predictor, and the paper's adaptive time weighting remain untested proposals.
+The useful signal is principally \emph{recent residual magnitude}; interpolation contributes a smaller, exploratory increment. These widths, horizons, and the box control were explored after the original study, and there are only eight independent initial-condition windows. The interpolation analysis used a restricted prediction-time subset and a time-adjusted baseline, so its $R^2$ values are not directly comparable to Table~\ref{tab:original}. It did not improve the PINN trajectory by changing training. Gaussian-process smoothing and a held-out Duhamel-integrated predictor remain untested proposals. The adaptive time-weighting experiment is reported separately in Section~\ref{sec:adaptive}.
 
 \section{Improving the trajectory model and revisiting the question}
 \subsection{Hard initial condition, early weighting, and optimization}
@@ -166,6 +181,18 @@ L_{\rm early}(\theta)=\frac{\sum_i[1+9(1-t_i/T)]\norm{r(t_i)}^2}
 {\sum_i[1+9(1-t_i/T)]}.
 \end{equation}
 Its pilot median error was 6.036; the fraction of points with error below 1 rose only from 11.3\% to 12.6\%. This fixed linear weight is \emph{not} Turinici's adaptive density \eqref{eq:rho}. Refining the hard-IC model with 300 float64 L-BFGS steps reduced the full-window collocation loss only from 2.31833 to 2.31595 and left median error at 6.052. These pilots showed that exact anchoring helped, while these particular weighting and local optimizer refinements did not solve the length-two trajectory problem \cite{modelprogress}.
+\begin{table}[H]\centering\small
+\caption{Window-0, seed-0 $T=2$ run-log milestones. These are trajectory errors against the reference, not interchangeable training-loss values. The soft-IC result is an earlier saved pilot, whereas later runs use a regenerated reference and current environment.}\label{tab:milestones}
+\begin{tabular}{@{}lrrrr@{}}\toprule
+Training configuration & Median error & Maximum error & Share $E<1$ & Median $\norm r$\\\midrule
+Global soft IC & 17.476 & 40.649 & 3.0\% & 0.083\\
+Global hard IC & 6.052 & 35.767 & 11.3\% & 0.819\\
+Hard IC + fixed early weight & 6.036 & 35.817 & 12.6\% & 1.119\\
+Hard IC + L-BFGS refinement & 6.052 & 35.771 & 11.3\% & 0.812\\
+Eight sequential hard-IC PINNs & 0.0259 & 0.154 & 100\% & 0.398\\\bottomrule
+\end{tabular}
+\end{table}
+One specific diagnostic from the hard-IC global run shows why a late residual cannot certify a trajectory: error first exceeds 1 near $t=0.226$, and at $t=1.25$ the trajectory error is about 32 while the local residual norm is only 0.11. Residual norms near the beginning were much larger (about 2.36 at $t=0$ and 3.15 at $t=0.1$), allowing earlier defects to propagate. The error threshold $E<1$ is an absolute Euclidean state-space criterion used consistently here; it is a practical quality indicator for this experiment, not a universal notion of a correct Lorenz prediction.
 
 \subsection{Sequential time-domain decomposition}
 The effective change was to train eight hard-IC networks on consecutive subintervals of length $h=0.25$ to cover $T=2$. On segment $j$, local time $s\in[0,h]$ and start state $X_j$ define
@@ -184,6 +211,21 @@ On the pilot initial condition, the piecewise model reduced median error from th
 
 \subsection{Frozen fresh-window validation}
 To check generalization after model development, we froze all segment, training, and analysis settings and generated a new long-run Lorenz trajectory starting from $(7,8,9)$ rather than $(1,1,1)$. Fresh windows 1--8 and seeds 0--4 gave 40 new finite runs, none omitted. The new reference passed 36/36 checks, and tangent quantities passed 31/31 checks. Median of run-level median trajectory errors was 0.0551, and median of run maxima was 0.3991. Crucially, \textbf{30/40} runs stayed below error 1 throughout $T=2$ and 32/40 did so for at least 90\% of the window. Full-window success counts across windows 1--8 were $(0,5,2,5,5,4,4,5)$ out of five. The method is substantially better than the global pilot, but failures cluster by initial condition; the development-set 35/40 figure was optimistic for this new set \cite{validation}.
+\begin{table}[H]\centering\small
+\caption{Frozen fresh-reference run log, five seeds per window. The window median is the median of five run-level median errors; worst maximum is the largest error reached by any seed. A small median can coexist with late failure.}\label{tab:freshwindows}
+\begin{tabular}{@{}cccc@{}}\toprule
+Window & Median of run medians & Worst maximum & Runs with $E(t)<1$ throughout\\\midrule
+1 & 0.0187 & 5.692 & 0/5\\
+2 & 0.0636 & 0.511 & 5/5\\
+3 & 0.0374 & 2.626 & 2/5\\
+4 & 0.0741 & 0.316 & 5/5\\
+5 & 0.0436 & 0.177 & 5/5\\
+6 & 0.0995 & 1.149 & 4/5\\
+7 & 0.0656 & 1.559 & 4/5\\
+8 & 0.0630 & 0.168 & 5/5\\\bottomrule
+\end{tabular}
+\end{table}
+Window 1 illustrates why we report maxima and full-window success as well as medians: all five runs cross error 1 at some time even though their median run error is low. A model can track much of a chaotic trajectory and still fail near the end. The eight windows, rather than the 40 seeded trainings or thousands of time samples, are the independent initial-condition units for uncertainty about transfer across trajectories. This is why the fresh oracle sensitivity resamples whole windows. The reference trust horizon remains longer than $T=2$, so these late discrepancies cannot be explained by the numerical reference reaching its documented accuracy limit.
 \begin{figure}[H]\centering
 \includegraphics[width=.86\linewidth]{independent_validation_40runs.pdf}
 \caption{All 40 frozen-model runs on the new eight initial conditions. Failures are included in the summary.}\label{fig:fresh}
@@ -203,10 +245,63 @@ $\Delta$ & $R^2(M_0)$ & $\Delta R^2(b_1)$ & $\Delta R^2(s_1)$ & $\Delta R^2(\Phi
 \end{table}
 The raw residual-only $R^2$ is near zero or negative, consistent with the target's inherited-error component. A separate, post-hoc sensitivity analysis therefore adds elapsed time and time squared to the residual-magnitude baseline and resamples whole initial-condition windows, keeping each window's five seeds together. The \emph{oracle} full-amplification gain beyond that baseline is $+0.056$ with window-bootstrap interval $[0.031,0.083]$ at $\Delta=0.25$; $+0.258$ $[0.206,0.395]$ at $0.5$; and $+0.442$ $[0.267,0.672]$ at $1.0$. The single-direction features still do not show useful positive gains. These intervals describe eight-window uncertainty for a secondary, reference-dependent feature, not a new practical predictor or causal training result \cite{validation}.
 
+\section{Direct test of the paper's adaptive time weighting}\label{sec:adaptive}
+After the first version of this report, we cloned the author's official code at commit \texttt{0595f4c} \cite{authorcode}. Its Lorenz implementation uses a fixed time grid and updates normalized residual-loss weights from the current candidate trajectory after every training epoch. We ported that rule to the existing PyTorch trainer so it could be tested under our architecture and reference protocol. At fixed grid times $t_i=iT/(N-1)$, the discrete rate proxy and weights are
+\begin{align}\label{eq:adaptiveactual}
+\widehat\lambda_i&=\frac{f(\widehat X_\theta(t_i))^\top\widehat X_\theta(t_i)}
+{\norm{\widehat X_\theta(t_i)}^2+10^{-10}},\qquad \delta t=\frac{T}{N-1},\\
+q_i&=\frac{\exp[-\delta t\sum_{j=0}^i\widehat\lambda_j]}
+{\sum_k\exp[-\delta t\sum_{j=0}^k\widehat\lambda_j]},\qquad
+L_{\rm adaptive}=\sum_i q_i\norm{r(t_i)}^2.
+\end{align}
+The weights are updated from the network after each Adam step and held fixed during the next gradient calculation. The initial condition is enforced exactly. Equation~\eqref{eq:adaptiveactual} implements the paper's Eq.~\eqref{eq:rho} and practical proxy Eq.~\eqref{eq:lambdaest} in physical time. The author's Lorenz code instead uses $\delta t_{\rm code}=1/(N-1)$ in its cumulative sum even for its $T=0.5$ interval. We tested that literal scaling as a separate \texttt{turinici\_code} mode, changing only $\delta t$. Our weighted objective is normalized to the same scale as our uniform control; the author's TensorFlow loss has its own overall scaling. The author's complete architecture and schedule were not reproduced, so these are tests of its \emph{adaptive weighting rule within our PINN}, not a reproduction of every published numerical result.
+
+To isolate weighting, each adaptive run has a uniform-weight control with the same fixed grid, hard-IC model, seed, updates, and optimizer. In the global $T=2$ window-0 pilot, both used 20,000 updates and 256 collocation points. Uniform weights gave median trajectory error 17.473 and error below 1 for 3.20\% of the interval; adaptive weights gave 17.415 and 4.10\%. Both failed to solve the full trajectory. The adaptive run's final weights put 74.1\% of their mass on the last quarter of the grid and only 1.34\% on the first quarter; their max/min ratio was about 202. Its final \emph{weighted} training loss was smaller, but that is a different objective from the uniform loss and did not establish trajectory improvement.
+
+Because the paper's own Lorenz experiments use shorter intervals, we also tested the rule within eight consecutive $0.25$-unit segments. The matched window-0 pilot used 4000 updates and 256 fixed points per segment. Uniform weighting gave median error 0.03594 and maximum 0.3130; adaptive weighting gave median 0.04203 and maximum 0.4094. Both stayed below error 1 throughout. Final weight contrasts on these short segments ranged from about 1.4 to 2.3, much nearer uniform than the global weights.
+
+We then ran the same pair on all eight original analysis starting conditions at seed 0, without selecting only favorable windows. Table~\ref{tab:adaptive} reports trajectory error against the trusted reference, which is the common outcome for both objectives. The median of run-level median errors was 0.04326 with uniform weights and 0.04666 with adaptive weights. The adaptive run had a lower median error in only one of eight paired windows. Both methods stayed below error 1 throughout on seven of eight windows; both failed late on window 1. Mean training time per two-unit run was 88.2 versus 96.9 seconds, respectively. Thus this port of the paper's rule did not improve our sequential PINN in this one-seed comparison. The source code, all run files, and the comparison protocol are recorded in \cite{adaptiveprogress}.
+\begin{table}[H]\centering\small
+\caption{Matched fixed-grid sequential PINNs, seed 0: per-window median and maximum Euclidean trajectory errors. Only time weighting differs within a row.}\label{tab:adaptive}
+\begin{tabular}{@{}ccccc@{}}\toprule
+Window & Uniform median & Adaptive median & Uniform maximum & Adaptive maximum\\\midrule
+1 & 0.04474 & 0.04331 & 7.3613 & 7.6281\\
+2 & 0.05781 & 0.06783 & 0.4514 & 0.5184\\
+3 & 0.04615 & 0.05122 & 0.1962 & 0.2536\\
+4 & 0.02412 & 0.02437 & 0.0843 & 0.1050\\
+5 & 0.04291 & 0.05001 & 0.1492 & 0.1604\\
+6 & 0.04362 & 0.05260 & 0.2637 & 0.3181\\
+7 & 0.02612 & 0.02718 & 0.0672 & 0.0685\\
+8 & 0.03860 & 0.04294 & 0.1398 & 0.1695\\\bottomrule
+\end{tabular}
+\end{table}
+These are eight starting conditions already used during model development, with one seed each. They are descriptive follow-up evidence, not a fresh 40-run validation or a reproduction of the paper's published TensorFlow comparison. The rate proxy in Eq.~\eqref{eq:adaptiveactual} is not guaranteed to equal the one-sided bound rate required in Eq.~\eqref{eq:onesided}; the global pilot's strong late weighting illustrates that gap. The observed sequential advantage is still attributable to the complete segmented training package, not to this adaptive weighting option.
+
+The literal source-code time scale produced a different, stronger weighting distribution on short segments. Its matched global $T=2$ pilot still failed (median error 17.489 versus 17.473 uniform). On the eight sequential windows, the median of run-level median errors was 0.10283, versus 0.04326 uniform and 0.04666 with Eq.~\eqref{eq:adaptiveactual}'s physical-time scale. It lowered median error on 0/8 windows and stayed below error 1 throughout on 6/8, versus 7/8 for each other method. Table~\ref{tab:codeweights} gives all eight outcomes. This source-code scaling is a sensitivity to the published implementation, not a separate theorem or an independent validation set.
+\begin{table}[H]\centering\small
+\caption{Literal author-code cumulative time scale, same eight fixed-grid sequential windows and seed 0 as Table~\ref{tab:adaptive}. Values are Euclidean trajectory errors.}\label{tab:codeweights}
+\begin{tabular}{@{}ccc@{}}\toprule
+Window & Source-scale median & Source-scale maximum\\\midrule
+1 & 0.13425 & 36.8641\\
+2 & 0.13275 & 0.8259\\
+3 & 0.09457 & 0.5071\\
+4 & 0.07770 & 0.4043\\
+5 & 0.09132 & 0.3598\\
+6 & 0.23774 & 1.4802\\
+7 & 0.05422 & 0.1138\\
+8 & 0.11110 & 0.4789\\\bottomrule
+\end{tabular}
+\end{table}
+\begin{figure}[H]\centering
+\includegraphics[width=.82\linewidth]{report_adaptive_paired_windows.pdf}
+\caption{Matched fixed-grid sequential trainings on the eight previously used analysis windows, seed 0. The vertical axis is logarithmic; lower median trajectory error is better. ``Paper equation'' uses physical-time spacing in the density, while ``author code scale'' uses the time step in the released Lorenz script. This is an exploratory within-architecture comparison, not the paper's published benchmark.}\label{fig:adaptivepaired}
+\end{figure}
+The code-scale result does not contradict the paper's minimax statement: that statement assumes a suitable scalar growth bound and a fixed weighted-residual budget, whereas this is finite neural-network optimization with a rough state/zero rate proxy. It does show that neither implemented scaling was a demonstrated trajectory improvement for our Lorenz solver in the matched tests \cite{adaptiveprogress}.
+
 \section{Final conclusion and limits}
 The original goal was to learn whether the orientation of a PINN's local ODE violation could improve forecasts of its future error. The mathematical motivation is sound: for equal-size defects, linear dynamics can amplify one direction and damp another. The original empirical hypothesis, however, was \textbf{not supported}: neither backward Lyapunov alignment nor leading finite-time singular alignment improves held-out prediction enough to meet the fixed rule in the initial standard-PINN study or the frozen fresh-window sequential-PINN study. This is a Lorenz-63, architecture- and task-specific conclusion, not a theorem that direction never matters.
 
-The research also identified what was more useful in these data. Recent residual \emph{history} predicts short-horizon total error in an exploratory sparse-sampling study, while the full tangent propagator's amplification of all residual components carries reference-dependent information at longer horizons. The latter cannot be deployed as measured here because it requires the true trajectory. Sequential hard-IC training extended useful trajectories from the original $T=1$ limit to $T=2$ for most new runs; its observed full-window success rate was 30/40, so the model remains sensitive to initial condition. The tested fixed early weight and L-BFGS refinement did not resolve the global-$T=2$ failure. No Gaussian-process smoother, held-out Duhamel-integral regressor, adaptive Turinici weighting, or directional loss has been claimed as a completed result.
+The research also identified what was more useful in these data. Recent residual \emph{history} predicts short-horizon total error in an exploratory sparse-sampling study, while the full tangent propagator's amplification of all residual components carries reference-dependent information at longer horizons. The latter cannot be deployed as measured here because it requires the true trajectory. Sequential hard-IC training extended useful trajectories from the original $T=1$ limit to $T=2$ for most new runs; its observed full-window success rate was 30/40, so the model remains sensitive to initial condition. Fixed early weighting and L-BFGS refinement did not materially improve their global pilots. Neither tested time scale of the ported Turinici adaptive rule improved the matched global pilot or the eight-window, one-seed sequential comparison. No Gaussian-process smoother, held-out Duhamel-integral regressor, or directional loss has been claimed as a completed result.
 
 The main limitations are eight initial-condition clusters per set, one chaotic system, one base architecture, post-hoc choices in the interpolation and model-improvement branches, and an oracle analysis that uses a trusted numerical reference. The fresh model was frozen before those new windows were evaluated, but its design followed the earlier results; this is an independent-initial-condition validation of a developed method, not a preregistered independent method discovery. A future practical extension would estimate time-integrated amplification from the candidate trajectory and test it on new systems and new initial conditions. The present project reaches a defensible conclusion without claiming that unperformed extensions succeeded.
 
@@ -219,8 +314,9 @@ The source repository provides the complete numerical record. Main checkpoints a
 \item Baseline setup and theory checks: \path{docs/phase4_pinn.md}, \path{docs/phase2_lorenz_reference.md}, \path{docs/phase3_lyapunov.md}.
 \item Interpolation protocol and output: \path{docs/interpolation_study.md}, \path{docs/interpolation_progress.md}, \path{results/interpolation_rebuild/interpolation_box_control/metrics.json}.
 \item Model development and frozen validation: \path{docs/model_improvement_progress.md}, \path{docs/independent_validation_plan.md}, \path{docs/validation_progress_2026-11-22.md}, \path{results/independent_validation/}.
+\item Adaptive weighting port and paired runs: \path{docs/adaptive_weighting_progress_2026-11-22.md}, \path{results/adaptive_time_weighting/sequential_seed0_summary.json}, \path{results/adaptive_time_weighting/sequential_code_seed0_summary.json}.
 \end{itemize}
-The experiment entry points are the numbered scripts 03, 04, 06, 07, 09, 13, 17, and 20 in \path{experiments/}. Large raw arrays are ignored by version control; the scripts and saved configurations specify how they were generated. The latest full automated suite had 129 passing tests before this report was assembled.
+The experiment entry points are the numbered scripts 03, 04, 06, 07, 09, 13, 17, 20, 22, and 23 in \path{experiments/}. Script 23 regenerates Figures~\ref{fig:interpolation} and \ref{fig:adaptivepaired} from the saved JSON metrics. Large raw arrays are ignored by version control; the scripts and saved configurations specify how they were generated. The full automated suite had 131 passing tests after the adaptive port.
 \endgroup
 
 \begin{thebibliography}{9}
@@ -235,5 +331,7 @@ The experiment entry points are the numbered scripts 03, 04, 06, 07, 09, 13, 17,
 \bibitem{interpolation} Project record, \texttt{docs/interpolation\_study.md} and \texttt{docs/interpolation\_progress.md}.
 \bibitem{modelprogress} Project record, \texttt{docs/model\_improvement\_progress.md}.
 \bibitem{validation} Project record, \path{docs/independent_validation_plan.md} and \path{docs/validation_progress_2026-11-22.md}.
+\bibitem{authorcode} G. Turinici, official code for the reference paper, commit \texttt{0595f4c}, \url{https://github.com/gabriel-turinici/physics_informed_neural_networks_time_sampling}.
+\bibitem{adaptiveprogress} Project record, \path{docs/adaptive_weighting_progress_2026-11-22.md} and \path{results/adaptive_time_weighting/sequential_seed0_summary.json}.
 \end{thebibliography}
 \end{document}
