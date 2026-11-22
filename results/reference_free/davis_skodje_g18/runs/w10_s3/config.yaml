@@ -1,0 +1,39 @@
+run_dir: results/reference_free/davis_skodje_g18/runs/w10_s3
+window: 10
+reference_file: results/reference_free/reference/davis_skodje_g18/data/window_10.npz
+system:
+  family: D
+  gamma: 18.0
+train:
+  t_final: 2.0
+  x0:
+  - 1.25
+  - 0.8055555555555556
+  seed: 3
+  hidden:
+  - 64
+  - 64
+  - 64
+  - 64
+  activation: tanh
+  out_mean:
+  - 0.9250003635343776
+  - 0.4144448401938159
+  out_scale:
+  - 0.7610797155382254
+  - 0.18257238050137448
+  iterations: 20000
+  lr: 0.001
+  lr_final: 1.0e-05
+  n_collocation: 1024
+  lambda_ic: 100.0
+  hard_ic: false
+  early_weight: 0.0
+  time_weighting: uniform
+  collocation_scheme: stratified
+  dtype: float32
+  threads: 1
+  log_every: 100
+  curriculum_start: null
+  curriculum_fraction: 0.6
+  device: cuda

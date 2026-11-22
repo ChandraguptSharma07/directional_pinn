@@ -1,0 +1,45 @@
+{
+  "created_utc": "2026-11-22T14:54:43+00:00",
+  "command": [
+    "experiments/25_dial_pinn_runs.py",
+    "--iterations",
+    "20000",
+    "--device",
+    "cuda",
+    "--settings",
+    "saddle_k1",
+    "saddle_k64",
+    "davis_skodje_g18",
+    "davis_skodje_g66",
+    "--windows",
+    "9",
+    "10",
+    "11",
+    "12",
+    "13",
+    "14",
+    "15",
+    "16",
+    "--reference-dir",
+    "results/reference_free/reference",
+    "--out",
+    "results/reference_free"
+  ],
+  "runtime_seconds": 10.677,
+  "git": {
+    "commit": "95bf538a0002a8a2a3d6e59894376507db4ca92b",
+    "dirty": false
+  },
+  "environment": {
+    "python": "3.12.11",
+    "platform": "Linux-7.3.4-1-cachyos-x86_64-with-glibc2.44",
+    "packages": {
+      "numpy": "2.5.4",
+      "scipy": "1.18.1",
+      "matplotlib": "3.11.2",
+      "PyYAML": "6.0.3",
+      "pytest": "9.2.0",
+      "torch": "2.14.1+cu130"
+    }
+  }
+}

@@ -36,3 +36,17 @@ This log follows [`reference_free_plan.md`](reference_free_plan.md).
   - **This is an implementation detail of the planned P,** decided after
     looking only at development data. No fresh-window result had been computed
     at that point.
+- **Fresh PINNs finished.** All 160 are finite, trained in 428–459 s per
+  setting. The summary is `results/reference_free/pinn_summary.json`.
+- **Analysis.** `python experiments/27_reference_free_analysis.py`, output in
+  `results/reference_free/analysis/`.
+  - (A) The oracle result replicates at kappa = 64, gamma = 18 and gamma = 66.
+    The control at kappa = 1 fails, as planned.
+  - (B) P works at both Davis–Skodje settings, with 100% oracle recovery.
+    **Verdict: supported.** F also works.
+  - No samples needed to be dropped.
+  - The reference-free directions are within 0.001° (P) and 0.15° (F) of the
+    oracle in these systems.
+  - In Lorenz, P is 0.8° off at the median and 18.6° at the 90th percentile;
+    F is 6.5° and 45.7°.
+  - The write-up is [`reference_free_results.md`](reference_free_results.md).

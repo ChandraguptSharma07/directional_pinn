@@ -1,0 +1,40 @@
+run_dir: results/reference_free/saddle_k64/runs/w12_s4
+window: 12
+reference_file: results/reference_free/reference/saddle_k64/data/window_12.npz
+system:
+  family: L
+  kappa: 64.0
+  angle: 0.5235987755982988
+train:
+  t_final: 2.0
+  x0:
+  - 0.4129165124598852
+  - 0.5848076211353316
+  seed: 4
+  hidden:
+  - 64
+  - 64
+  - 64
+  - 64
+  activation: tanh
+  out_mean:
+  - 2.73638238019573
+  - 1.5804911811789897
+  out_scale:
+  - 1.7344313162425538
+  - 1.0016178254341757
+  iterations: 20000
+  lr: 0.001
+  lr_final: 1.0e-05
+  n_collocation: 1024
+  lambda_ic: 100.0
+  hard_ic: false
+  early_weight: 0.0
+  time_weighting: uniform
+  collocation_scheme: stratified
+  dtype: float32
+  threads: 1
+  log_every: 100
+  curriculum_start: null
+  curriculum_fraction: 0.6
+  device: cuda

@@ -72,6 +72,22 @@ Davis–Skodje system.
 
 See [docs/dial_study_results.md](docs/dial_study_results.md).
 
+**Reference-free directions.** A follow-up repeated the dial test on 160
+fresh PINNs, planned in
+[docs/reference_free_plan.md](docs/reference_free_plan.md). This time the
+direction was computed from the PINN's own predicted path instead of the true
+solution.
+- **The dial finding replicated** on the fresh starting points: gains of
+  +0.065 to +0.137 at the high-gap settings, and nothing at the low-gap
+  control.
+- **The reference-free direction recovered 100% of the oracle gain** (verdict
+  "supported"). In these two-dimensional stiff systems it is almost identical
+  to the oracle direction.
+- **In Lorenz it is less exact:** 0.8° off at the median and 19° at the 90th
+  percentile.
+
+See [docs/reference_free_results.md](docs/reference_free_results.md).
+
 ## Research question
 
 > Does the component of a PINN's differential-equation residual along locally

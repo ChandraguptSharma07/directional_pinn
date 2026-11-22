@@ -1,0 +1,20 @@
+{
+  "window": 16,
+  "seed": 4,
+  "t_final": 2.0,
+  "lambda_ic": 100.0,
+  "hard_ic": false,
+  "dtype": "float32",
+  "final_loss": 7.829947571735829e-05,
+  "final_loss_ode": 7.824131171219051e-05,
+  "final_loss_ic": 5.816396253521816e-10,
+  "finite": true,
+  "initial_error": 0.00022229261593396325,
+  "median_error": 0.00024442633270539314,
+  "max_error": 0.00138623147502762,
+  "final_error": 0.0009479571627850567,
+  "fraction_error_below_1": 1.0,
+  "median_residual": 0.004272600431320587,
+  "max_reference_norm": 0.903119593409422,
+  "runtime_seconds": 10.67733201355004
+}
