@@ -486,3 +486,23 @@ This is only a preview on other hardware; the planned decision waits for the
 nixxa runs. The soft-initial-condition kernel stayed queued on hy1069. It was
 moved to `nikita245678k/mw-side-soft-ic-b`, and the queued copy was replaced
 by a no-op.
+
+### Gate 1 on nixxa: first pool finished, reruns started
+
+The first pool ended with 9 results:
+
+- T = 1: all six methods;
+- T = 2: `U`, `TUR` and `S-orc`.
+
+The waiter then started the nine reruns (9 workers). The finished nixxa
+results reproduce the GPU replicate almost exactly. Success counts at T = 1:
+
+| method | `M-self` | `S-self` | `M-orc` | `S-orc` | `U` | `TUR` |
+|---|---|---|---|---|---|---|
+| nixxa (CPU) | 27 | 24 | 23 | 9 | 7 | 5 |
+| GPU replicate | 27 | 24 | 23 | 9 | 7 | 5 |
+
+The medians agree to within about 0.07 in log10 E_rms. At T = 2, `U`, `TUR`
+and `S-orc` match too (0, 0 and 6 successes). Which networks succeed is
+therefore set by the initial condition, the seed and the weighting, not by
+the hardware.

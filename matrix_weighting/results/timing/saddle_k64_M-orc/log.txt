@@ -1,0 +1,5 @@
+it      0      0.0 s  median residual rms 3.134e+01  median grid error rms 1.099e+00
+it    100      6.0 s  median residual rms 1.369e+01  median grid error rms 3.490e-01
+it    200     12.3 s  median residual rms 1.365e+01  median grid error rms 3.657e-01
+it    300     18.6 s  median residual rms 1.364e+01  median grid error rms 3.514e-01
+done results/timing/saddle_k64_M-orc: median log10 E_rms -0.455, runtime 19 s

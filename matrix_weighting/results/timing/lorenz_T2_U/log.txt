@@ -1,0 +1,5 @@
+it      0      0.1 s  median residual rms 6.621e+01  median grid error rms 1.776e+01
+it    100     10.3 s  median residual rms 3.872e+01  median grid error rms 2.081e+01
+it    200     20.2 s  median residual rms 3.680e+01  median grid error rms 2.168e+01
+it    300     28.5 s  median residual rms 3.635e+01  median grid error rms 2.168e+01
+done results/timing/lorenz_T2_U: median log10 E_rms 1.336, runtime 28 s

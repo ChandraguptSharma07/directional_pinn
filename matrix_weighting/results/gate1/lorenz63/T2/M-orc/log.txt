@@ -1,0 +1,4 @@
+it      0      0.2 s  median residual rms 6.621e+01  median grid error rms 1.776e+01
+it    500    192.5 s  median residual rms 5.548e+01  median grid error rms 2.283e+01
+it   1000    336.5 s  median residual rms 5.439e+01  median grid error rms 2.369e+01
+it   1500    479.6 s  median residual rms 5.164e+01  median grid error rms 2.343e+01
