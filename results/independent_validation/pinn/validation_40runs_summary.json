@@ -1,0 +1,3050 @@
+{
+  "experiment": "17_piecewise_batch",
+  "n_runs": 40,
+  "median_of_run_medians": 0.05507843091225138,
+  "median_of_run_maxima": 0.3991417214988737,
+  "runs_below_1_throughout": 30,
+  "runs_below_1_at_least_90_percent": 32,
+  "runs": [
+    {
+      "experiment": "13_piecewise_pinn_pilot",
+      "window": 1,
+      "seed": 0,
+      "t_final": 2.0,
+      "segments": 8,
+      "segment_length": 0.25,
+      "iterations_per_segment": 4000,
+      "collocation_per_segment": 256,
+      "initial_error": 8.598026932812394e-07,
+      "median_error": 0.01832749965856954,
+      "max_error": 2.0528491233861703,
+      "final_error": 1.170986768717651,
+      "fraction_error_below_1": 0.8641358641358642,
+      "first_error_above_1": 1.73,
+      "median_residual": 0.24684151502497206,
+      "runtime_seconds": 210.56349424399997,
+      "segment_metrics": [
+        {
+          "segment": 0,
+          "t_start": 0.0,
+          "t_end": 0.25,
+          "loss": 0.07049056887626648,
+          "runtime_seconds": 17.38396914699996
+        },
+        {
+          "segment": 1,
+          "t_start": 0.25,
+          "t_end": 0.5,
+          "loss": 0.0813990980386734,
+          "runtime_seconds": 15.94136766400004
+        },
+        {
+          "segment": 2,
+          "t_start": 0.5,
+          "t_end": 0.75,
+          "loss": 0.11067909002304077,
+          "runtime_seconds": 26.10333508499997
+        },
+        {
+          "segment": 3,
+          "t_start": 0.75,
+          "t_end": 1.0,
+          "loss": 0.11844895780086517,
+          "runtime_seconds": 36.316646279
+        },
+        {
+          "segment": 4,
+          "t_start": 1.0,
+          "t_end": 1.25,
+          "loss": 0.1030372679233551,
+          "runtime_seconds": 45.781857694999985
+        },
+        {
+          "segment": 5,
+          "t_start": 1.25,
+          "t_end": 1.5,
+          "loss": 0.36223921179771423,
+          "runtime_seconds": 32.90260868400003
+        },
+        {
+          "segment": 6,
+          "t_start": 1.5,
+          "t_end": 1.75,
+          "loss": 0.08386816829442978,
+          "runtime_seconds": 18.569144972999993
+        },
+        {
+          "segment": 7,
+          "t_start": 1.75,
+          "t_end": 2.0,
+          "loss": 0.13837674260139465,
+          "runtime_seconds": 16.474945854999987
+        }
+      ]
+    },
+    {
+      "experiment": "13_piecewise_pinn_pilot",
+      "window": 1,
+      "seed": 1,
+      "t_final": 2.0,
+      "segments": 8,
+      "segment_length": 0.25,
+      "iterations_per_segment": 4000,
+      "collocation_per_segment": 256,
+      "initial_error": 8.598026932812394e-07,
+      "median_error": 0.0708228389253826,
+      "max_error": 5.691628093046657,
+      "final_error": 3.396071908114815,
+      "fraction_error_below_1": 0.8141858141858141,
+      "first_error_above_1": 1.6300000000000001,
+      "median_residual": 0.36472324054885824,
+      "runtime_seconds": 153.53460976600002,
+      "segment_metrics": [
+        {
+          "segment": 0,
+          "t_start": 0.0,
+          "t_end": 0.25,
+          "loss": 0.08018654584884644,
+          "runtime_seconds": 19.176947058999986
+        },
+        {
+          "segment": 1,
+          "t_start": 0.25,
+          "t_end": 0.5,
+          "loss": 0.5614188313484192,
+          "runtime_seconds": 16.020590749000007
+        },
+        {
+          "segment": 2,
+          "t_start": 0.5,
+          "t_end": 0.75,
+          "loss": 1.364510178565979,
+          "runtime_seconds": 23.261587880000036
+        },
+        {
+          "segment": 3,
+          "t_start": 0.75,
+          "t_end": 1.0,
+          "loss": 0.0988275483250618,
+          "runtime_seconds": 21.48656828899999
+        },
+        {
+          "segment": 4,
+          "t_start": 1.0,
+          "t_end": 1.25,
+          "loss": 0.23402254283428192,
+          "runtime_seconds": 18.570908062
+        },
+        {
+          "segment": 5,
+          "t_start": 1.25,
+          "t_end": 1.5,
+          "loss": 0.8233336210250854,
+          "runtime_seconds": 17.48961951499996
+        },
+        {
+          "segment": 6,
+          "t_start": 1.5,
+          "t_end": 1.75,
+          "loss": 0.2756034731864929,
+          "runtime_seconds": 18.159729845000015
+        },
+        {
+          "segment": 7,
+          "t_start": 1.75,
+          "t_end": 2.0,
+          "loss": 0.3477643132209778,
+          "runtime_seconds": 18.311664843000017
+        }
+      ]
+    },
+    {
+      "experiment": "13_piecewise_pinn_pilot",
+      "window": 1,
+      "seed": 2,
+      "t_final": 2.0,
+      "segments": 8,
+      "segment_length": 0.25,
+      "iterations_per_segment": 4000,
+      "collocation_per_segment": 256,
+      "initial_error": 8.598026932812394e-07,
+      "median_error": 0.04619651438290625,
+      "max_error": 4.162887290604718,
+      "final_error": 2.451611459152483,
+      "fraction_error_below_1": 0.8301698301698301,
+      "first_error_above_1": 1.6620000000000001,
+      "median_residual": 0.400987738956092,
+      "runtime_seconds": 165.991548207,
+      "segment_metrics": [
+        {
+          "segment": 0,
+          "t_start": 0.0,
+          "t_end": 0.25,
+          "loss": 0.1301804482936859,
+          "runtime_seconds": 21.538263530999984
+        },
+        {
+          "segment": 1,
+          "t_start": 0.25,
+          "t_end": 0.5,
+          "loss": 0.552100419998169,
+          "runtime_seconds": 22.383840359000033
+        },
+        {
+          "segment": 2,
+          "t_start": 0.5,
+          "t_end": 0.75,
+          "loss": 0.3910198211669922,
+          "runtime_seconds": 25.851170226000022
+        },
+        {
+          "segment": 3,
+          "t_start": 0.75,
+          "t_end": 1.0,
+          "loss": 0.13507266342639923,
+          "runtime_seconds": 18.555004655999994
+        },
+        {
+          "segment": 4,
+          "t_start": 1.0,
+          "t_end": 1.25,
+          "loss": 0.3943933844566345,
+          "runtime_seconds": 18.304409333000024
+        },
+        {
+          "segment": 5,
+          "t_start": 1.25,
+          "t_end": 1.5,
+          "loss": 0.7191554307937622,
+          "runtime_seconds": 20.817220029999987
+        },
+        {
+          "segment": 6,
+          "t_start": 1.5,
+          "t_end": 1.75,
+          "loss": 5.096546173095703,
+          "runtime_seconds": 19.090996485999995
+        },
+        {
+          "segment": 7,
+          "t_start": 1.75,
+          "t_end": 2.0,
+          "loss": 0.1381806582212448,
+          "runtime_seconds": 18.521874078999986
+        }
+      ]
+    },
+    {
+      "experiment": "13_piecewise_pinn_pilot",
+      "window": 1,
+      "seed": 3,
+      "t_final": 2.0,
+      "segments": 8,
+      "segment_length": 0.25,
+      "iterations_per_segment": 4000,
+      "collocation_per_segment": 256,
+      "initial_error": 8.598026932812394e-07,
+      "median_error": 0.01868277136489495,
+      "max_error": 4.7433863577468145,
+      "final_error": 2.8020603706067373,
+      "fraction_error_below_1": 0.8231768231768232,
+      "first_error_above_1": 1.6480000000000001,
+      "median_residual": 0.37026535977806974,
+      "runtime_seconds": 159.96479150799996,
+      "segment_metrics": [
+        {
+          "segment": 0,
+          "t_start": 0.0,
+          "t_end": 0.25,
+          "loss": 0.11313116550445557,
+          "runtime_seconds": 18.639326786000026
+        },
+        {
+          "segment": 1,
+          "t_start": 0.25,
+          "t_end": 0.5,
+          "loss": 0.1875843107700348,
+          "runtime_seconds": 21.391940312999964
+        },
+        {
+          "segment": 2,
+          "t_start": 0.5,
+          "t_end": 0.75,
+          "loss": 0.3900023102760315,
+          "runtime_seconds": 27.443490924999992
+        },
+        {
+          "segment": 3,
+          "t_start": 0.75,
+          "t_end": 1.0,
+          "loss": 0.20579689741134644,
+          "runtime_seconds": 19.060853580000014
+        },
+        {
+          "segment": 4,
+          "t_start": 1.0,
+          "t_end": 1.25,
+          "loss": 0.1728593409061432,
+          "runtime_seconds": 18.022910213999978
+        },
+        {
+          "segment": 5,
+          "t_start": 1.25,
+          "t_end": 1.5,
+          "loss": 0.5315617322921753,
+          "runtime_seconds": 17.68584854300002
+        },
+        {
+          "segment": 6,
+          "t_start": 1.5,
+          "t_end": 1.75,
+          "loss": 2.9323949813842773,
+          "runtime_seconds": 18.567406981999966
+        },
+        {
+          "segment": 7,
+          "t_start": 1.75,
+          "t_end": 2.0,
+          "loss": 0.13723525404930115,
+          "runtime_seconds": 17.789812978999976
+        }
+      ]
+    },
+    {
+      "experiment": "13_piecewise_pinn_pilot",
+      "window": 1,
+      "seed": 4,
+      "t_final": 2.0,
+      "segments": 8,
+      "segment_length": 0.25,
+      "iterations_per_segment": 4000,
+      "collocation_per_segment": 256,
+      "initial_error": 8.598026932812394e-07,
+      "median_error": 0.016458209536023925,
+      "max_error": 2.925642809803426,
+      "final_error": 1.68738970005629,
+      "fraction_error_below_1": 0.8451548451548452,
+      "first_error_above_1": 1.692,
+      "median_residual": 0.3431374646800047,
+      "runtime_seconds": 166.254096113,
+      "segment_metrics": [
+        {
+          "segment": 0,
+          "t_start": 0.0,
+          "t_end": 0.25,
+          "loss": 0.15978474915027618,
+          "runtime_seconds": 15.615499655000008
+        },
+        {
+          "segment": 1,
+          "t_start": 0.25,
+          "t_end": 0.5,
+          "loss": 0.10358880460262299,
+          "runtime_seconds": 17.28442613699997
+        },
+        {
+          "segment": 2,
+          "t_start": 0.5,
+          "t_end": 0.75,
+          "loss": 0.2637680172920227,
+          "runtime_seconds": 20.014593235000007
+        },
+        {
+          "segment": 3,
+          "t_start": 0.75,
+          "t_end": 1.0,
+          "loss": 0.272843599319458,
+          "runtime_seconds": 22.469978986
+        },
+        {
+          "segment": 4,
+          "t_start": 1.0,
+          "t_end": 1.25,
+          "loss": 0.08872701227664948,
+          "runtime_seconds": 18.775806630000034
+        },
+        {
+          "segment": 5,
+          "t_start": 1.25,
+          "t_end": 1.5,
+          "loss": 0.43337544798851013,
+          "runtime_seconds": 17.921856235999996
+        },
+        {
+          "segment": 6,
+          "t_start": 1.5,
+          "t_end": 1.75,
+          "loss": 0.19558116793632507,
+          "runtime_seconds": 18.551621283999964
+        },
+        {
+          "segment": 7,
+          "t_start": 1.75,
+          "t_end": 2.0,
+          "loss": 0.23021942377090454,
+          "runtime_seconds": 34.780053246999955
+        }
+      ]
+    },
+    {
+      "experiment": "13_piecewise_pinn_pilot",
+      "window": 2,
+      "seed": 0,
+      "t_final": 2.0,
+      "segments": 8,
+      "segment_length": 0.25,
+      "iterations_per_segment": 4000,
+      "collocation_per_segment": 256,
+      "initial_error": 2.624284660850716e-07,
+      "median_error": 0.05781250435579246,
+      "max_error": 0.29049760139243,
+      "final_error": 0.08434677405517352,
+      "fraction_error_below_1": 1.0,
+      "first_error_above_1": null,
+      "median_residual": 0.3221468364643736,
+      "runtime_seconds": 183.30095798399998,
+      "segment_metrics": [
+        {
+          "segment": 0,
+          "t_start": 0.0,
+          "t_end": 0.25,
+          "loss": 0.237106591463089,
+          "runtime_seconds": 26.05603914200003
+        },
+        {
+          "segment": 1,
+          "t_start": 0.25,
+          "t_end": 0.5,
+          "loss": 0.30070769786834717,
+          "runtime_seconds": 19.354019867000034
+        },
+        {
+          "segment": 2,
+          "t_start": 0.5,
+          "t_end": 0.75,
+          "loss": 0.3415992856025696,
+          "runtime_seconds": 24.42320293199998
+        },
+        {
+          "segment": 3,
+          "t_start": 0.75,
+          "t_end": 1.0,
+          "loss": 0.13491004705429077,
+          "runtime_seconds": 20.08070868499999
+        },
+        {
+          "segment": 4,
+          "t_start": 1.0,
+          "t_end": 1.25,
+          "loss": 0.10182983428239822,
+          "runtime_seconds": 31.056528926
+        },
+        {
+          "segment": 5,
+          "t_start": 1.25,
+          "t_end": 1.5,
+          "loss": 0.13762062788009644,
+          "runtime_seconds": 23.75793126800005
+        },
+        {
+          "segment": 6,
+          "t_start": 1.5,
+          "t_end": 1.75,
+          "loss": 0.18871673941612244,
+          "runtime_seconds": 19.017658799999992
+        },
+        {
+          "segment": 7,
+          "t_start": 1.75,
+          "t_end": 2.0,
+          "loss": 0.3100124001502991,
+          "runtime_seconds": 18.446243055999958
+        }
+      ]
+    },
+    {
+      "experiment": "13_piecewise_pinn_pilot",
+      "window": 2,
+      "seed": 1,
+      "t_final": 2.0,
+      "segments": 8,
+      "segment_length": 0.25,
+      "iterations_per_segment": 4000,
+      "collocation_per_segment": 256,
+      "initial_error": 2.624284660850716e-07,
+      "median_error": 0.09399407367568187,
+      "max_error": 0.5109345649303895,
+      "final_error": 0.13318181583059627,
+      "fraction_error_below_1": 1.0,
+      "first_error_above_1": null,
+      "median_residual": 0.5011142836726293,
+      "runtime_seconds": 178.47181011200001,
+      "segment_metrics": [
+        {
+          "segment": 0,
+          "t_start": 0.0,
+          "t_end": 0.25,
+          "loss": 0.5849502086639404,
+          "runtime_seconds": 15.118697000999987
+        },
+        {
+          "segment": 1,
+          "t_start": 0.25,
+          "t_end": 0.5,
+          "loss": 0.6654357314109802,
+          "runtime_seconds": 26.495913411999993
+        },
+        {
+          "segment": 2,
+          "t_start": 0.5,
+          "t_end": 0.75,
+          "loss": 0.39380717277526855,
+          "runtime_seconds": 27.834607320999964
+        },
+        {
+          "segment": 3,
+          "t_start": 0.75,
+          "t_end": 1.0,
+          "loss": 0.2577378451824188,
+          "runtime_seconds": 32.92197774600004
+        },
+        {
+          "segment": 4,
+          "t_start": 1.0,
+          "t_end": 1.25,
+          "loss": 0.24610060453414917,
+          "runtime_seconds": 17.66136770899999
+        },
+        {
+          "segment": 5,
+          "t_start": 1.25,
+          "t_end": 1.5,
+          "loss": 1.4875484704971313,
+          "runtime_seconds": 21.135260743000003
+        },
+        {
+          "segment": 6,
+          "t_start": 1.5,
+          "t_end": 1.75,
+          "loss": 0.5548750758171082,
+          "runtime_seconds": 17.92939416400003
+        },
+        {
+          "segment": 7,
+          "t_start": 1.75,
+          "t_end": 2.0,
+          "loss": 0.38333001732826233,
+          "runtime_seconds": 18.261417314000028
+        }
+      ]
+    },
+    {
+      "experiment": "13_piecewise_pinn_pilot",
+      "window": 2,
+      "seed": 2,
+      "t_final": 2.0,
+      "segments": 8,
+      "segment_length": 0.25,
+      "iterations_per_segment": 4000,
+      "collocation_per_segment": 256,
+      "initial_error": 2.624284660850716e-07,
+      "median_error": 0.0672382391716068,
+      "max_error": 0.32757352518281896,
+      "final_error": 0.10248146345317137,
+      "fraction_error_below_1": 1.0,
+      "first_error_above_1": null,
+      "median_residual": 0.3997315089245781,
+      "runtime_seconds": 161.52520246800003,
+      "segment_metrics": [
+        {
+          "segment": 0,
+          "t_start": 0.0,
+          "t_end": 0.25,
+          "loss": 0.29409343004226685,
+          "runtime_seconds": 18.136494904000017
+        },
+        {
+          "segment": 1,
+          "t_start": 0.25,
+          "t_end": 0.5,
+          "loss": 0.5674379467964172,
+          "runtime_seconds": 17.815745092000043
+        },
+        {
+          "segment": 2,
+          "t_start": 0.5,
+          "t_end": 0.75,
+          "loss": 0.3760310709476471,
+          "runtime_seconds": 28.744447263999973
+        },
+        {
+          "segment": 3,
+          "t_start": 0.75,
+          "t_end": 1.0,
+          "loss": 0.29457831382751465,
+          "runtime_seconds": 19.98651039699996
+        },
+        {
+          "segment": 4,
+          "t_start": 1.0,
+          "t_end": 1.25,
+          "loss": 0.30161648988723755,
+          "runtime_seconds": 18.978262733999998
+        },
+        {
+          "segment": 5,
+          "t_start": 1.25,
+          "t_end": 1.5,
+          "loss": 0.1316896677017212,
+          "runtime_seconds": 19.925707778000003
+        },
+        {
+          "segment": 6,
+          "t_start": 1.5,
+          "t_end": 1.75,
+          "loss": 0.19403952360153198,
+          "runtime_seconds": 18.682401948999996
+        },
+        {
+          "segment": 7,
+          "t_start": 1.75,
+          "t_end": 2.0,
+          "loss": 0.6728963255882263,
+          "runtime_seconds": 17.836483112999986
+        }
+      ]
+    },
+    {
+      "experiment": "13_piecewise_pinn_pilot",
+      "window": 2,
+      "seed": 3,
+      "t_final": 2.0,
+      "segments": 8,
+      "segment_length": 0.25,
+      "iterations_per_segment": 4000,
+      "collocation_per_segment": 256,
+      "initial_error": 2.624284660850716e-07,
+      "median_error": 0.04411864297013226,
+      "max_error": 0.18518651475027265,
+      "final_error": 0.08796270411299818,
+      "fraction_error_below_1": 1.0,
+      "first_error_above_1": null,
+      "median_residual": 0.3305688972261681,
+      "runtime_seconds": 193.48896237200006,
+      "segment_metrics": [
+        {
+          "segment": 0,
+          "t_start": 0.0,
+          "t_end": 0.25,
+          "loss": 0.2260635495185852,
+          "runtime_seconds": 21.499657050999986
+        },
+        {
+          "segment": 1,
+          "t_start": 0.25,
+          "t_end": 0.5,
+          "loss": 0.28583547472953796,
+          "runtime_seconds": 17.868492752000066
+        },
+        {
+          "segment": 2,
+          "t_start": 0.5,
+          "t_end": 0.75,
+          "loss": 0.6703776121139526,
+          "runtime_seconds": 31.736286885000027
+        },
+        {
+          "segment": 3,
+          "t_start": 0.75,
+          "t_end": 1.0,
+          "loss": 0.07580170035362244,
+          "runtime_seconds": 29.499204258999953
+        },
+        {
+          "segment": 4,
+          "t_start": 1.0,
+          "t_end": 1.25,
+          "loss": 0.18173769116401672,
+          "runtime_seconds": 36.19346122000002
+        },
+        {
+          "segment": 5,
+          "t_start": 1.25,
+          "t_end": 1.5,
+          "loss": 0.26832616329193115,
+          "runtime_seconds": 19.055751334999968
+        },
+        {
+          "segment": 6,
+          "t_start": 1.5,
+          "t_end": 1.75,
+          "loss": 0.14499197900295258,
+          "runtime_seconds": 17.718533921000017
+        },
+        {
+          "segment": 7,
+          "t_start": 1.75,
+          "t_end": 2.0,
+          "loss": 0.2863050401210785,
+          "runtime_seconds": 18.690302360999908
+        }
+      ]
+    },
+    {
+      "experiment": "13_piecewise_pinn_pilot",
+      "window": 2,
+      "seed": 4,
+      "t_final": 2.0,
+      "segments": 8,
+      "segment_length": 0.25,
+      "iterations_per_segment": 4000,
+      "collocation_per_segment": 256,
+      "initial_error": 2.624284660850716e-07,
+      "median_error": 0.06363984497593125,
+      "max_error": 0.35843324657678066,
+      "final_error": 0.08332329063455066,
+      "fraction_error_below_1": 1.0,
+      "first_error_above_1": null,
+      "median_residual": 0.32982868762694084,
+      "runtime_seconds": 152.61437893200002,
+      "segment_metrics": [
+        {
+          "segment": 0,
+          "t_start": 0.0,
+          "t_end": 0.25,
+          "loss": 0.33380642533302307,
+          "runtime_seconds": 21.100667524000016
+        },
+        {
+          "segment": 1,
+          "t_start": 0.25,
+          "t_end": 0.5,
+          "loss": 0.22857581079006195,
+          "runtime_seconds": 16.93328605399995
+        },
+        {
+          "segment": 2,
+          "t_start": 0.5,
+          "t_end": 0.75,
+          "loss": 0.2978671193122864,
+          "runtime_seconds": 16.68112924600007
+        },
+        {
+          "segment": 3,
+          "t_start": 0.75,
+          "t_end": 1.0,
+          "loss": 0.13327676057815552,
+          "runtime_seconds": 19.86717700199995
+        },
+        {
+          "segment": 4,
+          "t_start": 1.0,
+          "t_end": 1.25,
+          "loss": 0.15357233583927155,
+          "runtime_seconds": 20.891729639999994
+        },
+        {
+          "segment": 5,
+          "t_start": 1.25,
+          "t_end": 1.5,
+          "loss": 0.5059822797775269,
+          "runtime_seconds": 18.850378012999954
+        },
+        {
+          "segment": 6,
+          "t_start": 1.5,
+          "t_end": 1.75,
+          "loss": 0.11104230582714081,
+          "runtime_seconds": 18.03245205099995
+        },
+        {
+          "segment": 7,
+          "t_start": 1.75,
+          "t_end": 2.0,
+          "loss": 0.4219142198562622,
+          "runtime_seconds": 19.182044908999956
+        }
+      ]
+    },
+    {
+      "experiment": "13_piecewise_pinn_pilot",
+      "window": 3,
+      "seed": 0,
+      "t_final": 2.0,
+      "segments": 8,
+      "segment_length": 0.25,
+      "iterations_per_segment": 4000,
+      "collocation_per_segment": 256,
+      "initial_error": 5.644774322364236e-07,
+      "median_error": 0.031778494259333274,
+      "max_error": 0.8535778426309306,
+      "final_error": 0.1780110936159109,
+      "fraction_error_below_1": 1.0,
+      "first_error_above_1": null,
+      "median_residual": 0.32767637645110714,
+      "runtime_seconds": 315.33644023500005,
+      "segment_metrics": [
+        {
+          "segment": 0,
+          "t_start": 0.0,
+          "t_end": 0.25,
+          "loss": 0.14092940092086792,
+          "runtime_seconds": 27.26855335099998
+        },
+        {
+          "segment": 1,
+          "t_start": 0.25,
+          "t_end": 0.5,
+          "loss": 0.5705994367599487,
+          "runtime_seconds": 24.766024722999987
+        },
+        {
+          "segment": 2,
+          "t_start": 0.5,
+          "t_end": 0.75,
+          "loss": 0.22058182954788208,
+          "runtime_seconds": 34.624325229999954
+        },
+        {
+          "segment": 3,
+          "t_start": 0.75,
+          "t_end": 1.0,
+          "loss": 0.3128012418746948,
+          "runtime_seconds": 45.96311841900001
+        },
+        {
+          "segment": 4,
+          "t_start": 1.0,
+          "t_end": 1.25,
+          "loss": 0.3460988402366638,
+          "runtime_seconds": 45.734319822999964
+        },
+        {
+          "segment": 5,
+          "t_start": 1.25,
+          "t_end": 1.5,
+          "loss": 0.13427096605300903,
+          "runtime_seconds": 44.881067300999916
+        },
+        {
+          "segment": 6,
+          "t_start": 1.5,
+          "t_end": 1.75,
+          "loss": 0.14380738139152527,
+          "runtime_seconds": 45.257340817
+        },
+        {
+          "segment": 7,
+          "t_start": 1.75,
+          "t_end": 2.0,
+          "loss": 0.3125267028808594,
+          "runtime_seconds": 45.692224738999926
+        }
+      ]
+    },
+    {
+      "experiment": "13_piecewise_pinn_pilot",
+      "window": 3,
+      "seed": 1,
+      "t_final": 2.0,
+      "segments": 8,
+      "segment_length": 0.25,
+      "iterations_per_segment": 4000,
+      "collocation_per_segment": 256,
+      "initial_error": 5.644774322364236e-07,
+      "median_error": 0.0374172360335359,
+      "max_error": 2.6259232648781703,
+      "final_error": 0.5548370430985151,
+      "fraction_error_below_1": 0.8141858141858141,
+      "first_error_above_1": 1.526,
+      "median_residual": 0.5130992126934193,
+      "runtime_seconds": 262.74820059600006,
+      "segment_metrics": [
+        {
+          "segment": 0,
+          "t_start": 0.0,
+          "t_end": 0.25,
+          "loss": 0.7801589965820312,
+          "runtime_seconds": 44.88634019999995
+        },
+        {
+          "segment": 1,
+          "t_start": 0.25,
+          "t_end": 0.5,
+          "loss": 0.4763367772102356,
+          "runtime_seconds": 30.257373647999998
+        },
+        {
+          "segment": 2,
+          "t_start": 0.5,
+          "t_end": 0.75,
+          "loss": 0.7748602628707886,
+          "runtime_seconds": 18.545552640999972
+        },
+        {
+          "segment": 3,
+          "t_start": 0.75,
+          "t_end": 1.0,
+          "loss": 0.6111050248146057,
+          "runtime_seconds": 19.448362695000014
+        },
+        {
+          "segment": 4,
+          "t_start": 1.0,
+          "t_end": 1.25,
+          "loss": 0.36118659377098083,
+          "runtime_seconds": 39.42887891100008
+        },
+        {
+          "segment": 5,
+          "t_start": 1.25,
+          "t_end": 1.5,
+          "loss": 1.390649676322937,
+          "runtime_seconds": 18.55216912900005
+        },
+        {
+          "segment": 6,
+          "t_start": 1.5,
+          "t_end": 1.75,
+          "loss": 0.2974357008934021,
+          "runtime_seconds": 44.69626490899998
+        },
+        {
+          "segment": 7,
+          "t_start": 1.75,
+          "t_end": 2.0,
+          "loss": 0.4745170772075653,
+          "runtime_seconds": 45.20517608199998
+        }
+      ]
+    },
+    {
+      "experiment": "13_piecewise_pinn_pilot",
+      "window": 3,
+      "seed": 2,
+      "t_final": 2.0,
+      "segments": 8,
+      "segment_length": 0.25,
+      "iterations_per_segment": 4000,
+      "collocation_per_segment": 256,
+      "initial_error": 5.644774322364236e-07,
+      "median_error": 0.04646866466434206,
+      "max_error": 1.514192696332614,
+      "final_error": 0.3156917562334331,
+      "fraction_error_below_1": 0.8871128871128872,
+      "first_error_above_1": 1.59,
+      "median_residual": 0.48871842637867063,
+      "runtime_seconds": 156.57914765499999,
+      "segment_metrics": [
+        {
+          "segment": 0,
+          "t_start": 0.0,
+          "t_end": 0.25,
+          "loss": 0.506695568561554,
+          "runtime_seconds": 22.905313639999974
+        },
+        {
+          "segment": 1,
+          "t_start": 0.25,
+          "t_end": 0.5,
+          "loss": 1.6581189632415771,
+          "runtime_seconds": 17.652371152
+        },
+        {
+          "segment": 2,
+          "t_start": 0.5,
+          "t_end": 0.75,
+          "loss": 0.22262409329414368,
+          "runtime_seconds": 17.312961386999973
+        },
+        {
+          "segment": 3,
+          "t_start": 0.75,
+          "t_end": 1.0,
+          "loss": 0.5527319312095642,
+          "runtime_seconds": 20.456357256999922
+        },
+        {
+          "segment": 4,
+          "t_start": 1.0,
+          "t_end": 1.25,
+          "loss": 0.3364540934562683,
+          "runtime_seconds": 18.99871706099998
+        },
+        {
+          "segment": 5,
+          "t_start": 1.25,
+          "t_end": 1.5,
+          "loss": 1.656782627105713,
+          "runtime_seconds": 19.153261843999985
+        },
+        {
+          "segment": 6,
+          "t_start": 1.5,
+          "t_end": 1.75,
+          "loss": 0.27597200870513916,
+          "runtime_seconds": 20.33936491199995
+        },
+        {
+          "segment": 7,
+          "t_start": 1.75,
+          "t_end": 2.0,
+          "loss": 0.24072441458702087,
+          "runtime_seconds": 18.053434023000023
+        }
+      ]
+    },
+    {
+      "experiment": "13_piecewise_pinn_pilot",
+      "window": 3,
+      "seed": 3,
+      "t_final": 2.0,
+      "segments": 8,
+      "segment_length": 0.25,
+      "iterations_per_segment": 4000,
+      "collocation_per_segment": 256,
+      "initial_error": 5.644774322364236e-07,
+      "median_error": 0.050698232330534485,
+      "max_error": 0.8194955097829419,
+      "final_error": 0.16946760652088946,
+      "fraction_error_below_1": 1.0,
+      "first_error_above_1": null,
+      "median_residual": 0.3944758225887398,
+      "runtime_seconds": 149.68103945899998,
+      "segment_metrics": [
+        {
+          "segment": 0,
+          "t_start": 0.0,
+          "t_end": 0.25,
+          "loss": 0.3360987901687622,
+          "runtime_seconds": 17.614583778999986
+        },
+        {
+          "segment": 1,
+          "t_start": 0.25,
+          "t_end": 0.5,
+          "loss": 0.3809732496738434,
+          "runtime_seconds": 16.89621829700002
+        },
+        {
+          "segment": 2,
+          "t_start": 0.5,
+          "t_end": 0.75,
+          "loss": 0.1516156941652298,
+          "runtime_seconds": 18.62812210499999
+        },
+        {
+          "segment": 3,
+          "t_start": 0.75,
+          "t_end": 1.0,
+          "loss": 0.2700662910938263,
+          "runtime_seconds": 20.01614197099991
+        },
+        {
+          "segment": 4,
+          "t_start": 1.0,
+          "t_end": 1.25,
+          "loss": 0.34821897745132446,
+          "runtime_seconds": 19.34719114500001
+        },
+        {
+          "segment": 5,
+          "t_start": 1.25,
+          "t_end": 1.5,
+          "loss": 1.1617066860198975,
+          "runtime_seconds": 18.07614060900005
+        },
+        {
+          "segment": 6,
+          "t_start": 1.5,
+          "t_end": 1.75,
+          "loss": 0.17132872343063354,
+          "runtime_seconds": 19.54000814999995
+        },
+        {
+          "segment": 7,
+          "t_start": 1.75,
+          "t_end": 2.0,
+          "loss": 0.1903090626001358,
+          "runtime_seconds": 18.397519311999986
+        }
+      ]
+    },
+    {
+      "experiment": "13_piecewise_pinn_pilot",
+      "window": 3,
+      "seed": 4,
+      "t_final": 2.0,
+      "segments": 8,
+      "segment_length": 0.25,
+      "iterations_per_segment": 4000,
+      "collocation_per_segment": 256,
+      "initial_error": 5.644774322364236e-07,
+      "median_error": 0.0194521569266176,
+      "max_error": 1.5650384346315418,
+      "final_error": 0.3289479316719188,
+      "fraction_error_below_1": 0.8811188811188811,
+      "first_error_above_1": 1.584,
+      "median_residual": 0.35439735877443385,
+      "runtime_seconds": 163.91688365999994,
+      "segment_metrics": [
+        {
+          "segment": 0,
+          "t_start": 0.0,
+          "t_end": 0.25,
+          "loss": 0.27036866545677185,
+          "runtime_seconds": 17.48780643100008
+        },
+        {
+          "segment": 1,
+          "t_start": 0.25,
+          "t_end": 0.5,
+          "loss": 0.12487006187438965,
+          "runtime_seconds": 17.07809069999996
+        },
+        {
+          "segment": 2,
+          "t_start": 0.5,
+          "t_end": 0.75,
+          "loss": 0.13034634292125702,
+          "runtime_seconds": 24.529726986000014
+        },
+        {
+          "segment": 3,
+          "t_start": 0.75,
+          "t_end": 1.0,
+          "loss": 0.25657281279563904,
+          "runtime_seconds": 18.291672195000046
+        },
+        {
+          "segment": 4,
+          "t_start": 1.0,
+          "t_end": 1.25,
+          "loss": 0.22736921906471252,
+          "runtime_seconds": 19.405686108000054
+        },
+        {
+          "segment": 5,
+          "t_start": 1.25,
+          "t_end": 1.5,
+          "loss": 0.7009741067886353,
+          "runtime_seconds": 19.49748789800003
+        },
+        {
+          "segment": 6,
+          "t_start": 1.5,
+          "t_end": 1.75,
+          "loss": 0.3540497422218323,
+          "runtime_seconds": 18.87797437000006
+        },
+        {
+          "segment": 7,
+          "t_start": 1.75,
+          "t_end": 2.0,
+          "loss": 0.3196698725223541,
+          "runtime_seconds": 27.578951795999956
+        }
+      ]
+    },
+    {
+      "experiment": "13_piecewise_pinn_pilot",
+      "window": 4,
+      "seed": 0,
+      "t_final": 2.0,
+      "segments": 8,
+      "segment_length": 0.25,
+      "iterations_per_segment": 4000,
+      "collocation_per_segment": 256,
+      "initial_error": 2.767926120744601e-07,
+      "median_error": 0.038627017350048025,
+      "max_error": 0.1480853916825134,
+      "final_error": 0.052553439335502175,
+      "fraction_error_below_1": 1.0,
+      "first_error_above_1": null,
+      "median_residual": 0.29789583679168197,
+      "runtime_seconds": 148.34689253099998,
+      "segment_metrics": [
+        {
+          "segment": 0,
+          "t_start": 0.0,
+          "t_end": 0.25,
+          "loss": 0.08082198351621628,
+          "runtime_seconds": 17.506896703999928
+        },
+        {
+          "segment": 1,
+          "t_start": 0.25,
+          "t_end": 0.5,
+          "loss": 0.6555508971214294,
+          "runtime_seconds": 19.583352879000017
+        },
+        {
+          "segment": 2,
+          "t_start": 0.5,
+          "t_end": 0.75,
+          "loss": 0.12007604539394379,
+          "runtime_seconds": 17.94763922700008
+        },
+        {
+          "segment": 3,
+          "t_start": 0.75,
+          "t_end": 1.0,
+          "loss": 0.30397161841392517,
+          "runtime_seconds": 18.74125020200006
+        },
+        {
+          "segment": 4,
+          "t_start": 1.0,
+          "t_end": 1.25,
+          "loss": 0.4989751875400543,
+          "runtime_seconds": 19.110470067999927
+        },
+        {
+          "segment": 5,
+          "t_start": 1.25,
+          "t_end": 1.5,
+          "loss": 0.13408659398555756,
+          "runtime_seconds": 17.999578592000034
+        },
+        {
+          "segment": 6,
+          "t_start": 1.5,
+          "t_end": 1.75,
+          "loss": 0.2079354077577591,
+          "runtime_seconds": 18.264029600999947
+        },
+        {
+          "segment": 7,
+          "t_start": 1.75,
+          "t_end": 2.0,
+          "loss": 0.32441699504852295,
+          "runtime_seconds": 18.155403703000047
+        }
+      ]
+    },
+    {
+      "experiment": "13_piecewise_pinn_pilot",
+      "window": 4,
+      "seed": 1,
+      "t_final": 2.0,
+      "segments": 8,
+      "segment_length": 0.25,
+      "iterations_per_segment": 4000,
+      "collocation_per_segment": 256,
+      "initial_error": 2.767926120744601e-07,
+      "median_error": 0.0770183857923652,
+      "max_error": 0.2413233314957354,
+      "final_error": 0.10851694036478114,
+      "fraction_error_below_1": 1.0,
+      "first_error_above_1": null,
+      "median_residual": 0.4620901714655563,
+      "runtime_seconds": 150.57493230900002,
+      "segment_metrics": [
+        {
+          "segment": 0,
+          "t_start": 0.0,
+          "t_end": 0.25,
+          "loss": 0.2817087471485138,
+          "runtime_seconds": 18.022015061999923
+        },
+        {
+          "segment": 1,
+          "t_start": 0.25,
+          "t_end": 0.5,
+          "loss": 1.1733869314193726,
+          "runtime_seconds": 17.949124030999997
+        },
+        {
+          "segment": 2,
+          "t_start": 0.5,
+          "t_end": 0.75,
+          "loss": 0.17652207612991333,
+          "runtime_seconds": 17.51486335300001
+        },
+        {
+          "segment": 3,
+          "t_start": 0.75,
+          "t_end": 1.0,
+          "loss": 0.2816846966743469,
+          "runtime_seconds": 17.833796907999954
+        },
+        {
+          "segment": 4,
+          "t_start": 1.0,
+          "t_end": 1.25,
+          "loss": 1.0740424394607544,
+          "runtime_seconds": 17.763124188999996
+        },
+        {
+          "segment": 5,
+          "t_start": 1.25,
+          "t_end": 1.5,
+          "loss": 0.3599540591239929,
+          "runtime_seconds": 17.819866389000026
+        },
+        {
+          "segment": 6,
+          "t_start": 1.5,
+          "t_end": 1.75,
+          "loss": 0.36217963695526123,
+          "runtime_seconds": 24.69159834100003
+        },
+        {
+          "segment": 7,
+          "t_start": 1.75,
+          "t_end": 2.0,
+          "loss": 0.8338587284088135,
+          "runtime_seconds": 17.95874474300001
+        }
+      ]
+    },
+    {
+      "experiment": "13_piecewise_pinn_pilot",
+      "window": 4,
+      "seed": 2,
+      "t_final": 2.0,
+      "segments": 8,
+      "segment_length": 0.25,
+      "iterations_per_segment": 4000,
+      "collocation_per_segment": 256,
+      "initial_error": 2.767926120744601e-07,
+      "median_error": 0.0911059365465634,
+      "max_error": 0.31585337322514306,
+      "final_error": 0.2255299839230575,
+      "fraction_error_below_1": 1.0,
+      "first_error_above_1": null,
+      "median_residual": 0.45020403112555724,
+      "runtime_seconds": 144.65136871999994,
+      "segment_metrics": [
+        {
+          "segment": 0,
+          "t_start": 0.0,
+          "t_end": 0.25,
+          "loss": 0.2570160925388336,
+          "runtime_seconds": 17.8827970829999
+        },
+        {
+          "segment": 1,
+          "t_start": 0.25,
+          "t_end": 0.5,
+          "loss": 1.778779149055481,
+          "runtime_seconds": 17.45898924300002
+        },
+        {
+          "segment": 2,
+          "t_start": 0.5,
+          "t_end": 0.75,
+          "loss": 0.19630463421344757,
+          "runtime_seconds": 17.649449344999994
+        },
+        {
+          "segment": 3,
+          "t_start": 0.75,
+          "t_end": 1.0,
+          "loss": 0.1341603845357895,
+          "runtime_seconds": 17.71413461399993
+        },
+        {
+          "segment": 4,
+          "t_start": 1.0,
+          "t_end": 1.25,
+          "loss": 1.4693293571472168,
+          "runtime_seconds": 17.906085307000012
+        },
+        {
+          "segment": 5,
+          "t_start": 1.25,
+          "t_end": 1.5,
+          "loss": 0.22977551817893982,
+          "runtime_seconds": 18.717690756000025
+        },
+        {
+          "segment": 6,
+          "t_start": 1.5,
+          "t_end": 1.75,
+          "loss": 0.5513466000556946,
+          "runtime_seconds": 18.63943512100002
+        },
+        {
+          "segment": 7,
+          "t_start": 1.75,
+          "t_end": 2.0,
+          "loss": 1.035294771194458,
+          "runtime_seconds": 17.62144647799994
+        }
+      ]
+    },
+    {
+      "experiment": "13_piecewise_pinn_pilot",
+      "window": 4,
+      "seed": 3,
+      "t_final": 2.0,
+      "segments": 8,
+      "segment_length": 0.25,
+      "iterations_per_segment": 4000,
+      "collocation_per_segment": 256,
+      "initial_error": 2.767926120744601e-07,
+      "median_error": 0.05356571362991048,
+      "max_error": 0.16261034089342907,
+      "final_error": 0.09147814778724578,
+      "fraction_error_below_1": 1.0,
+      "first_error_above_1": null,
+      "median_residual": 0.4792167815131464,
+      "runtime_seconds": 146.39191961100005,
+      "segment_metrics": [
+        {
+          "segment": 0,
+          "t_start": 0.0,
+          "t_end": 0.25,
+          "loss": 0.292299747467041,
+          "runtime_seconds": 18.512616031999983
+        },
+        {
+          "segment": 1,
+          "t_start": 0.25,
+          "t_end": 0.5,
+          "loss": 0.8079434633255005,
+          "runtime_seconds": 17.468891923
+        },
+        {
+          "segment": 2,
+          "t_start": 0.5,
+          "t_end": 0.75,
+          "loss": 0.26077917218208313,
+          "runtime_seconds": 17.87910702499994
+        },
+        {
+          "segment": 3,
+          "t_start": 0.75,
+          "t_end": 1.0,
+          "loss": 0.15672746300697327,
+          "runtime_seconds": 17.684604483000044
+        },
+        {
+          "segment": 4,
+          "t_start": 1.0,
+          "t_end": 1.25,
+          "loss": 1.2617555856704712,
+          "runtime_seconds": 17.888611998999977
+        },
+        {
+          "segment": 5,
+          "t_start": 1.25,
+          "t_end": 1.5,
+          "loss": 0.27233999967575073,
+          "runtime_seconds": 18.47635611399994
+        },
+        {
+          "segment": 6,
+          "t_start": 1.5,
+          "t_end": 1.75,
+          "loss": 0.5775147080421448,
+          "runtime_seconds": 19.140276900000003
+        },
+        {
+          "segment": 7,
+          "t_start": 1.75,
+          "t_end": 2.0,
+          "loss": 0.7071670889854431,
+          "runtime_seconds": 18.263533043000052
+        }
+      ]
+    },
+    {
+      "experiment": "13_piecewise_pinn_pilot",
+      "window": 4,
+      "seed": 4,
+      "t_final": 2.0,
+      "segments": 8,
+      "segment_length": 0.25,
+      "iterations_per_segment": 4000,
+      "collocation_per_segment": 256,
+      "initial_error": 2.767926120744601e-07,
+      "median_error": 0.07407780068361994,
+      "max_error": 0.25373227495766587,
+      "final_error": 0.14041281890750854,
+      "fraction_error_below_1": 1.0,
+      "first_error_above_1": null,
+      "median_residual": 0.4348623524877648,
+      "runtime_seconds": 150.70628885600001,
+      "segment_metrics": [
+        {
+          "segment": 0,
+          "t_start": 0.0,
+          "t_end": 0.25,
+          "loss": 0.31432434916496277,
+          "runtime_seconds": 18.20378229100004
+        },
+        {
+          "segment": 1,
+          "t_start": 0.25,
+          "t_end": 0.5,
+          "loss": 1.617220163345337,
+          "runtime_seconds": 18.63211258199999
+        },
+        {
+          "segment": 2,
+          "t_start": 0.5,
+          "t_end": 0.75,
+          "loss": 0.28324276208877563,
+          "runtime_seconds": 19.207486665000033
+        },
+        {
+          "segment": 3,
+          "t_start": 0.75,
+          "t_end": 1.0,
+          "loss": 0.14838606119155884,
+          "runtime_seconds": 18.622317820000035
+        },
+        {
+          "segment": 4,
+          "t_start": 1.0,
+          "t_end": 1.25,
+          "loss": 0.5750575661659241,
+          "runtime_seconds": 20.12778868600003
+        },
+        {
+          "segment": 5,
+          "t_start": 1.25,
+          "t_end": 1.5,
+          "loss": 0.1716739535331726,
+          "runtime_seconds": 18.410645191999947
+        },
+        {
+          "segment": 6,
+          "t_start": 1.5,
+          "t_end": 1.75,
+          "loss": 0.3529697358608246,
+          "runtime_seconds": 19.173443931000065
+        },
+        {
+          "segment": 7,
+          "t_start": 1.75,
+          "t_end": 2.0,
+          "loss": 0.5851155519485474,
+          "runtime_seconds": 17.234393991999923
+        }
+      ]
+    },
+    {
+      "experiment": "13_piecewise_pinn_pilot",
+      "window": 5,
+      "seed": 0,
+      "t_final": 2.0,
+      "segments": 8,
+      "segment_length": 0.25,
+      "iterations_per_segment": 4000,
+      "collocation_per_segment": 256,
+      "initial_error": 1.9709692342501174e-07,
+      "median_error": 0.0335950175875743,
+      "max_error": 0.07206206032407932,
+      "final_error": 0.04960158618940065,
+      "fraction_error_below_1": 1.0,
+      "first_error_above_1": null,
+      "median_residual": 0.3175375764094535,
+      "runtime_seconds": 164.02184504299998,
+      "segment_metrics": [
+        {
+          "segment": 0,
+          "t_start": 0.0,
+          "t_end": 0.25,
+          "loss": 0.4171110689640045,
+          "runtime_seconds": 17.67844513299997
+        },
+        {
+          "segment": 1,
+          "t_start": 0.25,
+          "t_end": 0.5,
+          "loss": 0.2513928711414337,
+          "runtime_seconds": 18.009417095000003
+        },
+        {
+          "segment": 2,
+          "t_start": 0.5,
+          "t_end": 0.75,
+          "loss": 0.06625602394342422,
+          "runtime_seconds": 17.935859176000008
+        },
+        {
+          "segment": 3,
+          "t_start": 0.75,
+          "t_end": 1.0,
+          "loss": 0.36844325065612793,
+          "runtime_seconds": 18.07477169599997
+        },
+        {
+          "segment": 4,
+          "t_start": 1.0,
+          "t_end": 1.25,
+          "loss": 0.29718920588493347,
+          "runtime_seconds": 19.170147207000014
+        },
+        {
+          "segment": 5,
+          "t_start": 1.25,
+          "t_end": 1.5,
+          "loss": 0.2115280032157898,
+          "runtime_seconds": 18.34068249500001
+        },
+        {
+          "segment": 6,
+          "t_start": 1.5,
+          "t_end": 1.75,
+          "loss": 0.12371335178613663,
+          "runtime_seconds": 17.894338543999993
+        },
+        {
+          "segment": 7,
+          "t_start": 1.75,
+          "t_end": 2.0,
+          "loss": 0.10687597841024399,
+          "runtime_seconds": 35.86254049399997
+        }
+      ]
+    },
+    {
+      "experiment": "13_piecewise_pinn_pilot",
+      "window": 5,
+      "seed": 1,
+      "t_final": 2.0,
+      "segments": 8,
+      "segment_length": 0.25,
+      "iterations_per_segment": 4000,
+      "collocation_per_segment": 256,
+      "initial_error": 1.9709692342501174e-07,
+      "median_error": 0.07847920855157564,
+      "max_error": 0.17663155623269602,
+      "final_error": 0.14126308583550826,
+      "fraction_error_below_1": 1.0,
+      "first_error_above_1": null,
+      "median_residual": 0.7761169858350963,
+      "runtime_seconds": 147.16539790299998,
+      "segment_metrics": [
+        {
+          "segment": 0,
+          "t_start": 0.0,
+          "t_end": 0.25,
+          "loss": 0.35931989550590515,
+          "runtime_seconds": 19.334996465000017
+        },
+        {
+          "segment": 1,
+          "t_start": 0.25,
+          "t_end": 0.5,
+          "loss": 1.9616787433624268,
+          "runtime_seconds": 18.44115878599996
+        },
+        {
+          "segment": 2,
+          "t_start": 0.5,
+          "t_end": 0.75,
+          "loss": 0.8870933055877686,
+          "runtime_seconds": 18.749454238999988
+        },
+        {
+          "segment": 3,
+          "t_start": 0.75,
+          "t_end": 1.0,
+          "loss": 0.6349161863327026,
+          "runtime_seconds": 18.958990203999974
+        },
+        {
+          "segment": 4,
+          "t_start": 1.0,
+          "t_end": 1.25,
+          "loss": 0.40782639384269714,
+          "runtime_seconds": 18.71304502099997
+        },
+        {
+          "segment": 5,
+          "t_start": 1.25,
+          "t_end": 1.5,
+          "loss": 1.5970728397369385,
+          "runtime_seconds": 17.58429442399995
+        },
+        {
+          "segment": 6,
+          "t_start": 1.5,
+          "t_end": 1.75,
+          "loss": 2.035889148712158,
+          "runtime_seconds": 17.527281318000064
+        },
+        {
+          "segment": 7,
+          "t_start": 1.75,
+          "t_end": 2.0,
+          "loss": 1.5442661046981812,
+          "runtime_seconds": 16.753614491999997
+        }
+      ]
+    },
+    {
+      "experiment": "13_piecewise_pinn_pilot",
+      "window": 5,
+      "seed": 2,
+      "t_final": 2.0,
+      "segments": 8,
+      "segment_length": 0.25,
+      "iterations_per_segment": 4000,
+      "collocation_per_segment": 256,
+      "initial_error": 1.9709692342501174e-07,
+      "median_error": 0.04361637788872905,
+      "max_error": 0.10323281282172982,
+      "final_error": 0.07391144160790006,
+      "fraction_error_below_1": 1.0,
+      "first_error_above_1": null,
+      "median_residual": 0.47164326929174616,
+      "runtime_seconds": 169.03021607799997,
+      "segment_metrics": [
+        {
+          "segment": 0,
+          "t_start": 0.0,
+          "t_end": 0.25,
+          "loss": 0.4794960618019104,
+          "runtime_seconds": 36.96956703600006
+        },
+        {
+          "segment": 1,
+          "t_start": 0.25,
+          "t_end": 0.5,
+          "loss": 0.21845859289169312,
+          "runtime_seconds": 21.70279574999995
+        },
+        {
+          "segment": 2,
+          "t_start": 0.5,
+          "t_end": 0.75,
+          "loss": 0.3919811546802521,
+          "runtime_seconds": 17.31624917800002
+        },
+        {
+          "segment": 3,
+          "t_start": 0.75,
+          "t_end": 1.0,
+          "loss": 0.7460978627204895,
+          "runtime_seconds": 18.61050370299995
+        },
+        {
+          "segment": 4,
+          "t_start": 1.0,
+          "t_end": 1.25,
+          "loss": 0.3237879276275635,
+          "runtime_seconds": 18.448333018000085
+        },
+        {
+          "segment": 5,
+          "t_start": 1.25,
+          "t_end": 1.5,
+          "loss": 0.8993589878082275,
+          "runtime_seconds": 18.990101286000026
+        },
+        {
+          "segment": 6,
+          "t_start": 1.5,
+          "t_end": 1.75,
+          "loss": 0.19025906920433044,
+          "runtime_seconds": 17.87758291
+        },
+        {
+          "segment": 7,
+          "t_start": 1.75,
+          "t_end": 2.0,
+          "loss": 0.5442233085632324,
+          "runtime_seconds": 17.863196834000064
+        }
+      ]
+    },
+    {
+      "experiment": "13_piecewise_pinn_pilot",
+      "window": 5,
+      "seed": 3,
+      "t_final": 2.0,
+      "segments": 8,
+      "segment_length": 0.25,
+      "iterations_per_segment": 4000,
+      "collocation_per_segment": 256,
+      "initial_error": 1.9709692342501174e-07,
+      "median_error": 0.04391381180402546,
+      "max_error": 0.08057992509020784,
+      "final_error": 0.06043804948226392,
+      "fraction_error_below_1": 1.0,
+      "first_error_above_1": null,
+      "median_residual": 0.48214722557662215,
+      "runtime_seconds": 175.68713176799997,
+      "segment_metrics": [
+        {
+          "segment": 0,
+          "t_start": 0.0,
+          "t_end": 0.25,
+          "loss": 0.5037171244621277,
+          "runtime_seconds": 17.806016332000013
+        },
+        {
+          "segment": 1,
+          "t_start": 0.25,
+          "t_end": 0.5,
+          "loss": 0.6132332682609558,
+          "runtime_seconds": 16.824547016999986
+        },
+        {
+          "segment": 2,
+          "t_start": 0.5,
+          "t_end": 0.75,
+          "loss": 0.579484760761261,
+          "runtime_seconds": 26.713888829999973
+        },
+        {
+          "segment": 3,
+          "t_start": 0.75,
+          "t_end": 1.0,
+          "loss": 0.5010993480682373,
+          "runtime_seconds": 30.93272707099993
+        },
+        {
+          "segment": 4,
+          "t_start": 1.0,
+          "t_end": 1.25,
+          "loss": 0.2939259707927704,
+          "runtime_seconds": 18.582044831000076
+        },
+        {
+          "segment": 5,
+          "t_start": 1.25,
+          "t_end": 1.5,
+          "loss": 0.62913978099823,
+          "runtime_seconds": 18.18250648000003
+        },
+        {
+          "segment": 6,
+          "t_start": 1.5,
+          "t_end": 1.75,
+          "loss": 0.39749079942703247,
+          "runtime_seconds": 18.301398049
+        },
+        {
+          "segment": 7,
+          "t_start": 1.75,
+          "t_end": 2.0,
+          "loss": 0.16988983750343323,
+          "runtime_seconds": 27.29622748700001
+        }
+      ]
+    },
+    {
+      "experiment": "13_piecewise_pinn_pilot",
+      "window": 5,
+      "seed": 4,
+      "t_final": 2.0,
+      "segments": 8,
+      "segment_length": 0.25,
+      "iterations_per_segment": 4000,
+      "collocation_per_segment": 256,
+      "initial_error": 1.9709692342501174e-07,
+      "median_error": 0.02872059485726567,
+      "max_error": 0.07493549166691081,
+      "final_error": 0.051352776005461384,
+      "fraction_error_below_1": 1.0,
+      "first_error_above_1": null,
+      "median_residual": 0.37432782867916253,
+      "runtime_seconds": 142.929134631,
+      "segment_metrics": [
+        {
+          "segment": 0,
+          "t_start": 0.0,
+          "t_end": 0.25,
+          "loss": 0.4174394905567169,
+          "runtime_seconds": 17.581691078000063
+        },
+        {
+          "segment": 1,
+          "t_start": 0.25,
+          "t_end": 0.5,
+          "loss": 0.32171815633773804,
+          "runtime_seconds": 16.767192381999962
+        },
+        {
+          "segment": 2,
+          "t_start": 0.5,
+          "t_end": 0.75,
+          "loss": 0.10680143535137177,
+          "runtime_seconds": 18.309137508999925
+        },
+        {
+          "segment": 3,
+          "t_start": 0.75,
+          "t_end": 1.0,
+          "loss": 0.363172709941864,
+          "runtime_seconds": 17.906884626999954
+        },
+        {
+          "segment": 4,
+          "t_start": 1.0,
+          "t_end": 1.25,
+          "loss": 0.30220577120780945,
+          "runtime_seconds": 17.762547358000006
+        },
+        {
+          "segment": 5,
+          "t_start": 1.25,
+          "t_end": 1.5,
+          "loss": 0.5049155950546265,
+          "runtime_seconds": 17.91325239699995
+        },
+        {
+          "segment": 6,
+          "t_start": 1.5,
+          "t_end": 1.75,
+          "loss": 0.17230984568595886,
+          "runtime_seconds": 17.788674872
+        },
+        {
+          "segment": 7,
+          "t_start": 1.75,
+          "t_end": 2.0,
+          "loss": 0.21952806413173676,
+          "runtime_seconds": 17.82308866799997
+        }
+      ]
+    },
+    {
+      "experiment": "13_piecewise_pinn_pilot",
+      "window": 6,
+      "seed": 0,
+      "t_final": 2.0,
+      "segments": 8,
+      "segment_length": 0.25,
+      "iterations_per_segment": 4000,
+      "collocation_per_segment": 256,
+      "initial_error": 4.429473723555558e-07,
+      "median_error": 0.04697486771710947,
+      "max_error": 0.24583017115662012,
+      "final_error": 0.06740806103365651,
+      "fraction_error_below_1": 1.0,
+      "first_error_above_1": null,
+      "median_residual": 0.3091582504427953,
+      "runtime_seconds": 158.33631043100002,
+      "segment_metrics": [
+        {
+          "segment": 0,
+          "t_start": 0.0,
+          "t_end": 0.25,
+          "loss": 0.13448089361190796,
+          "runtime_seconds": 29.157193167999935
+        },
+        {
+          "segment": 1,
+          "t_start": 0.25,
+          "t_end": 0.5,
+          "loss": 0.03277664631605148,
+          "runtime_seconds": 18.357031869000025
+        },
+        {
+          "segment": 2,
+          "t_start": 0.5,
+          "t_end": 0.75,
+          "loss": 0.589383602142334,
+          "runtime_seconds": 17.898812414999952
+        },
+        {
+          "segment": 3,
+          "t_start": 0.75,
+          "t_end": 1.0,
+          "loss": 0.06521201878786087,
+          "runtime_seconds": 17.583299408000016
+        },
+        {
+          "segment": 4,
+          "t_start": 1.0,
+          "t_end": 1.25,
+          "loss": 0.28901705145835876,
+          "runtime_seconds": 17.74896284600004
+        },
+        {
+          "segment": 5,
+          "t_start": 1.25,
+          "t_end": 1.5,
+          "loss": 0.4513954818248749,
+          "runtime_seconds": 18.67753692200006
+        },
+        {
+          "segment": 6,
+          "t_start": 1.5,
+          "t_end": 1.75,
+          "loss": 0.2430490255355835,
+          "runtime_seconds": 18.941704150999954
+        },
+        {
+          "segment": 7,
+          "t_start": 1.75,
+          "t_end": 2.0,
+          "loss": 0.24686218798160553,
+          "runtime_seconds": 18.256014668000034
+        }
+      ]
+    },
+    {
+      "experiment": "13_piecewise_pinn_pilot",
+      "window": 6,
+      "seed": 1,
+      "t_final": 2.0,
+      "segments": 8,
+      "segment_length": 0.25,
+      "iterations_per_segment": 4000,
+      "collocation_per_segment": 256,
+      "initial_error": 4.429473723555558e-07,
+      "median_error": 0.16971667228706874,
+      "max_error": 0.9080422578542429,
+      "final_error": 0.2286020688356355,
+      "fraction_error_below_1": 1.0,
+      "first_error_above_1": null,
+      "median_residual": 0.5049393358048287,
+      "runtime_seconds": 143.27440167299994,
+      "segment_metrics": [
+        {
+          "segment": 0,
+          "t_start": 0.0,
+          "t_end": 0.25,
+          "loss": 0.34880465269088745,
+          "runtime_seconds": 17.245962459999987
+        },
+        {
+          "segment": 1,
+          "t_start": 0.25,
+          "t_end": 0.5,
+          "loss": 0.1542091965675354,
+          "runtime_seconds": 17.54686402099992
+        },
+        {
+          "segment": 2,
+          "t_start": 0.5,
+          "t_end": 0.75,
+          "loss": 0.5680794715881348,
+          "runtime_seconds": 18.15339608599993
+        },
+        {
+          "segment": 3,
+          "t_start": 0.75,
+          "t_end": 1.0,
+          "loss": 2.060372829437256,
+          "runtime_seconds": 17.97434156999998
+        },
+        {
+          "segment": 4,
+          "t_start": 1.0,
+          "t_end": 1.25,
+          "loss": 0.37120890617370605,
+          "runtime_seconds": 17.83376862500006
+        },
+        {
+          "segment": 5,
+          "t_start": 1.25,
+          "t_end": 1.5,
+          "loss": 0.5427194833755493,
+          "runtime_seconds": 17.766320119999932
+        },
+        {
+          "segment": 6,
+          "t_start": 1.5,
+          "t_end": 1.75,
+          "loss": 0.8112483024597168,
+          "runtime_seconds": 17.62838422499999
+        },
+        {
+          "segment": 7,
+          "t_start": 1.75,
+          "t_end": 2.0,
+          "loss": 0.5614599585533142,
+          "runtime_seconds": 18.08884272800003
+        }
+      ]
+    },
+    {
+      "experiment": "13_piecewise_pinn_pilot",
+      "window": 6,
+      "seed": 2,
+      "t_final": 2.0,
+      "segments": 8,
+      "segment_length": 0.25,
+      "iterations_per_segment": 4000,
+      "collocation_per_segment": 256,
+      "initial_error": 4.429473723555558e-07,
+      "median_error": 0.2021625641027231,
+      "max_error": 1.1485110449328115,
+      "final_error": 0.22394347655121188,
+      "fraction_error_below_1": 0.9400599400599401,
+      "first_error_above_1": 1.022,
+      "median_residual": 0.3750439051566312,
+      "runtime_seconds": 178.19372807500008,
+      "segment_metrics": [
+        {
+          "segment": 0,
+          "t_start": 0.0,
+          "t_end": 0.25,
+          "loss": 0.1271522492170334,
+          "runtime_seconds": 24.391633644999956
+        },
+        {
+          "segment": 1,
+          "t_start": 0.25,
+          "t_end": 0.5,
+          "loss": 0.3056574761867523,
+          "runtime_seconds": 18.201983606
+        },
+        {
+          "segment": 2,
+          "t_start": 0.5,
+          "t_end": 0.75,
+          "loss": 1.0078223943710327,
+          "runtime_seconds": 18.21618941899999
+        },
+        {
+          "segment": 3,
+          "t_start": 0.75,
+          "t_end": 1.0,
+          "loss": 0.1901126503944397,
+          "runtime_seconds": 20.777535007999973
+        },
+        {
+          "segment": 4,
+          "t_start": 1.0,
+          "t_end": 1.25,
+          "loss": 0.27231913805007935,
+          "runtime_seconds": 18.73073586800001
+        },
+        {
+          "segment": 5,
+          "t_start": 1.25,
+          "t_end": 1.5,
+          "loss": 0.5242612361907959,
+          "runtime_seconds": 17.982330982999997
+        },
+        {
+          "segment": 6,
+          "t_start": 1.5,
+          "t_end": 1.75,
+          "loss": 0.35882267355918884,
+          "runtime_seconds": 18.013091009999926
+        },
+        {
+          "segment": 7,
+          "t_start": 1.75,
+          "t_end": 2.0,
+          "loss": 0.17859326303005219,
+          "runtime_seconds": 40.15063340000006
+        }
+      ]
+    },
+    {
+      "experiment": "13_piecewise_pinn_pilot",
+      "window": 6,
+      "seed": 3,
+      "t_final": 2.0,
+      "segments": 8,
+      "segment_length": 0.25,
+      "iterations_per_segment": 4000,
+      "collocation_per_segment": 256,
+      "initial_error": 4.429473723555558e-07,
+      "median_error": 0.09932290061685668,
+      "max_error": 0.5718950562058661,
+      "final_error": 0.1220360487671666,
+      "fraction_error_below_1": 1.0,
+      "first_error_above_1": null,
+      "median_residual": 0.35956870415712205,
+      "runtime_seconds": 175.213075656,
+      "segment_metrics": [
+        {
+          "segment": 0,
+          "t_start": 0.0,
+          "t_end": 0.25,
+          "loss": 0.17036472260951996,
+          "runtime_seconds": 20.060653002000095
+        },
+        {
+          "segment": 1,
+          "t_start": 0.25,
+          "t_end": 0.5,
+          "loss": 0.2839757800102234,
+          "runtime_seconds": 18.457664572999988
+        },
+        {
+          "segment": 2,
+          "t_start": 0.5,
+          "t_end": 0.75,
+          "loss": 0.4282894730567932,
+          "runtime_seconds": 36.93270783999992
+        },
+        {
+          "segment": 3,
+          "t_start": 0.75,
+          "t_end": 1.0,
+          "loss": 0.08102394640445709,
+          "runtime_seconds": 26.26419190699994
+        },
+        {
+          "segment": 4,
+          "t_start": 1.0,
+          "t_end": 1.25,
+          "loss": 0.24037493765354156,
+          "runtime_seconds": 17.722332779999988
+        },
+        {
+          "segment": 5,
+          "t_start": 1.25,
+          "t_end": 1.5,
+          "loss": 0.5319565534591675,
+          "runtime_seconds": 17.813652228000024
+        },
+        {
+          "segment": 6,
+          "t_start": 1.5,
+          "t_end": 1.75,
+          "loss": 0.2791963517665863,
+          "runtime_seconds": 17.642508615999986
+        },
+        {
+          "segment": 7,
+          "t_start": 1.75,
+          "t_end": 2.0,
+          "loss": 0.3759148418903351,
+          "runtime_seconds": 18.62122103100012
+        }
+      ]
+    },
+    {
+      "experiment": "13_piecewise_pinn_pilot",
+      "window": 6,
+      "seed": 4,
+      "t_final": 2.0,
+      "segments": 8,
+      "segment_length": 0.25,
+      "iterations_per_segment": 4000,
+      "collocation_per_segment": 256,
+      "initial_error": 4.429473723555558e-07,
+      "median_error": 0.09945434271267993,
+      "max_error": 0.5771918200189036,
+      "final_error": 0.12472274187278985,
+      "fraction_error_below_1": 1.0,
+      "first_error_above_1": null,
+      "median_residual": 0.4034523023737429,
+      "runtime_seconds": 296.3604702079999,
+      "segment_metrics": [
+        {
+          "segment": 0,
+          "t_start": 0.0,
+          "t_end": 0.25,
+          "loss": 0.24718785285949707,
+          "runtime_seconds": 45.49991865699997
+        },
+        {
+          "segment": 1,
+          "t_start": 0.25,
+          "t_end": 0.5,
+          "loss": 0.14469707012176514,
+          "runtime_seconds": 45.57418455100003
+        },
+        {
+          "segment": 2,
+          "t_start": 0.5,
+          "t_end": 0.75,
+          "loss": 0.6399536728858948,
+          "runtime_seconds": 45.36206391300004
+        },
+        {
+          "segment": 3,
+          "t_start": 0.75,
+          "t_end": 1.0,
+          "loss": 0.13398760557174683,
+          "runtime_seconds": 45.84964397400006
+        },
+        {
+          "segment": 4,
+          "t_start": 1.0,
+          "t_end": 1.25,
+          "loss": 0.3994237780570984,
+          "runtime_seconds": 45.501042347000066
+        },
+        {
+          "segment": 5,
+          "t_start": 1.25,
+          "t_end": 1.5,
+          "loss": 0.4865458309650421,
+          "runtime_seconds": 32.31142394199992
+        },
+        {
+          "segment": 6,
+          "t_start": 1.5,
+          "t_end": 1.75,
+          "loss": 0.3127269744873047,
+          "runtime_seconds": 17.914699733000134
+        },
+        {
+          "segment": 7,
+          "t_start": 1.75,
+          "t_end": 2.0,
+          "loss": 0.21300959587097168,
+          "runtime_seconds": 16.54185696100012
+        }
+      ]
+    },
+    {
+      "experiment": "13_piecewise_pinn_pilot",
+      "window": 7,
+      "seed": 0,
+      "t_final": 2.0,
+      "segments": 8,
+      "segment_length": 0.25,
+      "iterations_per_segment": 4000,
+      "collocation_per_segment": 256,
+      "initial_error": 8.899553422132165e-07,
+      "median_error": 0.029903980321604833,
+      "max_error": 0.43985019642096673,
+      "final_error": 0.4396398653825924,
+      "fraction_error_below_1": 1.0,
+      "first_error_above_1": null,
+      "median_residual": 0.23550564984895792,
+      "runtime_seconds": 156.29177268799992,
+      "segment_metrics": [
+        {
+          "segment": 0,
+          "t_start": 0.0,
+          "t_end": 0.25,
+          "loss": 0.10339482128620148,
+          "runtime_seconds": 28.685486878999995
+        },
+        {
+          "segment": 1,
+          "t_start": 0.25,
+          "t_end": 0.5,
+          "loss": 0.09237044304609299,
+          "runtime_seconds": 18.051193204000015
+        },
+        {
+          "segment": 2,
+          "t_start": 0.5,
+          "t_end": 0.75,
+          "loss": 0.06737285852432251,
+          "runtime_seconds": 17.88787207400003
+        },
+        {
+          "segment": 3,
+          "t_start": 0.75,
+          "t_end": 1.0,
+          "loss": 0.2502891421318054,
+          "runtime_seconds": 18.90969979500005
+        },
+        {
+          "segment": 4,
+          "t_start": 1.0,
+          "t_end": 1.25,
+          "loss": 0.0894528478384018,
+          "runtime_seconds": 17.629429153000046
+        },
+        {
+          "segment": 5,
+          "t_start": 1.25,
+          "t_end": 1.5,
+          "loss": 0.0765281468629837,
+          "runtime_seconds": 17.707453299000008
+        },
+        {
+          "segment": 6,
+          "t_start": 1.5,
+          "t_end": 1.75,
+          "loss": 0.3948124051094055,
+          "runtime_seconds": 18.120337769999878
+        },
+        {
+          "segment": 7,
+          "t_start": 1.75,
+          "t_end": 2.0,
+          "loss": 0.07761026918888092,
+          "runtime_seconds": 17.510658246000048
+        }
+      ]
+    },
+    {
+      "experiment": "13_piecewise_pinn_pilot",
+      "window": 7,
+      "seed": 1,
+      "t_final": 2.0,
+      "segments": 8,
+      "segment_length": 0.25,
+      "iterations_per_segment": 4000,
+      "collocation_per_segment": 256,
+      "initial_error": 8.899553422132165e-07,
+      "median_error": 0.10921340909896574,
+      "max_error": 1.5592200790115078,
+      "final_error": 1.5588373041499395,
+      "fraction_error_below_1": 0.9530469530469531,
+      "first_error_above_1": 1.9080000000000001,
+      "median_residual": 0.4309917286533832,
+      "runtime_seconds": 150.71388723200005,
+      "segment_metrics": [
+        {
+          "segment": 0,
+          "t_start": 0.0,
+          "t_end": 0.25,
+          "loss": 0.7117416858673096,
+          "runtime_seconds": 17.825682353000047
+        },
+        {
+          "segment": 1,
+          "t_start": 0.25,
+          "t_end": 0.5,
+          "loss": 0.32955488562583923,
+          "runtime_seconds": 20.485652510000023
+        },
+        {
+          "segment": 2,
+          "t_start": 0.5,
+          "t_end": 0.75,
+          "loss": 0.46432995796203613,
+          "runtime_seconds": 18.121880517999898
+        },
+        {
+          "segment": 3,
+          "t_start": 0.75,
+          "t_end": 1.0,
+          "loss": 1.5761041641235352,
+          "runtime_seconds": 21.363759901000094
+        },
+        {
+          "segment": 4,
+          "t_start": 1.0,
+          "t_end": 1.25,
+          "loss": 0.13051390647888184,
+          "runtime_seconds": 17.91132193899989
+        },
+        {
+          "segment": 5,
+          "t_start": 1.25,
+          "t_end": 1.5,
+          "loss": 0.19348709285259247,
+          "runtime_seconds": 18.234328931999926
+        },
+        {
+          "segment": 6,
+          "t_start": 1.5,
+          "t_end": 1.75,
+          "loss": 0.9582793712615967,
+          "runtime_seconds": 17.950793793000003
+        },
+        {
+          "segment": 7,
+          "t_start": 1.75,
+          "t_end": 2.0,
+          "loss": 0.21374282240867615,
+          "runtime_seconds": 17.697568874000126
+        }
+      ]
+    },
+    {
+      "experiment": "13_piecewise_pinn_pilot",
+      "window": 7,
+      "seed": 2,
+      "t_final": 2.0,
+      "segments": 8,
+      "segment_length": 0.25,
+      "iterations_per_segment": 4000,
+      "collocation_per_segment": 256,
+      "initial_error": 8.899553422132165e-07,
+      "median_error": 0.10982055706935254,
+      "max_error": 0.731845880445285,
+      "final_error": 0.7310582437192161,
+      "fraction_error_below_1": 1.0,
+      "first_error_above_1": null,
+      "median_residual": 0.4275622702306242,
+      "runtime_seconds": 152.54777452600013,
+      "segment_metrics": [
+        {
+          "segment": 0,
+          "t_start": 0.0,
+          "t_end": 0.25,
+          "loss": 0.985081672668457,
+          "runtime_seconds": 18.208880432
+        },
+        {
+          "segment": 1,
+          "t_start": 0.25,
+          "t_end": 0.5,
+          "loss": 0.30943921208381653,
+          "runtime_seconds": 18.13326440800006
+        },
+        {
+          "segment": 2,
+          "t_start": 0.5,
+          "t_end": 0.75,
+          "loss": 0.23857487738132477,
+          "runtime_seconds": 19.139928041000076
+        },
+        {
+          "segment": 3,
+          "t_start": 0.75,
+          "t_end": 1.0,
+          "loss": 0.5816037058830261,
+          "runtime_seconds": 18.92330964200005
+        },
+        {
+          "segment": 4,
+          "t_start": 1.0,
+          "t_end": 1.25,
+          "loss": 0.11755582690238953,
+          "runtime_seconds": 18.29079906400011
+        },
+        {
+          "segment": 5,
+          "t_start": 1.25,
+          "t_end": 1.5,
+          "loss": 0.3903457224369049,
+          "runtime_seconds": 18.04228847000013
+        },
+        {
+          "segment": 6,
+          "t_start": 1.5,
+          "t_end": 1.75,
+          "loss": 0.9874229431152344,
+          "runtime_seconds": 17.809455324000055
+        },
+        {
+          "segment": 7,
+          "t_start": 1.75,
+          "t_end": 2.0,
+          "loss": 0.1968909204006195,
+          "runtime_seconds": 22.890543426000022
+        }
+      ]
+    },
+    {
+      "experiment": "13_piecewise_pinn_pilot",
+      "window": 7,
+      "seed": 3,
+      "t_final": 2.0,
+      "segments": 8,
+      "segment_length": 0.25,
+      "iterations_per_segment": 4000,
+      "collocation_per_segment": 256,
+      "initial_error": 8.899553422132165e-07,
+      "median_error": 0.06561461074296064,
+      "max_error": 0.648031860642443,
+      "final_error": 0.6445002405123912,
+      "fraction_error_below_1": 1.0,
+      "first_error_above_1": null,
+      "median_residual": 0.40933454567678884,
+      "runtime_seconds": 149.0004872280001,
+      "segment_metrics": [
+        {
+          "segment": 0,
+          "t_start": 0.0,
+          "t_end": 0.25,
+          "loss": 0.4263858497142792,
+          "runtime_seconds": 17.89491288699992
+        },
+        {
+          "segment": 1,
+          "t_start": 0.25,
+          "t_end": 0.5,
+          "loss": 0.1872570812702179,
+          "runtime_seconds": 17.968084089000058
+        },
+        {
+          "segment": 2,
+          "t_start": 0.5,
+          "t_end": 0.75,
+          "loss": 0.26778438687324524,
+          "runtime_seconds": 18.499880919000134
+        },
+        {
+          "segment": 3,
+          "t_start": 0.75,
+          "t_end": 1.0,
+          "loss": 0.8356572985649109,
+          "runtime_seconds": 18.148785197000052
+        },
+        {
+          "segment": 4,
+          "t_start": 1.0,
+          "t_end": 1.25,
+          "loss": 0.2669335901737213,
+          "runtime_seconds": 20.08985963499981
+        },
+        {
+          "segment": 5,
+          "t_start": 1.25,
+          "t_end": 1.5,
+          "loss": 0.16785567998886108,
+          "runtime_seconds": 19.20218163100003
+        },
+        {
+          "segment": 6,
+          "t_start": 1.5,
+          "t_end": 1.75,
+          "loss": 0.7221546173095703,
+          "runtime_seconds": 17.91993280199995
+        },
+        {
+          "segment": 7,
+          "t_start": 1.75,
+          "t_end": 2.0,
+          "loss": 0.2573345899581909,
+          "runtime_seconds": 18.23441363500001
+        }
+      ]
+    },
+    {
+      "experiment": "13_piecewise_pinn_pilot",
+      "window": 7,
+      "seed": 4,
+      "t_final": 2.0,
+      "segments": 8,
+      "segment_length": 0.25,
+      "iterations_per_segment": 4000,
+      "collocation_per_segment": 256,
+      "initial_error": 8.899553422132165e-07,
+      "median_error": 0.03032039991967398,
+      "max_error": 0.45567384969822305,
+      "final_error": 0.4534169161773279,
+      "fraction_error_below_1": 1.0,
+      "first_error_above_1": null,
+      "median_residual": 0.27373333671574784,
+      "runtime_seconds": 149.51923332700005,
+      "segment_metrics": [
+        {
+          "segment": 0,
+          "t_start": 0.0,
+          "t_end": 0.25,
+          "loss": 0.1292005181312561,
+          "runtime_seconds": 17.84862370499991
+        },
+        {
+          "segment": 1,
+          "t_start": 0.25,
+          "t_end": 0.5,
+          "loss": 0.11625051498413086,
+          "runtime_seconds": 18.843276899999978
+        },
+        {
+          "segment": 2,
+          "t_start": 0.5,
+          "t_end": 0.75,
+          "loss": 0.11278335005044937,
+          "runtime_seconds": 17.785898849999967
+        },
+        {
+          "segment": 3,
+          "t_start": 0.75,
+          "t_end": 1.0,
+          "loss": 0.17341388761997223,
+          "runtime_seconds": 17.812370052999995
+        },
+        {
+          "segment": 4,
+          "t_start": 1.0,
+          "t_end": 1.25,
+          "loss": 0.15816426277160645,
+          "runtime_seconds": 18.759147613000096
+        },
+        {
+          "segment": 5,
+          "t_start": 1.25,
+          "t_end": 1.5,
+          "loss": 0.0701693668961525,
+          "runtime_seconds": 17.932371323000098
+        },
+        {
+          "segment": 6,
+          "t_start": 1.5,
+          "t_end": 1.75,
+          "loss": 0.5808285474777222,
+          "runtime_seconds": 21.02041531099985
+        },
+        {
+          "segment": 7,
+          "t_start": 1.75,
+          "t_end": 2.0,
+          "loss": 0.16175904870033264,
+          "runtime_seconds": 18.391281941000216
+        }
+      ]
+    },
+    {
+      "experiment": "13_piecewise_pinn_pilot",
+      "window": 8,
+      "seed": 0,
+      "t_final": 2.0,
+      "segments": 8,
+      "segment_length": 0.25,
+      "iterations_per_segment": 4000,
+      "collocation_per_segment": 256,
+      "initial_error": 3.664595099135163e-07,
+      "median_error": 0.047907797697204636,
+      "max_error": 0.10062703689743181,
+      "final_error": 0.07934005787795097,
+      "fraction_error_below_1": 1.0,
+      "first_error_above_1": null,
+      "median_residual": 0.4177432861857818,
+      "runtime_seconds": 172.37295940800004,
+      "segment_metrics": [
+        {
+          "segment": 0,
+          "t_start": 0.0,
+          "t_end": 0.25,
+          "loss": 0.6502493619918823,
+          "runtime_seconds": 41.31393611500005
+        },
+        {
+          "segment": 1,
+          "t_start": 0.25,
+          "t_end": 0.5,
+          "loss": 0.11560674011707306,
+          "runtime_seconds": 36.156550256999935
+        },
+        {
+          "segment": 2,
+          "t_start": 0.5,
+          "t_end": 0.75,
+          "loss": 0.3350849151611328,
+          "runtime_seconds": 19.043739003999917
+        },
+        {
+          "segment": 3,
+          "t_start": 0.75,
+          "t_end": 1.0,
+          "loss": 0.2878968417644501,
+          "runtime_seconds": 18.140737886999887
+        },
+        {
+          "segment": 4,
+          "t_start": 1.0,
+          "t_end": 1.25,
+          "loss": 0.28316259384155273,
+          "runtime_seconds": 16.506092792000118
+        },
+        {
+          "segment": 5,
+          "t_start": 1.25,
+          "t_end": 1.5,
+          "loss": 0.4860383868217468,
+          "runtime_seconds": 14.516343987000027
+        },
+        {
+          "segment": 6,
+          "t_start": 1.5,
+          "t_end": 1.75,
+          "loss": 0.08405910432338715,
+          "runtime_seconds": 12.866214044000117
+        },
+        {
+          "segment": 7,
+          "t_start": 1.75,
+          "t_end": 2.0,
+          "loss": 0.4444970488548279,
+          "runtime_seconds": 12.77025922200005
+        }
+      ]
+    },
+    {
+      "experiment": "13_piecewise_pinn_pilot",
+      "window": 8,
+      "seed": 1,
+      "t_final": 2.0,
+      "segments": 8,
+      "segment_length": 0.25,
+      "iterations_per_segment": 4000,
+      "collocation_per_segment": 256,
+      "initial_error": 3.664595099135163e-07,
+      "median_error": 0.07515817358223022,
+      "max_error": 0.16819373498513432,
+      "final_error": 0.11396762831766272,
+      "fraction_error_below_1": 1.0,
+      "first_error_above_1": null,
+      "median_residual": 0.6801642690563395,
+      "runtime_seconds": 141.90230027500002,
+      "segment_metrics": [
+        {
+          "segment": 0,
+          "t_start": 0.0,
+          "t_end": 0.25,
+          "loss": 0.9101462960243225,
+          "runtime_seconds": 18.28066644799992
+        },
+        {
+          "segment": 1,
+          "t_start": 0.25,
+          "t_end": 0.5,
+          "loss": 0.48902827501296997,
+          "runtime_seconds": 18.456302093999966
+        },
+        {
+          "segment": 2,
+          "t_start": 0.5,
+          "t_end": 0.75,
+          "loss": 0.5994796752929688,
+          "runtime_seconds": 18.160062629999857
+        },
+        {
+          "segment": 3,
+          "t_start": 0.75,
+          "t_end": 1.0,
+          "loss": 0.6166369318962097,
+          "runtime_seconds": 19.535167150999996
+        },
+        {
+          "segment": 4,
+          "t_start": 1.0,
+          "t_end": 1.25,
+          "loss": 0.5509873628616333,
+          "runtime_seconds": 17.968651750999925
+        },
+        {
+          "segment": 5,
+          "t_start": 1.25,
+          "t_end": 1.5,
+          "loss": 1.5007573366165161,
+          "runtime_seconds": 17.24465768899995
+        },
+        {
+          "segment": 6,
+          "t_start": 1.5,
+          "t_end": 1.75,
+          "loss": 1.035219430923462,
+          "runtime_seconds": 16.144492581999884
+        },
+        {
+          "segment": 7,
+          "t_start": 1.75,
+          "t_end": 2.0,
+          "loss": 0.5708077549934387,
+          "runtime_seconds": 15.025873241
+        }
+      ]
+    },
+    {
+      "experiment": "13_piecewise_pinn_pilot",
+      "window": 8,
+      "seed": 2,
+      "t_final": 2.0,
+      "segments": 8,
+      "segment_length": 0.25,
+      "iterations_per_segment": 4000,
+      "collocation_per_segment": 256,
+      "initial_error": 3.664595099135163e-07,
+      "median_error": 0.06296357892342831,
+      "max_error": 0.12077029259159604,
+      "final_error": 0.0848615136680515,
+      "fraction_error_below_1": 1.0,
+      "first_error_above_1": null,
+      "median_residual": 0.5642766728015538,
+      "runtime_seconds": 119.24788718700006,
+      "segment_metrics": [
+        {
+          "segment": 0,
+          "t_start": 0.0,
+          "t_end": 0.25,
+          "loss": 0.566056489944458,
+          "runtime_seconds": 20.901724489000117
+        },
+        {
+          "segment": 1,
+          "t_start": 0.25,
+          "t_end": 0.5,
+          "loss": 0.3588322401046753,
+          "runtime_seconds": 16.71265662099995
+        },
+        {
+          "segment": 2,
+          "t_start": 0.5,
+          "t_end": 0.75,
+          "loss": 0.4193030595779419,
+          "runtime_seconds": 15.606562005000114
+        },
+        {
+          "segment": 3,
+          "t_start": 0.75,
+          "t_end": 1.0,
+          "loss": 0.894571840763092,
+          "runtime_seconds": 14.840111617000048
+        },
+        {
+          "segment": 4,
+          "t_start": 1.0,
+          "t_end": 1.25,
+          "loss": 0.44988468289375305,
+          "runtime_seconds": 12.93331079199993
+        },
+        {
+          "segment": 5,
+          "t_start": 1.25,
+          "t_end": 1.5,
+          "loss": 0.6308789253234863,
+          "runtime_seconds": 12.763589424999964
+        },
+        {
+          "segment": 6,
+          "t_start": 1.5,
+          "t_end": 1.75,
+          "loss": 0.37551242113113403,
+          "runtime_seconds": 11.800680086000057
+        },
+        {
+          "segment": 7,
+          "t_start": 1.75,
+          "t_end": 2.0,
+          "loss": 0.5301411151885986,
+          "runtime_seconds": 11.979359873000021
+        }
+      ]
+    },
+    {
+      "experiment": "13_piecewise_pinn_pilot",
+      "window": 8,
+      "seed": 3,
+      "t_final": 2.0,
+      "segments": 8,
+      "segment_length": 0.25,
+      "iterations_per_segment": 4000,
+      "collocation_per_segment": 256,
+      "initial_error": 3.664595099135163e-07,
+      "median_error": 0.07492801196222404,
+      "max_error": 0.15080448311527356,
+      "final_error": 0.09984693057130653,
+      "fraction_error_below_1": 1.0,
+      "first_error_above_1": null,
+      "median_residual": 0.5892575668744604,
+      "runtime_seconds": 121.30424979500003,
+      "segment_metrics": [
+        {
+          "segment": 0,
+          "t_start": 0.0,
+          "t_end": 0.25,
+          "loss": 1.074115514755249,
+          "runtime_seconds": 27.591141877999917
+        },
+        {
+          "segment": 1,
+          "t_start": 0.25,
+          "t_end": 0.5,
+          "loss": 0.6099801063537598,
+          "runtime_seconds": 15.649678156999926
+        },
+        {
+          "segment": 2,
+          "t_start": 0.5,
+          "t_end": 0.75,
+          "loss": 0.49571534991264343,
+          "runtime_seconds": 14.899137899999914
+        },
+        {
+          "segment": 3,
+          "t_start": 0.75,
+          "t_end": 1.0,
+          "loss": 0.2865297198295593,
+          "runtime_seconds": 13.061504722000109
+        },
+        {
+          "segment": 4,
+          "t_start": 1.0,
+          "t_end": 1.25,
+          "loss": 0.37631621956825256,
+          "runtime_seconds": 12.901612201999797
+        },
+        {
+          "segment": 5,
+          "t_start": 1.25,
+          "t_end": 1.5,
+          "loss": 1.1660798788070679,
+          "runtime_seconds": 12.003239856999926
+        },
+        {
+          "segment": 6,
+          "t_start": 1.5,
+          "t_end": 1.75,
+          "loss": 0.5852344632148743,
+          "runtime_seconds": 11.829824593000012
+        },
+        {
+          "segment": 7,
+          "t_start": 1.75,
+          "t_end": 2.0,
+          "loss": 0.47007226943969727,
+          "runtime_seconds": 11.635144918999913
+        }
+      ]
+    },
+    {
+      "experiment": "13_piecewise_pinn_pilot",
+      "window": 8,
+      "seed": 4,
+      "t_final": 2.0,
+      "segments": 8,
+      "segment_length": 0.25,
+      "iterations_per_segment": 4000,
+      "collocation_per_segment": 256,
+      "initial_error": 3.664595099135163e-07,
+      "median_error": 0.05659114819459229,
+      "max_error": 0.11788238507393956,
+      "final_error": 0.08522299008093187,
+      "fraction_error_below_1": 1.0,
+      "first_error_above_1": null,
+      "median_residual": 0.4587281839012833,
+      "runtime_seconds": 116.53373423400012,
+      "segment_metrics": [
+        {
+          "segment": 0,
+          "t_start": 0.0,
+          "t_end": 0.25,
+          "loss": 0.7060100436210632,
+          "runtime_seconds": 25.10162553400005
+        },
+        {
+          "segment": 1,
+          "t_start": 0.25,
+          "t_end": 0.5,
+          "loss": 0.22612428665161133,
+          "runtime_seconds": 15.392685231000087
+        },
+        {
+          "segment": 2,
+          "t_start": 0.5,
+          "t_end": 0.75,
+          "loss": 0.3660920262336731,
+          "runtime_seconds": 13.624457209999946
+        },
+        {
+          "segment": 3,
+          "t_start": 0.75,
+          "t_end": 1.0,
+          "loss": 0.40306246280670166,
+          "runtime_seconds": 13.03049405899992
+        },
+        {
+          "segment": 4,
+          "t_start": 1.0,
+          "t_end": 1.25,
+          "loss": 0.4466894567012787,
+          "runtime_seconds": 12.532976377000068
+        },
+        {
+          "segment": 5,
+          "t_start": 1.25,
+          "t_end": 1.5,
+          "loss": 0.6893035173416138,
+          "runtime_seconds": 11.778751162000162
+        },
+        {
+          "segment": 6,
+          "t_start": 1.5,
+          "t_end": 1.75,
+          "loss": 0.11508458107709885,
+          "runtime_seconds": 11.869662231999882
+        },
+        {
+          "segment": 7,
+          "t_start": 1.75,
+          "t_end": 2.0,
+          "loss": 0.4363332688808441,
+          "runtime_seconds": 11.455629790999865
+        }
+      ]
+    }
+  ]
+}

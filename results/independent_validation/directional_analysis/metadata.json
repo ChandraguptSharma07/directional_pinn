@@ -1,0 +1,33 @@
+{
+  "created_utc": "2026-11-22T07:03:28+00:00",
+  "command": [
+    "experiments/07_directional_analysis.py",
+    "--config",
+    "config/independent_validation.yaml",
+    "--runs",
+    "results/independent_validation/analysis_runs",
+    "--lyapunov",
+    "results/independent_validation/lyapunov",
+    "--out",
+    "results/independent_validation/directional_analysis",
+    "--exclude-joins",
+    "0.25"
+  ],
+  "runtime_seconds": 16.043,
+  "git": {
+    "commit": "921f8a555c2c9e67eb984eae79d27d6d79fd1710",
+    "dirty": true
+  },
+  "environment": {
+    "python": "3.13.15",
+    "platform": "Linux-6.18.53-x86_64-with-glibc2.42",
+    "packages": {
+      "numpy": "2.5.5",
+      "scipy": "1.18.1",
+      "matplotlib": "3.11.2",
+      "PyYAML": "6.0.4",
+      "pytest": "9.2.0",
+      "torch": "2.15.0+cpu"
+    }
+  }
+}

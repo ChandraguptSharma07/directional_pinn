@@ -14,12 +14,12 @@
 equation residual predicts later error on a chaotic Lorenz trajectory beyond
 the residual's magnitude. Its original planned test, using 40 PINNs, did not
 support that pointwise hypothesis. The team then improved the PINN solution
-itself: eight sequential short networks now track a two-unit trajectory with
-error below one throughout in 35 of 40 runs. Repeating the direction test
-on those better trajectories again found no reliable gain from one expanding
-direction. An oracle using the full tangent propagator did add held-out
-information at longer horizons. That is a clue about the mechanism, not yet
-a practical error indicator.
+itself using eight sequential short networks. Accuracy over two time units
+held in 35/40 development runs, then in 30/40 runs on \emph{new untouched
+initial conditions}. Repeating the direction test on the new trajectories
+again found no reliable gain from one expanding direction. An oracle using
+the full tangent propagator did add held-out information at longer horizons.
+That is a clue about the mechanism, not yet a practical error indicator.
 
 \section*{Goal and original hypothesis}
 The goal was to find out whether residual orientation could provide a useful
@@ -67,21 +67,29 @@ refinement gave little additional improvement. The effective construction
 was a \emph{sequential time-domain decomposition PINN}: eight separate
 networks solve successive 0.25-unit intervals, each starting from the
 previous network's \emph{predicted} endpoint. No true interior reference
-state is used in training. Across the fixed 8-window by 5-seed evaluation,
-35 of 40 runs stayed below error one throughout two time units. All five
-failures occurred late on window 1. The median of run-level median errors
-was 0.0433. This is a strong model-quality gain, although the training
-setups have different network counts and budgets.
+state is used in training. In the development set, 35/40 runs stayed below
+error one throughout two time units. The frozen model was then tested on a
+new attractor run, with eight fresh evaluation windows and five seeds each.
+The new reference and tangent computations passed all numerical checks.
+On this independent set, 30/40 stayed below error one throughout and 32/40
+for at least 90\% of the interval. The median of run-level median errors
+was 0.0551. All five seeds on window 1 failed the full-window criterion,
+and five further failures occurred across windows 3, 6 and 7. The model
+is substantially better than the single global two-unit pilot, but less
+reliable than the development-set rate suggested.
 
 \section*{Current scientific status}
-The original directional analysis was repeated on the 40 improved runs,
+The original directional analysis was repeated on the 40 \emph{new} runs,
 excluding exact segment joins where derivatives are two-sided. Neither
-$b_1$ nor $s_1$ passed the original rule. The oracle quantity
+$b_1$ nor $s_1$ passed the original rule at any horizon. The same pattern
+held when the analysis was restricted to accurate trajectory portions.
+The oracle quantity
 $\|\Phi(t+\Delta,t)r(t)\|$, which propagates the full residual vector
 along the \emph{known reference trajectory}, increased held-out $R^2$ by
-approximately $0.051$, $0.195$ and $0.307$ at horizons $0.25$, $0.5$ and
-$1.0$. The gains remained positive after controlling for elapsed time and
-after excluding window 1. The oracle cannot be used as a deployable
+approximately $0.066$, $0.267$ and $0.369$ at horizons $0.25$, $0.5$ and
+$1.0$. With elapsed time and its square in the baseline, whole-window
+bootstrap gains were $+0.056$ [0.031, 0.083], $+0.258$ [0.206, 0.395]
+and $+0.442$ [0.267, 0.672]. The oracle cannot be used as a deployable
 predictor because it needs the true reference trajectory.
 
 \begin{center}
@@ -89,10 +97,10 @@ predictor because it needs the true reference trajectory.
 \toprule
 Question & Current answer\\
 \midrule
-Original pointwise hypothesis & Not supported in the planned standard-PINN test;
-same pattern in the exploratory better-model repeat.\\
-Better Lorenz PINN & Two-unit accuracy below error one throughout in 35/40 runs;
-all five failures on one window.\\
+Original pointwise hypothesis & Not supported in the planned standard-PINN
+test; the frozen follow-up repeated the pattern on fresh initial conditions.\\
+Better Lorenz PINN & Two-unit accuracy below error one throughout in 30/40
+new runs; accuracy depends on the initial condition.\\
 Practical new error indicator & Not yet established. Full-propagator result is
 oracle-only.\\
 \bottomrule
@@ -100,26 +108,24 @@ oracle-only.\\
 \end{center}
 
 \section*{When can the project reach a conclusion?}
-\textbf{A project conclusion can be presented now:} the original pointwise
-one-vector hypothesis was not supported for the tested Lorenz PINNs; the
-sequential model provides a measurable trajectory improvement and a clearer
-test bed. The model was developed after the first result, so the repeat
-direction analysis is exploratory rather than a fresh preregistered test.
+\textbf{A project conclusion can be presented tomorrow:} the original
+pointwise one-vector hypothesis was not supported for the tested Lorenz
+PINNs, and a frozen repeat on fresh initial conditions showed the same
+result. The sequential model extends two-unit accuracy to most, but not all,
+new initial conditions. This is a bounded Lorenz-specific conclusion, not
+proof that residual direction never matters. The sequential model was
+designed after the first result, so its validation does not retroactively
+become the original preregistration.
 
-\textbf{A stronger paper claim requires one frozen independent round:}
-new initial-condition windows that played no part in model design, the same
-settings and controls fixed in advance, all failures retained, and
-uncertainty assessed at the window level. A practical positive claim further
-requires a causal predictor built from past PINN residuals alone, tested
-against residual magnitude, time and simple trailing-history baselines.
-The piecewise Duhamel quadrature also needs correction at segment joins.
-Another 40-run computation is feasible on the current machine, but the
-date and wording of a stronger conclusion depend on what those new runs
-show. The current negative result can be reported honestly without waiting
-for a positive predictor.
+\textbf{A positive practical predictor remains open.} It would require a
+causal statistic built from past PINN residuals alone, tested against
+residual magnitude, time and simple trailing-history baselines. The
+piecewise Duhamel quadrature also needs correction at segment joins.
+Generality beyond Lorenz-63 would require another dynamical system.
 
-\noindent\textbf{Evidence.} The companion research update PDF contains
-full methods, figures and results. The chronological progress log, original
-analysis plan and original results document are also in \texttt{docs/}.
+\noindent\textbf{Evidence.} The frozen validation plan, chronological run
+log and new 40-run accuracy figure are in the repository's \texttt{docs/}
+directory. The original analysis plan and complete result arrays remain
+available in the same project.
 
 \end{document}

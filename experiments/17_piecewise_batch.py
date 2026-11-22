@@ -20,6 +20,8 @@ def main() -> None:
     parser.add_argument("--seeds", type=int, nargs="+", default=[1, 2, 3, 4])
     parser.add_argument("--workers", type=int, default=8)
     parser.add_argument("--out", type=Path, default=ROOT / "results" / "piecewise_pinn_pilot")
+    parser.add_argument("--reference-dir", type=Path,
+                        default=ROOT / "results" / "interpolation_rebuild" / "reference" / "data")
     args = parser.parse_args()
 
     def run(window: int, seed: int) -> tuple[int, int, dict]:
@@ -27,7 +29,8 @@ def main() -> None:
         metrics_file = target / "metrics.json"
         if not metrics_file.exists():
             command = [sys.executable, str(ROOT / "experiments" / "13_piecewise_pinn_pilot.py"),
-                       "--window", str(window), "--seed", str(seed), "--out", str(target)]
+                       "--window", str(window), "--seed", str(seed), "--out", str(target),
+                       "--reference", str(args.reference_dir / f"window_{window}.npz")]
             result = subprocess.run(command, cwd=ROOT, capture_output=True, text=True)
             if result.returncode:
                 raise RuntimeError(f"window {window}, seed {seed}: {result.stdout}\n{result.stderr}")

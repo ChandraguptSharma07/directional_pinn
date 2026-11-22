@@ -23,18 +23,21 @@ study.
 
 The project then improved the model using eight consecutive short PINNs,
 each starting from the previous model's predicted endpoint. This produced
-accurate two-unit trajectories in **35 of 40 runs**; all five failures were
-late divergences on one initial-condition window. Repeating the direction
-test on the improved models again found no reliable benefit from alignment
-with a single expanding direction. A broader, reference-based quantity that
-propagates the *entire residual vector* did predict better at longer horizons.
-That result is a mechanistic clue, not yet a practical error indicator.
+accurate two-unit trajectories in **35/40 development runs**. A frozen
+evaluation on **40 new runs from untouched initial conditions** found
+**30/40 accurate throughout** and **32/40 accurate for at least 90%** of
+the window. Repeating the direction test on the new runs still found no
+reliable benefit from a single expanding direction. A broader,
+reference-based quantity that propagates the *entire residual vector*
+predicted better at longer horizons. That is a mechanistic clue, not yet a
+practical error indicator.
 
 The project can therefore report a defensible **negative conclusion about
-the original pointwise hypothesis in the tested setting** and a substantial
-model improvement. A stronger, generalizable conclusion requires a new set
-of untouched initial conditions and a predictor that uses only information
-available from the PINN, without the true reference trajectory.
+the original pointwise hypothesis in the tested Lorenz setting**, now
+reinforced on fresh initial conditions. The model improvement is useful but
+less reliable than the first 35/40 figure suggested. A positive practical
+predictor still needs a method that uses only information available from
+the PINN, without the true reference trajectory.
 
 ## 1. Original goal and hypothesis
 
@@ -108,51 +111,60 @@ used in training.
 
 On the pilot initial condition, median two-unit error fell from 6.052 for
 the single hard-initial-condition PINN to 0.0259 for the sequential model.
-With settings fixed, 35/40 runs across eight windows and five seeds stayed
-below error 1 throughout two units. The median of run-level median errors
-was 0.0433. All five failures occurred late on window 1. This is a strong
-model-quality improvement, though the two setups differ in architecture
-and training budget, and the new model is not uniformly reliable. The
-[research update](piecewise_pinn_research_update.pdf) shows the trajectories
-and the full 40-run distribution.
+With settings fixed, **35/40 development runs** across eight windows and
+five seeds stayed below error 1 throughout two units; all five failures
+occurred late on window 1. Before examining a new set, the model and
+analysis settings were frozen in the
+[independent validation plan](independent_validation_plan.md). A fresh
+long-run seed produced eight new evaluation windows. The high-accuracy
+reference passed 36/36 checks, and the tangent calculations passed 31/31.
+On these **40 new runs**, 30/40 stayed below error 1 throughout, 32/40
+for at least 90% of the window, and the median of run-level median errors
+was 0.0551. Failures occurred on windows 1, 3, 6, and 7; all five seeds
+failed the full-window criterion on window 1. The model therefore extends
+accuracy beyond the original global PINN but is not uniformly reliable.
+The [fresh-set figure](figures/independent_validation_40runs.pdf) shows
+every window and seed.
 
 ## 4. Where the research stands now
 
-The original held-out direction analysis was repeated on all 40 improved
-models, excluding exact segment joins where the derivative has two-sided
-values. Neither one-vector alignment passed the original rule. At horizons
-0.25, 0.5, and 1.0, an **oracle full-amplification** feature using
-$\|\Phi(t+\Delta,t)r(t)\|$ added held-out $R^2$ of approximately +0.051,
-+0.195, and +0.307 beyond residual size. Its gains remained positive after
-adding elapsed time and its square to the baseline (+0.046, +0.191, +0.360)
-and after removing the late-failing window 1. The full tangent propagator
-$\Phi$ was calculated along the known reference trajectory, so this is an
-**explanation-oriented oracle**, not a deployable prediction method.
+The original held-out direction analysis was repeated on all **40 fresh
+models**, excluding exact segment joins where the derivative has two-sided
+values. Neither one-vector alignment passed the original four-part rule at
+any horizon. Their held-out $R^2$ gains remained near zero or negative,
+including when analysis was restricted to times with current and future
+trajectory error below 1. Thus the negative directional result is not
+explained merely by the model's visibly failed runs.
+
+At horizons 0.25, 0.5, and 1.0, an **oracle full-amplification** feature
+using $\|\Phi(t+\Delta,t)r(t)\|$ added held-out $R^2$ of +0.066,
++0.267, and +0.369 beyond residual size. With elapsed time and its square
+in the baseline and **whole-window bootstrap** uncertainty, its gains
+were +0.056 [0.031, 0.083], +0.258 [0.206, 0.395], and +0.442
+[0.267, 0.672]. The full tangent propagator $\Phi$ was calculated along
+the known reference trajectory, so this is an **explanation-oriented
+oracle**, not a deployable prediction method.
 
 The defensible present conclusion is narrow: **for these Lorenz PINNs,
 pointwise alignment with one expanding direction is not a reliable
-held-out predictor of total future error.** More complete dynamical
-amplification appears relevant, and the improved PINN supplies a better
-trajectory test bed. This does not establish why the one-vector predictor
-fails, nor does it validate a new practical predictor. The sequential
-model was chosen after the original result, so its repeat analysis is
-exploratory rather than an independent preregistered test.
+held-out predictor of total future error.** The same pattern held on
+fresh initial conditions with the frozen sequential model. More complete
+dynamical amplification appears relevant. This does not establish why the
+one-vector predictor fails, nor does it validate a practical predictor.
+The sequential model was designed after the original test, so its new
+validation strengthens a post-hoc follow-up rather than retroactively
+turning it into the original preregistered experiment.
 
 ## 5. When can a conclusion be presented?
 
-**Now:** The professor can be shown a complete project conclusion about
-the *original* hypothesis, the new model's measured accuracy, its failure
-case, and the oracle mechanism. The [three-page research update](piecewise_pinn_research_update.pdf)
-and [chronological run record](model_improvement_progress.md) already
-support that presentation.
-
-**After one frozen independent validation round:** A stronger conclusion
-about the new model and residual-direction result requires initial-condition
-windows that played no part in model design or inspection. The settings,
-horizons, exclusions, controls, and window-level uncertainty method should
-be fixed before those runs. All failures must remain in the analysis. This
-is the next experimental milestone, not a missing explanation that can be
-filled in by writing alone.
+**For tomorrow's presentation:** The professor can be shown a completed
+project conclusion about the *original* pointwise hypothesis and a fresh
+40-run validation of the improved model. The honest headline is that the
+simple directional predictor was unsupported in both studies, while the
+sequential model achieved two-unit accuracy in 30/40 new runs and still
+failed on certain initial conditions. The oracle finding gives a plausible
+next direction. The [validation run log](validation_progress_2026-11-22.md)
+and fresh-set figure support the numbers.
 
 **For a positive practical predictor claim:** The project must implement a
 causal statistic from past PINN residuals, compare it with residual size,
@@ -161,24 +173,24 @@ untouched windows. Its input cannot include the true trajectory or oracle
 tangent propagator. The piecewise Duhamel quadrature also needs correction
 at segment joins before it is used as mechanistic evidence.
 
-The computation for another 40-run round was feasible on the current
-machine, but the date of a stronger conclusion depends on its outcome.
-If it reproduces the current pattern, the paper's defensible claim is a
-carefully bounded negative result plus a model-quality advance and an
-oracle-to-practical research direction. If it does not, the conclusion must
-be revised rather than declared on a timetable.
+The independent round is complete, so a bounded Lorenz-specific negative
+conclusion is available **now**. A wider paper claim would still require
+another dynamical system or a validated reference-free predictor. The
+result should not be described as proof that residual direction never
+matters in chaotic systems.
 
 ## Suggested answer to a direct question from the professor
 
 > **“Did the initial hypothesis fail?”** The planned test did not support
 > the hypothesis that one pointwise expanding-direction alignment predicts
-> future Lorenz PINN error beyond residual magnitude. The improved PINN
-> repeated that pattern. The result is specific to this tested predictor and
+> future Lorenz PINN error beyond residual magnitude. The frozen improved
+> PINN repeated that pattern on new initial conditions. The result is
+> specific to this tested predictor and
 > setting; the full-vector oracle result suggests that dynamical
 > amplification still matters.
 
 > **“What is the contribution now?”** The project has a reproducible
 > negative test, a sequential PINN that extends accurate Lorenz trajectories
-> to two units in 35/40 runs, and evidence separating a weak one-vector
+> to two units in 30/40 new runs, and evidence separating a weak one-vector
 > statistic from a stronger full-propagator oracle. The next contribution
 > under test is a causal, reference-free residual-history indicator.

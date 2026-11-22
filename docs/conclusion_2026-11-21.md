@@ -1,13 +1,16 @@
 # Project conclusion and continuation decision (21 November 2026)
 
-> **22 November addendum:** We returned to the original model-quality and
-> residual-direction question. A consecutive hard-IC PINN now stays below
-> trajectory error 1 over a two-unit Lorenz window in 35/40 fixed-setting
-> runs. Repeating the direction analysis on those runs still does not support
-> either one-vector alignment; an oracle full-propagator feature adds held-out
-> information at longer horizons. This is post-hoc exploratory work. See the
-> [research update](piecewise_pinn_research_update.md) and
-> [run log](model_improvement_progress.md) for methods, failures, and limits.
+> **22 November continuation:** A consecutive hard-IC PINN stayed below
+> trajectory error 1 over a two-unit Lorenz window in 35/40 development
+> runs. Its settings were then frozen and tested on fresh initial conditions:
+> **30/40** runs stayed below error 1 throughout and **32/40** for at least
+> 90% of the window. Neither one-vector alignment passed the direction rule
+> on the fresh runs; an oracle full-propagator feature added held-out
+> information at longer horizons. This strengthens a bounded Lorenz-specific
+> negative result while showing that the model is not uniformly reliable.
+> See the [updated professor briefing](professor_project_brief_2026-11-22.pdf),
+> [validation plan](independent_validation_plan.md), and
+> [validation log](validation_progress_2026-11-22.md).
 
 ## What this project actually tests
 

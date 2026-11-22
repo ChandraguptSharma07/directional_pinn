@@ -1,5 +1,14 @@
 # Longer Lorenz PINN trajectories and the residual-direction hypothesis
 
+> **Independent-validation update, 22 November 2026:** This document's
+> 35/40 model-accuracy figure is the *development set*. A frozen evaluation
+> on new initial conditions gave **30/40** runs below error 1 throughout
+> $T=2$, and **32/40** for at least 90% of it. Neither one-vector alignment
+> passed the decision rule on the new set. The full reference-based oracle
+> signal persisted at longer horizons. For the latest presentation-ready
+> conclusion, use the [professor briefing](professor_project_brief_2026-11-22.pdf)
+> and [validation log](validation_progress_2026-11-22.md).
+
 *Research update, 22 November 2026. Exploratory follow-up to the submitted project report.*
 
 ## Question and main result

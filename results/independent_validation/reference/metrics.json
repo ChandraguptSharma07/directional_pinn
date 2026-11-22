@@ -1,0 +1,458 @@
+{
+  "experiment": "03_lorenz_reference",
+  "solver": {
+    "method": "DOP853",
+    "rtol": 1e-12,
+    "atol": 1e-14
+  },
+  "strictest": {
+    "method": "DOP853",
+    "rtol": 1e-13,
+    "atol": 1e-15
+  },
+  "ladder": [
+    {
+      "method": "DOP853",
+      "rtol": 1e-06,
+      "atol": 1e-08
+    },
+    {
+      "method": "DOP853",
+      "rtol": 1e-08,
+      "atol": 1e-10
+    },
+    {
+      "method": "DOP853",
+      "rtol": 1e-10,
+      "atol": 1e-12
+    },
+    {
+      "method": "DOP853",
+      "rtol": 1e-12,
+      "atol": 1e-14
+    },
+    {
+      "method": "LSODA",
+      "rtol": 1e-10,
+      "atol": 1e-12
+    },
+    {
+      "method": "LSODA",
+      "rtol": 1e-12,
+      "atol": 1e-14
+    }
+  ],
+  "acceptance": 1e-08,
+  "required_horizon": 5.0,
+  "min_trusted_until": 5.8260000000000005,
+  "windows": [
+    {
+      "index": 0,
+      "role": "pilot",
+      "start_in_long_run": 130.0,
+      "x0": [
+        -3.6930715545337467,
+        -4.18339771774017,
+        20.303386431808974
+      ],
+      "trusted_until": 6.94,
+      "trusted_until_cross_check": 7.782,
+      "deviation_at_required_horizon": {
+        "DOP853 rtol=1e-06": 0.002854245439484388,
+        "DOP853 rtol=1e-08": 1.7909098525796226e-05,
+        "DOP853 rtol=1e-10": 1.7010285866701374e-07,
+        "DOP853 rtol=1e-12": 1.1362001044474028e-09,
+        "LSODA rtol=1e-10": 6.312072666042121e-07,
+        "LSODA rtol=1e-12": 3.255201271716197e-08
+      },
+      "reference_nfev": 15701
+    },
+    {
+      "index": 1,
+      "role": "analysis",
+      "start_in_long_run": 150.0,
+      "x0": [
+        -8.33065151289189,
+        -13.197027501184975,
+        18.400052249923917
+      ],
+      "trusted_until": 7.398000000000001,
+      "trusted_until_cross_check": 7.606,
+      "deviation_at_required_horizon": {
+        "DOP853 rtol=1e-06": 0.002753981381093447,
+        "DOP853 rtol=1e-08": 9.027533096676427e-06,
+        "DOP853 rtol=1e-10": 1.0696273971591489e-07,
+        "DOP853 rtol=1e-12": 6.104927391639728e-10,
+        "LSODA rtol=1e-10": 5.453711340628313e-07,
+        "LSODA rtol=1e-12": 1.16830996080464e-08
+      },
+      "reference_nfev": 15518
+    },
+    {
+      "index": 2,
+      "role": "analysis",
+      "start_in_long_run": 170.0,
+      "x0": [
+        -2.6086184176551015,
+        -4.419421363135002,
+        13.89828091167514
+      ],
+      "trusted_until": 6.336,
+      "trusted_until_cross_check": 9.236,
+      "deviation_at_required_horizon": {
+        "DOP853 rtol=1e-06": 0.004603854925358384,
+        "DOP853 rtol=1e-08": 5.326664240959412e-05,
+        "DOP853 rtol=1e-10": 4.3954572193668485e-07,
+        "DOP853 rtol=1e-12": 2.271183188219754e-09,
+        "LSODA rtol=1e-10": 4.801435793820157e-06,
+        "LSODA rtol=1e-12": 3.2969804468900744e-08
+      },
+      "reference_nfev": 15803
+    },
+    {
+      "index": 3,
+      "role": "analysis",
+      "start_in_long_run": 190.0,
+      "x0": [
+        -12.621669707916833,
+        -16.837856853119842,
+        27.2514896105482
+      ],
+      "trusted_until": 7.538,
+      "trusted_until_cross_check": 9.134,
+      "deviation_at_required_horizon": {
+        "DOP853 rtol=1e-06": 0.002441512890302653,
+        "DOP853 rtol=1e-08": 8.794386763965805e-06,
+        "DOP853 rtol=1e-10": 9.858174003094054e-08,
+        "DOP853 rtol=1e-12": 4.662407199119771e-10,
+        "LSODA rtol=1e-10": 4.583316605365322e-07,
+        "LSODA rtol=1e-12": 7.932799374242934e-09
+      },
+      "reference_nfev": 15956
+    },
+    {
+      "index": 4,
+      "role": "analysis",
+      "start_in_long_run": 210.0,
+      "x0": [
+        13.530379020459662,
+        6.37024262219262,
+        39.89825822784637
+      ],
+      "trusted_until": 7.304,
+      "trusted_until_cross_check": 7.502,
+      "deviation_at_required_horizon": {
+        "DOP853 rtol=1e-06": 0.0006139452806669307,
+        "DOP853 rtol=1e-08": 6.311510352104842e-06,
+        "DOP853 rtol=1e-10": 6.604721845309818e-08,
+        "DOP853 rtol=1e-12": 3.8920995779480155e-10,
+        "LSODA rtol=1e-10": 4.795774208505495e-07,
+        "LSODA rtol=1e-12": 7.839260145017733e-09
+      },
+      "reference_nfev": 15296
+    },
+    {
+      "index": 5,
+      "role": "analysis",
+      "start_in_long_run": 230.0,
+      "x0": [
+        -3.548026673900721,
+        5.852020424110168,
+        32.64695737452484
+      ],
+      "trusted_until": 7.562,
+      "trusted_until_cross_check": 10.52,
+      "deviation_at_required_horizon": {
+        "DOP853 rtol=1e-06": 0.002823759846657399,
+        "DOP853 rtol=1e-08": 2.5404710232255108e-05,
+        "DOP853 rtol=1e-10": 2.1424035731450528e-07,
+        "DOP853 rtol=1e-12": 1.5135697659483043e-09,
+        "LSODA rtol=1e-10": 7.970352790007058e-07,
+        "LSODA rtol=1e-12": 6.852341402671009e-09
+      },
+      "reference_nfev": 14996
+    },
+    {
+      "index": 6,
+      "role": "analysis",
+      "start_in_long_run": 250.0,
+      "x0": [
+        6.066732734693459,
+        10.415620117879337,
+        14.019544921438117
+      ],
+      "trusted_until": 6.83,
+      "trusted_until_cross_check": 9.076,
+      "deviation_at_required_horizon": {
+        "DOP853 rtol=1e-06": 0.0019522447128445682,
+        "DOP853 rtol=1e-08": 1.4560330979892591e-05,
+        "DOP853 rtol=1e-10": 1.3671193117492236e-07,
+        "DOP853 rtol=1e-12": 7.78208358604374e-10,
+        "LSODA rtol=1e-10": 1.1834302067951751e-06,
+        "LSODA rtol=1e-12": 1.1406203334557723e-08
+      },
+      "reference_nfev": 15485
+    },
+    {
+      "index": 7,
+      "role": "analysis",
+      "start_in_long_run": 270.0,
+      "x0": [
+        1.4013355187663286,
+        1.863639938207955,
+        16.1272307089756
+      ],
+      "trusted_until": 5.8260000000000005,
+      "trusted_until_cross_check": 10.248,
+      "deviation_at_required_horizon": {
+        "DOP853 rtol=1e-06": 0.0015347896966413168,
+        "DOP853 rtol=1e-08": 4.381949273210403e-06,
+        "DOP853 rtol=1e-10": 2.206078023161072e-08,
+        "DOP853 rtol=1e-12": 1.296769857433281e-10,
+        "LSODA rtol=1e-10": 4.5287291334716104e-07,
+        "LSODA rtol=1e-12": 1.9512651500673223e-09
+      },
+      "reference_nfev": 15860
+    },
+    {
+      "index": 8,
+      "role": "analysis",
+      "start_in_long_run": 290.0,
+      "x0": [
+        7.473145527542709,
+        9.630357602463507,
+        22.33733715786178
+      ],
+      "trusted_until": 7.7620000000000005,
+      "trusted_until_cross_check": 10.704,
+      "deviation_at_required_horizon": {
+        "DOP853 rtol=1e-06": 0.0004892596101457223,
+        "DOP853 rtol=1e-08": 2.0354671709572755e-06,
+        "DOP853 rtol=1e-10": 1.1556554101344512e-08,
+        "DOP853 rtol=1e-12": 7.873192288341558e-11,
+        "LSODA rtol=1e-10": 1.176963173390159e-08,
+        "LSODA rtol=1e-12": 1.0685644747580226e-09
+      },
+      "reference_nfev": 14312
+    }
+  ],
+  "checks": [
+    {
+      "name": "window 0: reference within 1e-08 of strictest up to t=5 (max deviation)",
+      "value": 2.33393983645615e-09,
+      "tolerance": 1e-08,
+      "passed": true
+    },
+    {
+      "name": "window 0: LSODA rtol=1e-12 within 1e-06 of strictest up to t=5 (max deviation)",
+      "value": 6.549866081362963e-08,
+      "tolerance": 1e-06,
+      "passed": true
+    },
+    {
+      "name": "window 0: DOP853 deviation at t=5 shrinks as rtol tightens (violations)",
+      "value": 0.0,
+      "tolerance": 0.0,
+      "passed": true
+    },
+    {
+      "name": "window 0: LSODA deviation at t=5 shrinks as rtol tightens (violations)",
+      "value": 0.0,
+      "tolerance": 0.0,
+      "passed": true
+    },
+    {
+      "name": "window 1: reference within 1e-08 of strictest up to t=5 (max deviation)",
+      "value": 1.579673808370037e-09,
+      "tolerance": 1e-08,
+      "passed": true
+    },
+    {
+      "name": "window 1: LSODA rtol=1e-12 within 1e-06 of strictest up to t=5 (max deviation)",
+      "value": 1.4606287097483034e-08,
+      "tolerance": 1e-06,
+      "passed": true
+    },
+    {
+      "name": "window 1: DOP853 deviation at t=5 shrinks as rtol tightens (violations)",
+      "value": 0.0,
+      "tolerance": 0.0,
+      "passed": true
+    },
+    {
+      "name": "window 1: LSODA deviation at t=5 shrinks as rtol tightens (violations)",
+      "value": 0.0,
+      "tolerance": 0.0,
+      "passed": true
+    },
+    {
+      "name": "window 2: reference within 1e-08 of strictest up to t=5 (max deviation)",
+      "value": 2.9684365165567295e-09,
+      "tolerance": 1e-08,
+      "passed": true
+    },
+    {
+      "name": "window 2: LSODA rtol=1e-12 within 1e-06 of strictest up to t=5 (max deviation)",
+      "value": 4.3219639464216116e-08,
+      "tolerance": 1e-06,
+      "passed": true
+    },
+    {
+      "name": "window 2: DOP853 deviation at t=5 shrinks as rtol tightens (violations)",
+      "value": 0.0,
+      "tolerance": 0.0,
+      "passed": true
+    },
+    {
+      "name": "window 2: LSODA deviation at t=5 shrinks as rtol tightens (violations)",
+      "value": 0.0,
+      "tolerance": 0.0,
+      "passed": true
+    },
+    {
+      "name": "window 3: reference within 1e-08 of strictest up to t=5 (max deviation)",
+      "value": 1.9208577847704903e-09,
+      "tolerance": 1e-08,
+      "passed": true
+    },
+    {
+      "name": "window 3: LSODA rtol=1e-12 within 1e-06 of strictest up to t=5 (max deviation)",
+      "value": 3.224184140578746e-08,
+      "tolerance": 1e-06,
+      "passed": true
+    },
+    {
+      "name": "window 3: DOP853 deviation at t=5 shrinks as rtol tightens (violations)",
+      "value": 0.0,
+      "tolerance": 0.0,
+      "passed": true
+    },
+    {
+      "name": "window 3: LSODA deviation at t=5 shrinks as rtol tightens (violations)",
+      "value": 0.0,
+      "tolerance": 0.0,
+      "passed": true
+    },
+    {
+      "name": "window 4: reference within 1e-08 of strictest up to t=5 (max deviation)",
+      "value": 4.051588511007721e-09,
+      "tolerance": 1e-08,
+      "passed": true
+    },
+    {
+      "name": "window 4: LSODA rtol=1e-12 within 1e-06 of strictest up to t=5 (max deviation)",
+      "value": 1.0434853492963042e-07,
+      "tolerance": 1e-06,
+      "passed": true
+    },
+    {
+      "name": "window 4: DOP853 deviation at t=5 shrinks as rtol tightens (violations)",
+      "value": 0.0,
+      "tolerance": 0.0,
+      "passed": true
+    },
+    {
+      "name": "window 4: LSODA deviation at t=5 shrinks as rtol tightens (violations)",
+      "value": 0.0,
+      "tolerance": 0.0,
+      "passed": true
+    },
+    {
+      "name": "window 5: reference within 1e-08 of strictest up to t=5 (max deviation)",
+      "value": 3.62579025466217e-09,
+      "tolerance": 1e-08,
+      "passed": true
+    },
+    {
+      "name": "window 5: LSODA rtol=1e-12 within 1e-06 of strictest up to t=5 (max deviation)",
+      "value": 1.6541400901301578e-08,
+      "tolerance": 1e-06,
+      "passed": true
+    },
+    {
+      "name": "window 5: DOP853 deviation at t=5 shrinks as rtol tightens (violations)",
+      "value": 0.0,
+      "tolerance": 0.0,
+      "passed": true
+    },
+    {
+      "name": "window 5: LSODA deviation at t=5 shrinks as rtol tightens (violations)",
+      "value": 0.0,
+      "tolerance": 0.0,
+      "passed": true
+    },
+    {
+      "name": "window 6: reference within 1e-08 of strictest up to t=5 (max deviation)",
+      "value": 4.628844638007092e-09,
+      "tolerance": 1e-08,
+      "passed": true
+    },
+    {
+      "name": "window 6: LSODA rtol=1e-12 within 1e-06 of strictest up to t=5 (max deviation)",
+      "value": 6.686252634969063e-08,
+      "tolerance": 1e-06,
+      "passed": true
+    },
+    {
+      "name": "window 6: DOP853 deviation at t=5 shrinks as rtol tightens (violations)",
+      "value": 0.0,
+      "tolerance": 0.0,
+      "passed": true
+    },
+    {
+      "name": "window 6: LSODA deviation at t=5 shrinks as rtol tightens (violations)",
+      "value": 0.0,
+      "tolerance": 0.0,
+      "passed": true
+    },
+    {
+      "name": "window 7: reference within 1e-08 of strictest up to t=5 (max deviation)",
+      "value": 7.418043401919945e-10,
+      "tolerance": 1e-08,
+      "passed": true
+    },
+    {
+      "name": "window 7: LSODA rtol=1e-12 within 1e-06 of strictest up to t=5 (max deviation)",
+      "value": 2.4823527068640583e-09,
+      "tolerance": 1e-06,
+      "passed": true
+    },
+    {
+      "name": "window 7: DOP853 deviation at t=5 shrinks as rtol tightens (violations)",
+      "value": 0.0,
+      "tolerance": 0.0,
+      "passed": true
+    },
+    {
+      "name": "window 7: LSODA deviation at t=5 shrinks as rtol tightens (violations)",
+      "value": 0.0,
+      "tolerance": 0.0,
+      "passed": true
+    },
+    {
+      "name": "window 8: reference within 1e-08 of strictest up to t=5 (max deviation)",
+      "value": 2.047988868568514e-10,
+      "tolerance": 1e-08,
+      "passed": true
+    },
+    {
+      "name": "window 8: LSODA rtol=1e-12 within 1e-06 of strictest up to t=5 (max deviation)",
+      "value": 2.095414475359228e-09,
+      "tolerance": 1e-06,
+      "passed": true
+    },
+    {
+      "name": "window 8: DOP853 deviation at t=5 shrinks as rtol tightens (violations)",
+      "value": 0.0,
+      "tolerance": 0.0,
+      "passed": true
+    },
+    {
+      "name": "window 8: LSODA deviation at t=5 shrinks as rtol tightens (violations)",
+      "value": 0.0,
+      "tolerance": 0.0,
+      "passed": true
+    }
+  ],
+  "all_checks_passed": true
+}

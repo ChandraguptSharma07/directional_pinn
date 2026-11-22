@@ -1,0 +1,610 @@
+{
+  "experiment": "04_lorenz_lyapunov",
+  "long_run_exponents": [
+    0.9014529665709167,
+    -0.0023004932917459853,
+    -14.565819139952936
+  ],
+  "commonly_quoted_exponents": [
+    0.9056,
+    0.0,
+    -14.5723
+  ],
+  "long_run_time": 180.0,
+  "windows": [
+    {
+      "index": 0,
+      "finite_time_exponents": [
+        0.9444225310161198,
+        -0.052246074287506016,
+        -14.558843123395254
+      ],
+      "horizons": {
+        "0.05": {
+          "median_sin_angle_b1_s1": 0.7649136974805788,
+          "fraction_sin_angle_above_0.5": 0.7288306451612904,
+          "median_growth_rate_s1": 4.605287350032493,
+          "median_growth_rate_b1": 0.23611170628613426,
+          "median_rate_s3": -16.096488682963958
+        },
+        "0.1": {
+          "median_sin_angle_b1_s1": 0.8236075222412886,
+          "fraction_sin_angle_above_0.5": 0.775330396475771,
+          "median_growth_rate_s1": 4.349006400777815,
+          "median_growth_rate_b1": 0.30282221683801114,
+          "median_rate_s3": -15.946367463594957
+        },
+        "0.25": {
+          "median_sin_angle_b1_s1": 0.8811485323900928,
+          "fraction_sin_angle_above_0.5": 0.847009735744089,
+          "median_growth_rate_s1": 3.3640599313869215,
+          "median_growth_rate_b1": 0.625770496887416,
+          "median_rate_s3": -15.404563616594686
+        },
+        "0.5": {
+          "median_sin_angle_b1_s1": 0.9118401082008546,
+          "fraction_sin_angle_above_0.5": 0.8498727735368957,
+          "median_growth_rate_s1": 2.504250209887537,
+          "median_growth_rate_b1": 0.660316344504845,
+          "median_rate_s3": -14.611166070700337
+        },
+        "1": {
+          "median_sin_angle_b1_s1": 0.8915306300553745,
+          "fraction_sin_angle_above_0.5": 0.8564574170331867,
+          "median_growth_rate_s1": 1.943099924122467,
+          "median_growth_rate_b1": 1.1183288250758532,
+          "median_rate_s3": -14.909630067469882
+        }
+      }
+    },
+    {
+      "index": 1,
+      "finite_time_exponents": [
+        1.1184117083697045,
+        -0.16397796026794062,
+        -14.621100414768456
+      ],
+      "horizons": {
+        "0.05": {
+          "median_sin_angle_b1_s1": 0.7097174530291677,
+          "fraction_sin_angle_above_0.5": 0.6814516129032258,
+          "median_growth_rate_s1": 4.3575747706420405,
+          "median_growth_rate_b1": -0.1377848180302942,
+          "median_rate_s3": -15.823999962847417
+        },
+        "0.1": {
+          "median_sin_angle_b1_s1": 0.7549665141137007,
+          "fraction_sin_angle_above_0.5": 0.7414435784479837,
+          "median_growth_rate_s1": 4.064779054830752,
+          "median_growth_rate_b1": -0.07840202122908058,
+          "median_rate_s3": -15.669201659473861
+        },
+        "0.25": {
+          "median_sin_angle_b1_s1": 0.839959728522248,
+          "fraction_sin_angle_above_0.5": 0.7962447844228094,
+          "median_growth_rate_s1": 3.081912607717098,
+          "median_growth_rate_b1": 0.15003757981682514,
+          "median_rate_s3": -15.129668060547957
+        },
+        "0.5": {
+          "median_sin_angle_b1_s1": 0.8962839685911087,
+          "fraction_sin_angle_above_0.5": 0.8149763722282807,
+          "median_growth_rate_s1": 2.0537195411553633,
+          "median_growth_rate_b1": 0.2941426198561625,
+          "median_rate_s3": -14.457186573658788
+        },
+        "1": {
+          "median_sin_angle_b1_s1": 0.8940273444425391,
+          "fraction_sin_angle_above_0.5": 0.7780887644942023,
+          "median_growth_rate_s1": 1.6457990056740217,
+          "median_growth_rate_b1": 0.9657576767940879,
+          "median_rate_s3": -14.659605053884222
+        }
+      }
+    },
+    {
+      "index": 2,
+      "finite_time_exponents": [
+        0.873768246527026,
+        0.016560045670436684,
+        -14.556994958864188
+      ],
+      "horizons": {
+        "0.05": {
+          "median_sin_angle_b1_s1": 0.8070832997911727,
+          "fraction_sin_angle_above_0.5": 0.7180779569892473,
+          "median_growth_rate_s1": 4.733291376484086,
+          "median_growth_rate_b1": -0.02552559123043283,
+          "median_rate_s3": -16.20499054764741
+        },
+        "0.1": {
+          "median_sin_angle_b1_s1": 0.8453185483995852,
+          "fraction_sin_angle_above_0.5": 0.7438156557099288,
+          "median_growth_rate_s1": 4.470945999268179,
+          "median_growth_rate_b1": -0.0748646389711237,
+          "median_rate_s3": -16.040354084436387
+        },
+        "0.25": {
+          "median_sin_angle_b1_s1": 0.9066134377864243,
+          "fraction_sin_angle_above_0.5": 0.7868567454798331,
+          "median_growth_rate_s1": 3.5330800293029725,
+          "median_growth_rate_b1": -0.11519728966004823,
+          "median_rate_s3": -15.480541478219711
+        },
+        "0.5": {
+          "median_sin_angle_b1_s1": 0.9344420257547864,
+          "fraction_sin_angle_above_0.5": 0.8186114140312614,
+          "median_growth_rate_s1": 2.6699602540219995,
+          "median_growth_rate_b1": -0.006779003766211793,
+          "median_rate_s3": -14.65982381111305
+        },
+        "1": {
+          "median_sin_angle_b1_s1": 0.902365906030245,
+          "fraction_sin_angle_above_0.5": 0.8276689324270292,
+          "median_growth_rate_s1": 1.8288625039238902,
+          "median_growth_rate_b1": 1.2125099683818663,
+          "median_rate_s3": -14.955606513252802
+        }
+      }
+    },
+    {
+      "index": 3,
+      "finite_time_exponents": [
+        1.171001819698351,
+        -0.24659775377114157,
+        -14.591070732593854
+      ],
+      "horizons": {
+        "0.05": {
+          "median_sin_angle_b1_s1": 0.7547896450000567,
+          "fraction_sin_angle_above_0.5": 0.6589381720430108,
+          "median_growth_rate_s1": 4.683352430191538,
+          "median_growth_rate_b1": 0.18134131931697198,
+          "median_rate_s3": -16.083043877392853
+        },
+        "0.1": {
+          "median_sin_angle_b1_s1": 0.8100975331933583,
+          "fraction_sin_angle_above_0.5": 0.7102677058624195,
+          "median_growth_rate_s1": 4.4536388689317485,
+          "median_growth_rate_b1": 0.10120232922020332,
+          "median_rate_s3": -15.956880367512648
+        },
+        "0.25": {
+          "median_sin_angle_b1_s1": 0.8496756086340247,
+          "fraction_sin_angle_above_0.5": 0.7541724617524339,
+          "median_growth_rate_s1": 3.5904342203802324,
+          "median_growth_rate_b1": 0.43385395521713854,
+          "median_rate_s3": -15.459057237764894
+        },
+        "0.5": {
+          "median_sin_angle_b1_s1": 0.9393798876610578,
+          "fraction_sin_angle_above_0.5": 0.7960741548527808,
+          "median_growth_rate_s1": 2.6244234478554453,
+          "median_growth_rate_b1": 0.3403329665025936,
+          "median_rate_s3": -14.673752461830688
+        },
+        "1": {
+          "median_sin_angle_b1_s1": 0.9334460764770238,
+          "fraction_sin_angle_above_0.5": 0.8340663734506197,
+          "median_growth_rate_s1": 1.8211632310409624,
+          "median_growth_rate_b1": 1.150124217578996,
+          "median_rate_s3": -14.946998151786785
+        }
+      }
+    },
+    {
+      "index": 4,
+      "finite_time_exponents": [
+        0.7384930230622055,
+        0.08481616401985816,
+        -14.489975853748746
+      ],
+      "horizons": {
+        "0.05": {
+          "median_sin_angle_b1_s1": 0.7792018259429985,
+          "fraction_sin_angle_above_0.5": 0.7634408602150538,
+          "median_growth_rate_s1": 4.429276294434647,
+          "median_growth_rate_b1": -0.17412858683324717,
+          "median_rate_s3": -15.901590271006208
+        },
+        "0.1": {
+          "median_sin_angle_b1_s1": 0.823989656384699,
+          "fraction_sin_angle_above_0.5": 0.788546255506608,
+          "median_growth_rate_s1": 4.228997272543773,
+          "median_growth_rate_b1": -0.023868077361179078,
+          "median_rate_s3": -15.824463254225952
+        },
+        "0.25": {
+          "median_sin_angle_b1_s1": 0.8747715306286121,
+          "fraction_sin_angle_above_0.5": 0.836230876216968,
+          "median_growth_rate_s1": 3.3330631783311855,
+          "median_growth_rate_b1": 0.41015800405021585,
+          "median_rate_s3": -15.45104709958593
+        },
+        "0.5": {
+          "median_sin_angle_b1_s1": 0.9472481383374345,
+          "fraction_sin_angle_above_0.5": 0.8582333696837514,
+          "median_growth_rate_s1": 2.037252824359239,
+          "median_growth_rate_b1": 0.21206590517310192,
+          "median_rate_s3": -14.623550821645802
+        },
+        "1": {
+          "median_sin_angle_b1_s1": 0.957925777719551,
+          "fraction_sin_angle_above_0.5": 0.8500599760095962,
+          "median_growth_rate_s1": 1.738562550943868,
+          "median_growth_rate_b1": 0.6329093164289268,
+          "median_rate_s3": -14.756741876615417
+        }
+      }
+    },
+    {
+      "index": 5,
+      "finite_time_exponents": [
+        0.31007527701378296,
+        0.27008642987948134,
+        -14.246828373559906
+      ],
+      "horizons": {
+        "0.05": {
+          "median_sin_angle_b1_s1": 0.8007640948075192,
+          "fraction_sin_angle_above_0.5": 0.728494623655914,
+          "median_growth_rate_s1": 3.9102912461101926,
+          "median_growth_rate_b1": -0.7172739944430844,
+          "median_rate_s3": -15.38810959711073
+        },
+        "0.1": {
+          "median_sin_angle_b1_s1": 0.845191461612427,
+          "fraction_sin_angle_above_0.5": 0.7583869874618774,
+          "median_growth_rate_s1": 3.6875874690189003,
+          "median_growth_rate_b1": -0.6969947049949927,
+          "median_rate_s3": -15.29973792731685
+        },
+        "0.25": {
+          "median_sin_angle_b1_s1": 0.8742498503725558,
+          "fraction_sin_angle_above_0.5": 0.808066759388039,
+          "median_growth_rate_s1": 2.712849040981298,
+          "median_growth_rate_b1": -0.20398250735296058,
+          "median_rate_s3": -14.904552982768548
+        },
+        "0.5": {
+          "median_sin_angle_b1_s1": 0.9373401549533557,
+          "fraction_sin_angle_above_0.5": 0.8498727735368957,
+          "median_growth_rate_s1": 1.713599848387393,
+          "median_growth_rate_b1": 0.019316833361274738,
+          "median_rate_s3": -14.288442068932481
+        },
+        "1": {
+          "median_sin_angle_b1_s1": 0.9392931901716219,
+          "fraction_sin_angle_above_0.5": 0.8576569372251099,
+          "median_growth_rate_s1": 1.4226174008947248,
+          "median_growth_rate_b1": 0.5401171992446988,
+          "median_rate_s3": -14.536948992773581
+        }
+      }
+    },
+    {
+      "index": 6,
+      "finite_time_exponents": [
+        0.8477800480242662,
+        0.04430802760635342,
+        -14.558754742297301
+      ],
+      "horizons": {
+        "0.05": {
+          "median_sin_angle_b1_s1": 0.8037507396271979,
+          "fraction_sin_angle_above_0.5": 0.6804435483870968,
+          "median_growth_rate_s1": 4.516922018325326,
+          "median_growth_rate_b1": -0.2455050247079097,
+          "median_rate_s3": -15.978972669742802
+        },
+        "0.1": {
+          "median_sin_angle_b1_s1": 0.8359474160401992,
+          "fraction_sin_angle_above_0.5": 0.7173839376482548,
+          "median_growth_rate_s1": 4.232948955054689,
+          "median_growth_rate_b1": -0.2772090492592804,
+          "median_rate_s3": -15.80819651485162
+        },
+        "0.25": {
+          "median_sin_angle_b1_s1": 0.8953887205642196,
+          "fraction_sin_angle_above_0.5": 0.7562586926286509,
+          "median_growth_rate_s1": 3.188265952939192,
+          "median_growth_rate_b1": -0.29695169190991666,
+          "median_rate_s3": -15.175993140123584
+        },
+        "0.5": {
+          "median_sin_angle_b1_s1": 0.9635676847833355,
+          "fraction_sin_angle_above_0.5": 0.8062522719011269,
+          "median_growth_rate_s1": 2.3250741705111353,
+          "median_growth_rate_b1": -0.12912349382761548,
+          "median_rate_s3": -14.46438373165728
+        },
+        "1": {
+          "median_sin_angle_b1_s1": 0.9650085696703274,
+          "fraction_sin_angle_above_0.5": 0.8324670131947222,
+          "median_growth_rate_s1": 1.6765281987991478,
+          "median_growth_rate_b1": 1.067838418821216,
+          "median_rate_s3": -14.900633961717855
+        }
+      }
+    },
+    {
+      "index": 7,
+      "finite_time_exponents": [
+        1.3795246442035616,
+        -0.12623408342580825,
+        -14.919957227444465
+      ],
+      "horizons": {
+        "0.05": {
+          "median_sin_angle_b1_s1": 0.789121871548387,
+          "fraction_sin_angle_above_0.5": 0.6727150537634409,
+          "median_growth_rate_s1": 5.284363091859049,
+          "median_growth_rate_b1": 0.753661308350723,
+          "median_rate_s3": -16.742748392963403
+        },
+        "0.1": {
+          "median_sin_angle_b1_s1": 0.8385746340766232,
+          "fraction_sin_angle_above_0.5": 0.6987461877329719,
+          "median_growth_rate_s1": 5.009242246690266,
+          "median_growth_rate_b1": 0.725892152627718,
+          "median_rate_s3": -16.56170059194128
+        },
+        "0.25": {
+          "median_sin_angle_b1_s1": 0.8775123086750134,
+          "fraction_sin_angle_above_0.5": 0.7385257301808067,
+          "median_growth_rate_s1": 4.0342193285226084,
+          "median_growth_rate_b1": 0.7240077898139555,
+          "median_rate_s3": -15.962273082240822
+        },
+        "0.5": {
+          "median_sin_angle_b1_s1": 0.8956161416312904,
+          "fraction_sin_angle_above_0.5": 0.7637222828062523,
+          "median_growth_rate_s1": 2.803312881238035,
+          "median_growth_rate_b1": 0.14322802224004996,
+          "median_rate_s3": -14.84796076210488
+        },
+        "1": {
+          "median_sin_angle_b1_s1": 0.8972065723186768,
+          "fraction_sin_angle_above_0.5": 0.8560575769692124,
+          "median_growth_rate_s1": 1.978948606081485,
+          "median_growth_rate_b1": 1.0548231863390025,
+          "median_rate_s3": -15.035944387023479
+        }
+      }
+    },
+    {
+      "index": 8,
+      "finite_time_exponents": [
+        0.33699453735181056,
+        0.1527481558595703,
+        -14.15640935987804
+      ],
+      "horizons": {
+        "0.05": {
+          "median_sin_angle_b1_s1": 0.7705235751524935,
+          "fraction_sin_angle_above_0.5": 0.7190860215053764,
+          "median_growth_rate_s1": 3.1865323575910853,
+          "median_growth_rate_b1": -0.47760433403894265,
+          "median_rate_s3": -14.739621047693774
+        },
+        "0.1": {
+          "median_sin_angle_b1_s1": 0.819316863932542,
+          "fraction_sin_angle_above_0.5": 0.7536428329379872,
+          "median_growth_rate_s1": 2.9161694090818258,
+          "median_growth_rate_b1": -0.5287849215157191,
+          "median_rate_s3": -14.642719688409287
+        },
+        "0.25": {
+          "median_sin_angle_b1_s1": 0.8610242107769981,
+          "fraction_sin_angle_above_0.5": 0.8077190542420027,
+          "median_growth_rate_s1": 1.8685390051554462,
+          "median_growth_rate_b1": -0.2558664435780854,
+          "median_rate_s3": -14.288613413747585
+        },
+        "0.5": {
+          "median_sin_angle_b1_s1": 0.9075661595922931,
+          "fraction_sin_angle_above_0.5": 0.8320610687022901,
+          "median_growth_rate_s1": 1.165359142079057,
+          "median_growth_rate_b1": 0.061480885441655024,
+          "median_rate_s3": -14.060608253458497
+        },
+        "1": {
+          "median_sin_angle_b1_s1": 0.9293487150017777,
+          "fraction_sin_angle_above_0.5": 0.8296681327469012,
+          "median_growth_rate_s1": 0.90844665158971,
+          "median_growth_rate_b1": 0.05363630548894563,
+          "median_rate_s3": -14.114168158889367
+        }
+      }
+    }
+  ],
+  "checks": [
+    {
+      "name": "long run: largest exponent within 0.1 of 0.906",
+      "value": 0.004147033429083291,
+      "tolerance": 0.1,
+      "passed": true
+    },
+    {
+      "name": "long run: middle exponent within 0.1 of 0",
+      "value": 0.0023004932917459853,
+      "tolerance": 0.1,
+      "passed": true
+    },
+    {
+      "name": "long run: smallest exponent within 0.3 of -14.57",
+      "value": 0.006480860047064496,
+      "tolerance": 0.3,
+      "passed": true
+    },
+    {
+      "name": "long run: sum of exponents vs trace -(sigma+1+beta)",
+      "value": 7.098321930243401e-12,
+      "tolerance": 1e-06,
+      "passed": true
+    },
+    {
+      "name": "window 0: rebuilt reference equals the Phase 2 file (max difference)",
+      "value": 0.0,
+      "tolerance": 1e-12,
+      "passed": true
+    },
+    {
+      "name": "window 0: b1 independent of the starting basis (max sin angle on the window)",
+      "value": 2.041484398705926e-11,
+      "tolerance": 1e-08,
+      "passed": true
+    },
+    {
+      "name": "window 0: propagator vs nonlinear finite difference (max relative error)",
+      "value": 4.573144432345071e-07,
+      "tolerance": 0.0001,
+      "passed": true
+    },
+    {
+      "name": "window 1: rebuilt reference equals the Phase 2 file (max difference)",
+      "value": 0.0,
+      "tolerance": 1e-12,
+      "passed": true
+    },
+    {
+      "name": "window 1: b1 independent of the starting basis (max sin angle on the window)",
+      "value": 1.0459103769256432e-13,
+      "tolerance": 1e-08,
+      "passed": true
+    },
+    {
+      "name": "window 1: propagator vs nonlinear finite difference (max relative error)",
+      "value": 1.8680536364615064e-07,
+      "tolerance": 0.0001,
+      "passed": true
+    },
+    {
+      "name": "window 2: rebuilt reference equals the Phase 2 file (max difference)",
+      "value": 0.0,
+      "tolerance": 1e-12,
+      "passed": true
+    },
+    {
+      "name": "window 2: b1 independent of the starting basis (max sin angle on the window)",
+      "value": 2.802309181136268e-12,
+      "tolerance": 1e-08,
+      "passed": true
+    },
+    {
+      "name": "window 2: propagator vs nonlinear finite difference (max relative error)",
+      "value": 2.5347955369247827e-06,
+      "tolerance": 0.0001,
+      "passed": true
+    },
+    {
+      "name": "window 3: rebuilt reference equals the Phase 2 file (max difference)",
+      "value": 0.0,
+      "tolerance": 1e-12,
+      "passed": true
+    },
+    {
+      "name": "window 3: b1 independent of the starting basis (max sin angle on the window)",
+      "value": 5.356146143251454e-12,
+      "tolerance": 1e-08,
+      "passed": true
+    },
+    {
+      "name": "window 3: propagator vs nonlinear finite difference (max relative error)",
+      "value": 3.478472422486668e-07,
+      "tolerance": 0.0001,
+      "passed": true
+    },
+    {
+      "name": "window 4: rebuilt reference equals the Phase 2 file (max difference)",
+      "value": 0.0,
+      "tolerance": 1e-12,
+      "passed": true
+    },
+    {
+      "name": "window 4: b1 independent of the starting basis (max sin angle on the window)",
+      "value": 1.3340759779103132e-12,
+      "tolerance": 1e-08,
+      "passed": true
+    },
+    {
+      "name": "window 4: propagator vs nonlinear finite difference (max relative error)",
+      "value": 3.0283077695731667e-07,
+      "tolerance": 0.0001,
+      "passed": true
+    },
+    {
+      "name": "window 5: rebuilt reference equals the Phase 2 file (max difference)",
+      "value": 0.0,
+      "tolerance": 1e-12,
+      "passed": true
+    },
+    {
+      "name": "window 5: b1 independent of the starting basis (max sin angle on the window)",
+      "value": 2.6119759892349162e-14,
+      "tolerance": 1e-08,
+      "passed": true
+    },
+    {
+      "name": "window 5: propagator vs nonlinear finite difference (max relative error)",
+      "value": 1.1037881495969112e-07,
+      "tolerance": 0.0001,
+      "passed": true
+    },
+    {
+      "name": "window 6: rebuilt reference equals the Phase 2 file (max difference)",
+      "value": 0.0,
+      "tolerance": 1e-12,
+      "passed": true
+    },
+    {
+      "name": "window 6: b1 independent of the starting basis (max sin angle on the window)",
+      "value": 6.327643813037505e-13,
+      "tolerance": 1e-08,
+      "passed": true
+    },
+    {
+      "name": "window 6: propagator vs nonlinear finite difference (max relative error)",
+      "value": 4.467326408913384e-06,
+      "tolerance": 0.0001,
+      "passed": true
+    },
+    {
+      "name": "window 7: rebuilt reference equals the Phase 2 file (max difference)",
+      "value": 0.0,
+      "tolerance": 1e-12,
+      "passed": true
+    },
+    {
+      "name": "window 7: b1 independent of the starting basis (max sin angle on the window)",
+      "value": 9.781423051925599e-13,
+      "tolerance": 1e-08,
+      "passed": true
+    },
+    {
+      "name": "window 7: propagator vs nonlinear finite difference (max relative error)",
+      "value": 3.883995152784377e-07,
+      "tolerance": 0.0001,
+      "passed": true
+    },
+    {
+      "name": "window 8: rebuilt reference equals the Phase 2 file (max difference)",
+      "value": 0.0,
+      "tolerance": 1e-12,
+      "passed": true
+    },
+    {
+      "name": "window 8: b1 independent of the starting basis (max sin angle on the window)",
+      "value": 9.522353470541848e-13,
+      "tolerance": 1e-08,
+      "passed": true
+    },
+    {
+      "name": "window 8: propagator vs nonlinear finite difference (max relative error)",
+      "value": 2.462740055184314e-07,
+      "tolerance": 0.0001,
+      "passed": true
+    }
+  ],
+  "all_checks_passed": true
+}

@@ -9,6 +9,15 @@
 \begin{document}
 \maketitle
 
+\noindent\fbox{\parbox{0.94\linewidth}{\textbf{Independent-validation update
+(22 November 2026).} The 35/40 accuracy figure below describes the
+development set. A frozen check on new initial conditions found 30/40 runs
+below error one throughout $T=2$, and 32/40 for at least 90\% of it.
+Neither one-vector alignment passed the directional decision rule on the
+new set. The full reference-based oracle signal persisted at longer
+horizons. The repository's professor briefing and independent-validation
+log give the latest conclusion.}}\par\medskip
+
 \begin{abstract}
 The project's prespecified 40-run test found no reliable predictive benefit
 from a PINN residual's alignment with one locally expanding direction.
@@ -63,7 +72,7 @@ trajectory error 6.052, whereas the piecewise model had median error 0.0259
 and maximum error 0.154. The training budgets and network counts differ;
 the pilot compares complete setups rather than isolating segmentation.
 
-\begin{table}[h]
+\begin{table}[ht]
 \centering
 \caption{Trajectory accuracy of the fixed piecewise PINN over $T=2$.}
 \begin{tabular}{lr}
@@ -99,7 +108,7 @@ The baseline predictor used log residual norm. Adding either $b_1$ or $s_1$
 alignment gave negligible or negative held-out $R^2$ gains at all five
 horizons; neither passed any horizon of the original four-part rule.
 
-\begin{table}[h]
+\begin{table}[ht]
 \centering
 \caption{Gain in held-out $R^2$ beyond pointwise residual magnitude.
 The last column is an oracle using $\|\Phi(t+\Delta,t)r(t)\|$.}

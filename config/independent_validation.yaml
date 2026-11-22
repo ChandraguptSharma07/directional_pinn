@@ -1,0 +1,100 @@
+# Default settings. Each experiment reads its own section and copies it into its
+# result directory (config.yaml), so every result records the settings it used.
+#
+# YAML note: write floats in exponent form with a decimal point (1.0e-3, not 1e-3);
+# PyYAML reads 1e-3 as a string.
+
+linear_saddle:                 # Phase 0: experiments/01_linear_sanity.py
+  t_final: 5.0                 # time window [0, T]
+  n_time: 5001                 # output times on [0, T] (spacing 1.0e-3)
+  z0: [0.01, 1.0]              # reference initial condition (x0, y0)
+  epsilon: 1.0e-3              # size of every artificial perturbation and residual
+  horizons: [0.05, 0.1, 0.25, 0.5, 1.0]   # prediction horizons Δt
+  n_angles: 360                # residual directions, evenly spaced on [0°, 180°)
+  isotropic_rate: 1.0          # negative control: dz/dt = rate * z
+  shear: 2.0                   # sheared saddle: dx/dt = x + shear * y, dy/dt = -y
+  shear_horizons: [0.25, 1.0, 4.0]
+  solver:
+    method: DOP853
+    rtol: 1.0e-10
+    atol: 1.0e-12
+
+lorenz:                        # Lorenz-63, used from Phase 1 on
+  params:
+    sigma: 10.0
+    rho: 28.0
+    beta: 2.6666666666666665   # 8/3 (YAML has no fractions; this is 8/3 in float64)
+
+lorenz_jacobian_check:         # Phase 1: experiments/02_lorenz_jacobian.py
+  n_states: 1000               # random states, in addition to the three fixed points
+  seed: 0
+  box: [[-30.0, 30.0], [-30.0, 30.0], [-5.0, 60.0]]   # sampling box for (x, y, z); contains the attractor
+  rho_range: [1.5, 40.0]       # rho values for the stability-of-C± panel
+
+lorenz_reference:              # Phase 2: experiments/03_lorenz_reference.py (reused by later phases)
+  seed_state: [7.0, 8.0, 9.0]  # frozen fresh long-run start; original used [1, 1, 1]
+  transient: 100.0             # discarded, so that recorded states lie on the attractor
+  spinup: 30.0                 # past of each window, needed by the backward Lyapunov vector b1
+  gap: 20.0                    # time between window starts along the long run (about 18 Lyapunov times)
+  n_windows: 9                 # window 0: pilot, only for choosing PINN settings; windows 1-8: analysis
+  length: 12.0                 # reference length per window; each PINN window is a prefix of it
+  dt: 0.002                    # output spacing of the reference
+  solver: {method: DOP853, rtol: 1.0e-12, atol: 1.0e-14}       # the reference used everywhere
+  strictest: {method: DOP853, rtol: 1.0e-13, atol: 1.0e-15}    # stands in for the exact solution
+  ladder:                      # settings compared with the strictest one
+    - {method: DOP853, rtol: 1.0e-6, atol: 1.0e-8}
+    - {method: DOP853, rtol: 1.0e-8, atol: 1.0e-10}
+    - {method: DOP853, rtol: 1.0e-10, atol: 1.0e-12}
+    - {method: DOP853, rtol: 1.0e-12, atol: 1.0e-14}
+    - {method: LSODA, rtol: 1.0e-10, atol: 1.0e-12}             # a different method family as a cross-check;
+    - {method: LSODA, rtol: 1.0e-12, atol: 1.0e-14}             # it must approach the DOP853 solution as rtol tightens
+  acceptance: 1.0e-8           # largest allowed |reference - strictest| inside a PINN window
+  cross_check_acceptance: 1.0e-6   # LSODA is less accurate than DOP853 at equal rtol, so a looser bound
+  required_horizon: 5.0        # the reference must be trustworthy at least this long in every window
+
+lorenz_lyapunov:               # Phase 3: experiments/04_lorenz_lyapunov.py
+  length: 6.0                  # analysed part of each window, [0, length]; covers every PINN window
+  dt: 0.002                    # grid inside the window (same as the reference output)
+  spinup_dt: 0.005             # grid on the past [-spinup, 0], used only to converge b1
+  horizons: [0.05, 0.1, 0.25, 0.5, 1.0]   # Δt for the finite-time singular vectors s_i(t; Δt)
+  long_run_time: 180.0         # stretch of the long run used to estimate the Lyapunov exponents
+  long_run_dt: 0.01
+  tangent_rtol: 1.0e-11        # tolerances for integrating the tangent equation
+  tangent_atol: 1.0e-13
+
+pinn:                          # Phase 4: baseline PINN training settings (src/pinn/train.py)
+  hidden: [64, 64, 64, 64]
+  activation: tanh
+  out_mean: [0.0, 0.0, 25.0]   # output scaling: x_hat = out_mean + out_scale * net(tau)
+  out_scale: [10.0, 10.0, 10.0]
+  iterations: 20000            # Adam iterations
+  lr: 1.0e-3                   # learning rate, decaying exponentially to lr_final
+  lr_final: 1.0e-5
+  n_collocation: 1024          # collocation times per iteration (stratified, redrawn every iteration)
+  dtype: float32
+  threads: 1                   # CPU threads per run (runs are executed in parallel processes)
+  log_every: 100
+  curriculum_start: 0.25       # time curriculum: collocation interval grows from [0, 0.25] to [0, T] ...
+  curriculum_fraction: 0.6     # ... during the first 60 % of the iterations (see src/pinn/train.py)
+  t_final: 1.0                 # window length chosen by the pilot (docs/phase4_pinn.md)
+  lambda_ic: 100.0             # initial-condition weight chosen by the pilot (see the deviation noted there)
+
+pinn_pilot:                    # Phase 4 pilot: experiments/05_pinn_pilot.py, on window 0 only
+  window: 0                    # (second attempt; see docs/phase4_pinn.md for the first)
+  seed: 0
+  window_lengths: [1.0, 2.0, 3.0, 4.0]
+  lambda_ic: [10.0, 100.0]
+
+pinn_runs:                     # Phases 4-7 main runs: experiments/06_pinn_runs.py
+  windows: [1, 2, 3, 4, 5, 6, 7, 8]
+  seeds: [0, 1, 2, 3, 4]
+
+pinn_runs_lambda10:            # sensitivity: the pilot rule's literal choice, lambda_IC = 10
+  windows: [1, 2, 3, 4, 5, 6, 7, 8]
+  seeds: [0, 1, 2, 3, 4]
+  overrides: {lambda_ic: 10.0}
+
+float64_check:                 # precision check: experiments/06_pinn_runs.py --set float64_check
+  windows: [1, 2, 3, 4, 5, 6, 7, 8]
+  seeds: [0]
+  overrides: {dtype: float64}

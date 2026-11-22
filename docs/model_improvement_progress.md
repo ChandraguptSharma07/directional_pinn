@@ -1,5 +1,13 @@
 # Model improvement: return to the original direction question
 
+> **Fresh-window validation completed 22 November 2026:** The development
+> model's 35/40 full-window accuracy became **30/40** on 40 new runs from
+> a frozen, different long-run seed. Neither one-vector directional alignment
+> passed the decision rule on the new runs. See
+> [`validation_progress_2026-11-22.md`](validation_progress_2026-11-22.md)
+> for the independent results. The chronological record below remains the
+> development history.
+
 ## 2026-11-21 session
 
 The current objective is to improve Lorenz PINN trajectory accuracy enough to

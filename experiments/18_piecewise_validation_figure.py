@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import argparse
 import json
 from pathlib import Path
 
@@ -14,7 +15,12 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def main() -> None:
-    source = ROOT / "results" / "piecewise_pinn_pilot"
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--source", type=Path, default=ROOT / "results" / "piecewise_pinn_pilot")
+    parser.add_argument("--out-stem", default="piecewise_pinn_validation_40runs")
+    parser.add_argument("--title", default="Piecewise hard-IC PINN: 8 windows × 5 seeds")
+    args = parser.parse_args()
+    source = args.source
     rows = [json.loads((source / f"w{window}_t2_s{seed}" / "metrics.json").read_text())
             for window in range(1, 9) for seed in range(5)]
     fig, axes = plt.subplots(1, 2, figsize=(10, 4), constrained_layout=True)
@@ -36,11 +42,11 @@ def main() -> None:
         ax.set_xticks(range(1, 9))
         ax.grid(alpha=0.2)
     axes[0].legend(ncol=3, fontsize=8, loc="upper right")
-    fig.suptitle("Piecewise hard-IC PINN: 8 windows × 5 seeds", fontsize=12)
+    fig.suptitle(args.title, fontsize=12)
     out = ROOT / "docs" / "figures"
     out.mkdir(parents=True, exist_ok=True)
-    fig.savefig(out / "piecewise_pinn_validation_40runs.pdf")
-    fig.savefig(out / "piecewise_pinn_validation_40runs.png", dpi=180)
+    fig.savefig(out / f"{args.out_stem}.pdf")
+    fig.savefig(out / f"{args.out_stem}.png", dpi=180)
     plt.close(fig)
 
 

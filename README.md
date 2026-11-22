@@ -23,18 +23,23 @@ In 40 rebuilt runs, a trailing residual average improved held-out prediction at
 short horizons, and linear interpolation added a smaller gain over sample-and-hold;
 this exploratory result does not change the original directional-alignment verdict.
 The current model-improvement work uses consecutive hard-initial-condition PINNs
-to extend trajectory accuracy to length 2: 35 of 40 fixed-setting runs stay
-below error 1 throughout. The original one-vector directional finding remains
-negative on these new runs, while an oracle full-propagator feature adds
-held-out information at longer horizons. See the
-[three-page research update](docs/piecewise_pinn_research_update.pdf)
-([text](docs/piecewise_pinn_research_update.md)) and the
-[chronological record](docs/model_improvement_progress.md). This follow-up is
-exploratory because the model was developed after the original analysis.
+to extend trajectory accuracy to length 2. The development set gave 35/40
+runs below error 1 throughout; a frozen check on new initial conditions gave
+**30/40**. The original one-vector directional finding remained negative
+on the new runs, while an oracle full-propagator feature added held-out
+information at longer horizons. See the
+[independent validation log](docs/validation_progress_2026-11-22.md),
+[frozen plan](docs/independent_validation_plan.md), and
+[chronological model record](docs/model_improvement_progress.md). The
+[earlier research update](docs/piecewise_pinn_research_update.pdf) describes
+the development set; the professor briefing below contains the latest result.
 For a short third-person explanation of the original goal, failed hypothesis,
 current result, and next conclusion milestone, use the
 [professor briefing](docs/professor_project_brief_2026-11-22.pdf)
 ([text](docs/professor_project_brief_2026-11-22.md)).
+For the 23 November presentation, use the
+[four-slide PDF](docs/presentation_2026-11-23.pdf) and
+[speaking notes](docs/presentation_talking_points_2026-11-23.md).
 
 ## Research question
 
