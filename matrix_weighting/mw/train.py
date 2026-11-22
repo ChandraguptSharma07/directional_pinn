@@ -13,8 +13,8 @@ from mw.model import BatchedPINN
 from mw.systems import System
 
 DTYPES = {"float32": torch.float32, "float64": torch.float64}
-TANGENT_SELF = ("S-self", "M-self", "M-final-self")
-TANGENT_ORACLE = ("S-orc", "M-orc", "M-final-orc")
+TANGENT_SELF = ("S-self", "M-self", "M-final-self", "D-self")
+TANGENT_ORACLE = ("S-orc", "M-orc", "M-final-orc", "D-orc")
 
 
 @dataclass

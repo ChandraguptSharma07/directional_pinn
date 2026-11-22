@@ -19,8 +19,8 @@ import numpy as np
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from mw.reference import damped_initial_state, lorenz_attractor_states, reference  # noqa: E402
-from mw.systems import DavisSkodje, LinearSaddle, Lorenz63, System  # noqa: E402
+from mw.reference import attractor_states, damped_initial_state, long_run_range, lorenz_attractor_states, reference  # noqa: E402
+from mw.systems import DavisSkodje, LinearSaddle, Lorenz63, Lorenz96, Rossler, System  # noqa: E402
 from mw.train import Settings, grid  # noqa: E402
 
 ALL6 = ["U", "TUR", "S-orc", "M-orc", "S-self", "M-self"]
@@ -120,6 +120,41 @@ def side(out: Path) -> None:
                       scale, hidden=[20] * 5, lr=0.01, lr_final=0.01, iterations=2000, n_grid=256, log_every=100))
 
 
+GATE3 = [(Rossler(), [1.0, 1.0, 1.0], (5.0, 10.0)),
+         (Lorenz96(8), [8.01] + [8.0] * 7, (1.0, 2.0))]
+
+
+def gate3(out: Path) -> None:
+    """Plan amendment 1: Rossler and Lorenz-96, methods U, TUR, S-self, M-self, D-self."""
+    for system, start, windows in GATE3:
+        f = ROOT / "results" / "gate3" / f"initial_conditions_{system.name}.json"
+        if f.exists():
+            rec = json.loads(f.read_text())
+        else:
+            states = attractor_states(system, start)
+            lo, hi = long_run_range(system, start)
+            rec = {"description": f"Gate 3 states for {system.name} (plan amendment 1): spin-up 100, 12 sorted uniform "
+                                  "times in [0, 600], NumPy seed 2026112202; scaling from a 600-unit run",
+                   "states": [{"id": i + 1, "x0": s.tolist()} for i, s in enumerate(states)],
+                   "out_mean": (0.5 * (hi + lo)).tolist(), "out_scale": np.maximum(0.5 * (hi - lo), 1e-3).tolist()}
+            f.parent.mkdir(parents=True, exist_ok=True)
+            f.write_text(json.dumps(rec, indent=2) + "\n")
+        for T in windows:
+            for m in ("U", "TUR", "S-self", "M-self", "D-self"):
+                write_job(out, f"{system.name}_T{T:g}_{m}",
+                          job(system, T, m, rec["states"], SEEDS, f"results/gate3/{system.name}/T{T:g}/{m}",
+                              rec["out_mean"], rec["out_scale"]))
+
+
+def side_direction(out: Path) -> None:
+    """Plan amendment 1: direction-only weights on Lorenz T = 1 (side run)."""
+    ics = frozen_lorenz_states()
+    mean, scale = lorenz_scaling(0)
+    for m in ("D-orc", "D-self"):
+        write_job(out, f"direction_T1_{m}", job(Lorenz63(), 1.0, m, ics, SEEDS, f"results/side/direction/T1/{m}",
+                                                mean, scale))
+
+
 def pilot(out: Path) -> None:
     """Timing pilot: one batch per family with the full step count (results kept separate)."""
     sad = LinearSaddle(64.0)
@@ -136,10 +171,11 @@ def pilot(out: Path) -> None:
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("gate", choices=["gate0", "gate1", "gate2", "side", "pilot"])
+    ap.add_argument("gate", choices=["gate0", "gate1", "gate2", "side", "pilot", "gate3", "side_direction"])
     args = ap.parse_args()
     out = ROOT / "jobs" / args.gate
-    {"gate0": gate0, "gate1": gate1, "gate2": gate2, "side": side, "pilot": pilot}[args.gate](out)
+    {"gate0": gate0, "gate1": gate1, "gate2": gate2, "side": side, "pilot": pilot, "gate3": gate3,
+     "side_direction": side_direction}[args.gate](out)
     print(f"wrote {len(list(out.glob('*.json')))} job files to {out.relative_to(ROOT)}")
 
 

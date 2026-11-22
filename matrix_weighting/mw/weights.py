@@ -27,7 +27,8 @@ from __future__ import annotations
 
 import torch
 
-METHODS = ("U", "TUR", "S-orc", "M-orc", "S-self", "M-self", "M-final-orc", "M-final-self", "causal")
+METHODS = ("U", "TUR", "S-orc", "M-orc", "S-self", "M-self", "M-final-orc", "M-final-self", "causal",
+           "D-orc", "D-self")
 
 
 def step_propagators(J: torch.Tensor, h: float) -> torch.Tensor:
@@ -82,6 +83,14 @@ def minimax_matrix(A: torch.Tensor) -> torch.Tensor:
     return normalize_matrix(A * scale.unsqueeze(-1).unsqueeze(-1))
 
 
+def direction_only(A: torch.Tensor) -> torch.Tensor:
+    """n A_i / tr A_i: the direction split of A_i with the same total weight at every time (plan, amendment 1)."""
+    n = A.shape[-1]
+    tr = _trace(A)
+    scale = torch.where(tr > 0, n / tr.clamp_min(1e-300), torch.zeros_like(tr))
+    return normalize_matrix(A * scale.unsqueeze(-1).unsqueeze(-1))
+
+
 def best_scalar(A: torch.Tensor) -> torch.Tensor:
     """sqrt(lambda_max(A_i)) per time, normalized to mean 1."""
     # On CPU: batched eigvalsh on CUDA asked for ~9 GB of workspace for 36 x 512 small matrices
@@ -122,6 +131,8 @@ def tangent_weight(method: str, states: torch.Tensor, jac, h: float) -> tuple[st
         if method.startswith("S"):
             return "scalar", best_scalar(G)
         return "matrix", minimax_matrix(G)
+    if method in ("D-orc", "D-self"):
+        return "matrix", direction_only(window_gramian(Phi, h))
     if method in ("M-final-orc", "M-final-self"):
         return "matrix", minimax_matrix(final_cauchy_green(Phi))
     raise ValueError(f"{method!r} is not a tangent weight")

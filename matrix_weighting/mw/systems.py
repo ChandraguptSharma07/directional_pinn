@@ -186,6 +186,67 @@ class Lorenz63(System):
                 "sigma": self.sigma, "rho": self.rho, "beta": self.beta}
 
 
+# ---------------------------------------------------------------- Gate 3 systems
+class Rossler(System):
+    """dx/dt = -y - z, dy/dt = x + a y, dz/dt = b + z (x - c)."""
+
+    dim = 3
+
+    def __init__(self, a: float = 0.2, b: float = 0.2, c: float = 5.7) -> None:
+        self.a, self.b, self.c = float(a), float(b), float(c)
+        self.name = "rossler"
+
+    def rhs(self, x):
+        X, Y, Z = x[..., 0], x[..., 1], x[..., 2]
+        return _stack([-Y - Z, X + self.a * Y, self.b + Z * (X - self.c)], x)
+
+    def jac(self, x):
+        X, Z = x[..., 0], x[..., 2]
+        J = _zeros(x, x.shape[:-1] + (3, 3))
+        J[..., 0, 1] = -1.0
+        J[..., 0, 2] = -1.0
+        J[..., 1, 0] = 1.0
+        J[..., 1, 1] = self.a
+        J[..., 2, 0] = Z
+        J[..., 2, 2] = X - self.c
+        return J
+
+    def to_dict(self) -> dict:
+        return {"kind": "rossler", "a": self.a, "b": self.b, "c": self.c}
+
+
+class Lorenz96(System):
+    """dx_i/dt = (x_{i+1} - x_{i-2}) x_{i-1} - x_i + F, indices cyclic."""
+
+    def __init__(self, n: int = 8, forcing: float = 8.0) -> None:
+        if n < 4:
+            raise ValueError("Lorenz-96 needs at least 4 variables")
+        self.dim, self.forcing = int(n), float(forcing)
+        self.name = f"lorenz96_n{self.dim}"
+
+    @staticmethod
+    def _roll(x, shift):
+        if isinstance(x, torch.Tensor):
+            return torch.roll(x, shifts=shift, dims=-1)
+        return np.roll(x, shift, axis=-1)
+
+    def rhs(self, x):
+        return (self._roll(x, -1) - self._roll(x, 2)) * self._roll(x, 1) - x + self.forcing
+
+    def jac(self, x):
+        n = self.dim
+        J = _zeros(x, x.shape[:-1] + (n, n))
+        for i in range(n):
+            J[..., i, (i - 1) % n] = x[..., (i + 1) % n] - x[..., (i - 2) % n]
+            J[..., i, (i + 1) % n] = x[..., (i - 1) % n]
+            J[..., i, (i - 2) % n] = -x[..., (i - 1) % n]
+            J[..., i, i] = -1.0
+        return J
+
+    def to_dict(self) -> dict:
+        return {"kind": "lorenz96", "n": self.dim, "forcing": self.forcing}
+
+
 def system_from_dict(d: dict) -> System:
     kind = d["kind"]
     if kind == "saddle":
@@ -195,4 +256,8 @@ def system_from_dict(d: dict) -> System:
     if kind == "lorenz":
         return Lorenz63(d.get("k", 0), d.get("gamma_min", 5.0), d.get("gamma_max", 50.0),
                         d.get("sigma", 10.0), d.get("rho", 28.0), d.get("beta", 8.0 / 3.0))
+    if kind == "rossler":
+        return Rossler(d.get("a", 0.2), d.get("b", 0.2), d.get("c", 5.7))
+    if kind == "lorenz96":
+        return Lorenz96(d.get("n", 8), d.get("forcing", 8.0))
     raise ValueError(f"unknown system kind {kind!r}")

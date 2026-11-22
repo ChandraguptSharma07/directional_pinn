@@ -17,10 +17,10 @@ sys.path.insert(0, str(ROOT))
 from mw import weights as wt  # noqa: E402
 from mw.model import BatchedPINN, init_seed  # noqa: E402
 from mw.reference import reference  # noqa: E402
-from mw.systems import DavisSkodje, LinearSaddle, Lorenz63  # noqa: E402
+from mw.systems import DavisSkodje, LinearSaddle, Lorenz63, Lorenz96, Rossler  # noqa: E402
 from mw.train import Settings, train_batch  # noqa: E402
 
-SYSTEMS = [LinearSaddle(16.0), DavisSkodje(18.0), Lorenz63(), Lorenz63(k=4)]
+SYSTEMS = [LinearSaddle(16.0), DavisSkodje(18.0), Lorenz63(), Lorenz63(k=4), Rossler(), Lorenz96(8)]
 
 
 def sample_states(system, m=7, seed=0):
@@ -179,3 +179,21 @@ def test_every_method_trains_briefly(method):
                       ref_eval=np.stack([reference(L, x, np.linspace(0, 0.3, 31)) for x in x0]))
     assert np.all(np.isfinite(res["metrics"]["E_rms"]))
     assert len(res["history"]["iteration"]) == 3
+
+
+def test_lorenz96_matches_its_definition():
+    rng = np.random.default_rng(5)
+    x = rng.normal(size=(4, 8)) * 3
+    f = Lorenz96(8).rhs(x)
+    for i in range(8):
+        expected = (x[:, (i + 1) % 8] - x[:, (i - 2) % 8]) * x[:, (i - 1) % 8] - x[:, i] + 8.0
+        np.testing.assert_allclose(f[:, i], expected, rtol=1e-12)
+
+
+def test_direction_only_weight_has_equal_total_at_every_time():
+    rng = np.random.default_rng(6)
+    A = rng.normal(size=(2, 30, 3, 3))
+    G = torch.tensor(A @ np.swapaxes(A, -1, -2))
+    W = wt.direction_only(G)
+    tr = W.diagonal(dim1=-2, dim2=-1).sum(-1)
+    torch.testing.assert_close(tr, torch.full_like(tr, 3.0))
