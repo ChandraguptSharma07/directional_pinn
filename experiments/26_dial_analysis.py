@@ -23,6 +23,7 @@ import sys
 import time
 from pathlib import Path
 
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.stats import kendalltau, spearmanr
@@ -164,6 +165,23 @@ def analyse(S: dict, shuffle: bool) -> dict:
     return out
 
 
+def late_time_sensitivity(S: dict, t_min: float = 0.25) -> dict:
+    """Exploratory, added after seeing family L: the primary test on samples with t >= t_min only.
+
+    Removes the initial fast transient (decayed by at least exp(-4) for rates >= 16), to check
+    whether a direction effect is confined to it. Not part of the decision rule.
+    """
+    keep = S["t"] >= t_min - 1e-9
+    late = {key: value[keep] for key, value in S.items() if not key.startswith(("rand_", "shuf_"))}
+    if len(np.unique(late["window"])) < 2:
+        return {"t_min": t_min, "n_samples": int(keep.sum())}
+    base = heldout(late, BASE, "log_N")
+    pred = heldout(late, MODELS["M2"], "log_N")
+    stats = bootstrap_delta_r_squared(late["log_N"], base, pred, late["window"], n_boot=N_BOOT, seed=0)
+    return {"t_min": t_min, "n_samples": int(keep.sum()), **stats,
+            "alignment_p10_p50_p90": np.quantile(late["A"], [0.1, 0.5, 0.9]).tolist()}
+
+
 def setting_verdict(primary: dict, shuffle: bool) -> str:
     m2, controls = primary["N"]["M2"], primary["N"]["controls"]
     works = (m2["delta"] >= WORKS_GAIN and m2["ci_low"] > 0 and m2["coefficient"] > 0
@@ -234,6 +252,9 @@ def dial_figure(results: dict, lorenz: dict | None, out_dir: Path) -> None:
         ax.axhline(WORKS_GAIN, color=COLORS["muted"], linewidth=0.8, linestyle="--")
         ax.axhline(0.0, color=COLORS["axis"], linewidth=0.8)
         ax.set_xscale("log")
+        ax.set_xticks([2, 5, 17, 65])
+        ax.xaxis.set_major_formatter(mpl.ticker.FormatStrFormatter("%g"))
+        ax.xaxis.set_minor_formatter(mpl.ticker.NullFormatter())
         ax.set_title(f"horizon dt = {dt:g}" + ("  (primary)" if dt == PRIMARY_HORIZON else ""))
         ax.set_xlabel("rate gap  ln(σ₁/σ₂)/dt  (median)")
     axes[0].set_ylabel("held-out gain in R² from direction")
@@ -261,6 +282,9 @@ def main() -> None:
         family = system.to_dict()["family"]
         shuffle = family == "D"
         runs = load_runs(args.study / system.name / "runs")
+        if not runs:
+            print(f"{system.name}: no runs found, skipped", flush=True)
+            continue
         directions = {w: dict(np.load(args.study / "reference" / system.name / "data" / f"window_{w}.npz"))
                       for w in sorted({r["window"] for r in runs})}
         samples, excluded = build_samples(runs, directions, shuffle)
@@ -269,15 +293,21 @@ def main() -> None:
         verdict = setting_verdict(horizons[f"{PRIMARY_HORIZON:g}"], shuffle)
         results[system.name] = {"system": system.to_dict(), "family": family, "dial": system.dial,
                                 "accuracy": accuracy(runs), "excluded_runs": excluded,
-                                "horizons": horizons, "verdict": verdict}
+                                "horizons": horizons, "verdict": verdict,
+                                "exploratory_late_times": late_time_sensitivity(samples[PRIMARY_HORIZON])}
         p = horizons[f"{PRIMARY_HORIZON:g}"]["N"]["M2"]
+        late = results[system.name]["exploratory_late_times"]
         print(f"{system.name:20s} dial {system.dial:4g}: gain {p['delta']:+.3f} [{p['ci_low']:+.3f}, "
               f"{p['ci_high']:+.3f}], coef {p['coefficient']:+.2f}, random p95 "
-              f"{horizons[f'{PRIMARY_HORIZON:g}']['N']['controls']['random_p95']:+.3f} -> {verdict}", flush=True)
+              f"{horizons[f'{PRIMARY_HORIZON:g}']['N']['controls']['random_p95']:+.3f} -> {verdict}"
+              f"   (exploratory, t >= 0.25: {late.get('delta', float('nan')):+.3f} "
+              f"[{late.get('ci_low', float('nan')):+.3f}, {late.get('ci_high', float('nan')):+.3f}])", flush=True)
 
     families = {}
     for family in ("L", "D"):
         names = [s.name for s in dial_settings() if s.to_dict()["family"] == family]
+        if any(n not in results for n in names):
+            continue
         dials = [results[n]["dial"] for n in names]
         gains = [results[n]["horizons"][f"{PRIMARY_HORIZON:g}"]["N"]["M2"]["delta"] for n in names]
         tau = float(kendalltau(dials, gains).statistic)
@@ -286,7 +316,8 @@ def main() -> None:
                             "largest_works": a, "smallest_fails": b, "trend_ok": tau >= KENDALL_MIN,
                             "supported": bool(a and b and tau >= KENDALL_MIN)}
     n_supported = sum(f["supported"] for f in families.values())
-    overall = {2: "supported", 1: "partly supported", 0: "not supported"}[n_supported]
+    overall = ({2: "supported", 1: "partly supported", 0: "not supported"}[n_supported]
+               if len(families) == 2 else "incomplete: not all settings have runs")
 
     lorenz = None
     if args.lorenz_runs.exists():
@@ -295,7 +326,8 @@ def main() -> None:
         directions = {w: dict(np.load(args.lorenz_lyapunov / f"lyapunov_window_{w}.npz")) for w in windows}
         samples, excluded = build_samples(runs, directions, shuffle=True)
         lorenz = {"note": "descriptive reference point; data seen before this plan", "excluded_runs": excluded,
-                  "horizons": {f"{dt:g}": analyse(S, shuffle=True) for dt, S in samples.items()}}
+                  "horizons": {f"{dt:g}": analyse(S, shuffle=True) for dt, S in samples.items()},
+                  "exploratory_late_times": late_time_sensitivity(samples[PRIMARY_HORIZON])}
         p = lorenz["horizons"][f"{PRIMARY_HORIZON:g}"]["N"]["M2"]
         print(f"{'lorenz63 (reference)':20s}            gain {p['delta']:+.3f} [{p['ci_low']:+.3f}, {p['ci_high']:+.3f}]")
 
@@ -304,8 +336,9 @@ def main() -> None:
     args.out.mkdir(parents=True, exist_ok=True)
     save_json(metrics, args.out / "metrics.json")
     figures = args.out / "figures"
-    dial_figure(results, lorenz, figures)
-    for family in ("L", "D"):
+    if len(families) == 2:
+        dial_figure(results, lorenz, figures)
+    for family in families:
         scatter_figure(samples_by_setting, family, figures)
     write_run_record(args.out, {"script": "experiments/26_dial_analysis.py", "study": str(args.study)},
                      REPO_ROOT, time.perf_counter() - start)

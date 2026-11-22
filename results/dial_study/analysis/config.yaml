@@ -1,0 +1,2 @@
+script: experiments/26_dial_analysis.py
+study: /home/shin/Projects/directional_pinn/results/dial_study

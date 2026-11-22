@@ -50,6 +50,28 @@ For the 23 November presentation, use the
 [four-slide PDF](docs/presentation_2026-11-23.pdf) and
 [speaking notes](docs/presentation_talking_points_2026-11-23.md).
 
+**Dial study (22 November 2026): when direction does help.** A separate study
+asked under which conditions a residual's direction predicts the error it
+creates. It was planned in [docs/dial_study_plan.md](docs/dial_study_plan.md)
+before any of its 320 PINNs was trained. Two families of two-dimensional
+systems turn the stretching gap between directions like a dial (rate
+differences 2, 5, 17 and 65): a stiff linear saddle and the nonlinear
+Davis–Skodje system.
+- **Lorenz-like gaps:** direction adds nothing (held-out R² gain −0.000 to
+  +0.005).
+- **Large gaps:** at rate difference 65 it adds +0.09 (saddle) and +0.13
+  (Davis–Skodje) at horizon 0.1, improving all 8 held-out starting points.
+- **Lorenz-63:** the October runs sit in the low-gap region with a gain of
+  −0.012, which is what the dial predicts.
+- **Verdict under the planned rule: "partly supported".** The saddle family
+  passes. The top Davis–Skodje setting misses a time-shuffle control that
+  turned out to be degenerate there, because its direction does not change
+  in time.
+- **Limits:** the effect needs short horizons, over which the residual keeps
+  its direction, and it uses oracle directions.
+
+See [docs/dial_study_results.md](docs/dial_study_results.md).
+
 ## Research question
 
 > Does the component of a PINN's differential-equation residual along locally
