@@ -36,13 +36,14 @@ def init_seed(seed: int, ic_id: int) -> int:
 class BatchedPINN(nn.Module):
     def __init__(self, x0: np.ndarray, t_final: float, out_mean: Sequence[float], out_scale: Sequence[float],
                  init_seeds: Sequence[int], hidden: Sequence[int] = (64, 64, 64, 64),
-                 dtype: torch.dtype = torch.float32) -> None:
+                 dtype: torch.dtype = torch.float32, hard_ic: bool = True) -> None:
         super().__init__()
         x0 = np.asarray(x0, dtype=float)
         if x0.ndim != 2 or len(init_seeds) != x0.shape[0]:
             raise ValueError("x0 must have shape (batch, n) with one init seed per network")
         self.batch, self.dim = x0.shape
         self.t_final = float(t_final)
+        self.hard_ic = bool(hard_ic)  # False: x_hat = raw, and the loss must penalize x_hat(0) - x0
         widths = [1, *hidden, self.dim]
         self.weights = nn.ParameterList()
         self.biases = nn.ParameterList()
@@ -80,6 +81,8 @@ class BatchedPINN(nn.Module):
                 h, dh = z, dz
         raw = self.out_mean + self.out_scale * h
         draw = self.out_scale * dh
+        if not self.hard_ic:
+            return raw, draw
         s = (t / T).reshape(1, -1, 1)
         x0 = self.x0.unsqueeze(1)
         x = x0 + s * (raw - x0)

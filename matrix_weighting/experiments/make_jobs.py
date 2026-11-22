@@ -166,6 +166,19 @@ def side_sequential(out: Path) -> None:
             write_job(out, f"sequential_H4_L{L:g}_{m}", j)
 
 
+def side_soft_ic(out: Path) -> None:
+    """Plan amendment 3: Gate 0's stiffest settings with a soft initial condition (lambda_IC = 100)."""
+    T = 2.0
+    for system, methods in [(LinearSaddle(16), LINEAR4), (LinearSaddle(64), LINEAR4),
+                            (DavisSkodje(18), ALL6), (DavisSkodje(66), ALL6)]:
+        mean, scale = dial_scaling(system, T)
+        ics = [{"id": w, "x0": system.initial_state(w).tolist()} for w in range(1, 9)]
+        for m in methods:
+            write_job(out, f"softic_{system.name}_T2_{m}",
+                      job(system, T, m, ics, SEEDS, f"results/side/soft_ic/{system.name}/T2/{m}", mean, scale,
+                          lambda_ic=100.0))
+
+
 def pilot(out: Path) -> None:
     """Timing pilot: one batch per family with the full step count (results kept separate)."""
     sad = LinearSaddle(64.0)
@@ -182,11 +195,12 @@ def pilot(out: Path) -> None:
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("gate", choices=["gate0", "gate1", "gate2", "side", "pilot", "gate3", "side_direction", "side_sequential"])
+    ap.add_argument("gate", choices=["gate0", "gate1", "gate2", "side", "pilot", "gate3", "side_direction", "side_sequential", "side_soft_ic"])
     args = ap.parse_args()
     out = ROOT / "jobs" / args.gate
     {"gate0": gate0, "gate1": gate1, "gate2": gate2, "side": side, "pilot": pilot, "gate3": gate3,
-     "side_direction": side_direction, "side_sequential": side_sequential}[args.gate](out)
+     "side_direction": side_direction, "side_sequential": side_sequential,
+     "side_soft_ic": side_soft_ic}[args.gate](out)
     print(f"wrote {len(list(out.glob('*.json')))} job files to {out.relative_to(ROOT)}")
 
 

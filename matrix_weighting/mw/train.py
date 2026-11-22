@@ -27,6 +27,7 @@ class Settings:
     lr_final: float = 1e-5
     weight_every: int = 10  # self-consistent tangent weights are recomputed every this many steps
     causal_eps: float = 1.0
+    lambda_ic: float = 0.0  # 0: exact (hard) initial condition; > 0: soft penalty lambda |x_hat(0) - x0|^2 (amendment 3)
     dtype: str = "float32"
     device: str = "cpu"
     log_every: int = 500
@@ -59,7 +60,9 @@ def train_batch(system: System, method: str, x0: np.ndarray, init_seeds: list[in
     T, N = float(s.t_final), int(s.n_grid)
     h = T / (N - 1)
     t = torch.tensor(grid(T, N), dtype=dtype, device=device)
-    model = BatchedPINN(x0, T, out_mean, out_scale, init_seeds, s.hidden, dtype=dtype).to(device)
+    model = BatchedPINN(x0, T, out_mean, out_scale, init_seeds, s.hidden, dtype=dtype,
+                        hard_ic=s.lambda_ic == 0).to(device)
+    x0_t = torch.tensor(np.asarray(x0, dtype=float), dtype=dtype, device=device)
     opt = torch.optim.Adam(model.parameters(), lr=s.lr)
     sched = torch.optim.lr_scheduler.ExponentialLR(opt, gamma=(s.lr_final / s.lr) ** (1.0 / max(s.iterations, 1)))
 
@@ -71,7 +74,8 @@ def train_batch(system: System, method: str, x0: np.ndarray, init_seeds: list[in
         kind, W = wt.tangent_weight(method, ref_grid_t, system.jac, h)
         W = W.to(dtype)
 
-    hist = {"iteration": [], "loss_weighted": [], "residual_rms": [], "grid_error_rms": [], "weight_time_profile": []}
+    hist = {"iteration": [], "loss_weighted": [], "residual_rms": [], "grid_error_rms": [], "weight_time_profile": [],
+            "ic_error": []}
     start = time.perf_counter()
     for it in range(s.iterations + 1):
         x, dx = model(t)
@@ -84,11 +88,15 @@ def train_batch(system: System, method: str, x0: np.ndarray, init_seeds: list[in
         elif method == "causal":
             kind, W = "scalar", wt.causal(r.detach().double(), h, s.causal_eps).to(dtype)
         per_net = wt.weighted_loss(r, kind, W)
+        ic_err = (x[:, 0] - x0_t).square().sum(-1)  # identically zero with the hard initial condition
+        if s.lambda_ic > 0:
+            per_net = per_net + s.lambda_ic * ic_err
         if it % s.log_every == 0 or it == s.iterations:
             with torch.no_grad():
                 hist["iteration"].append(it)
                 hist["loss_weighted"].append(per_net.detach().cpu().double().numpy().tolist())
                 hist["residual_rms"].append(r.detach().square().sum(-1).mean(1).sqrt().cpu().double().numpy().tolist())
+                hist["ic_error"].append(ic_err.detach().sqrt().cpu().double().numpy().tolist())
                 if ref_grid_t is not None:
                     e = (x.detach().double() - ref_grid_t).square().sum(-1).mean(1).sqrt()
                     hist["grid_error_rms"].append(e.cpu().numpy().tolist())

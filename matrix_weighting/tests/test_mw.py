@@ -197,3 +197,19 @@ def test_direction_only_weight_has_equal_total_at_every_time():
     W = wt.direction_only(G)
     tr = W.diagonal(dim1=-2, dim2=-1).sum(-1)
     torch.testing.assert_close(tr, torch.full_like(tr, 3.0))
+
+
+def test_soft_initial_condition_trains_and_reports_initial_error():
+    s = LinearSaddle(16.0)
+    x0 = np.stack([s.initial_state(1), s.initial_state(2)])
+    tg = np.linspace(0, 1, 33)
+    st = Settings(t_final=1.0, hidden=[8, 8], n_grid=33, iterations=40, n_eval=21, log_every=20, lambda_ic=100.0)
+    res = train_batch(s, "M-orc", x0, [1, 2], [0, 0], [2, 2], st,
+                      ref_grid=np.stack([reference(s, x, tg) for x in x0]),
+                      ref_eval=np.stack([reference(s, x, np.linspace(0, 1, 21)) for x in x0]))
+    ic = np.array(res["history"]["ic_error"])
+    assert ic.shape == (3, 2) and np.all(ic[0] > 0) and np.all(ic[-1] < ic[0])
+    m = BatchedPINN(x0, 1.0, [0, 0], [2, 2], [1, 2], hidden=(8,), hard_ic=False)
+    t = torch.linspace(0, 1, 9)
+    x, dx = m(t)
+    assert not torch.allclose(x[:, 0], torch.tensor(x0, dtype=x.dtype))
