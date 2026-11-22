@@ -236,3 +236,12 @@ queued for over 30 minutes while other accounts' kernels started at once.
 - The queued first copies were replaced by a no-op version so they cannot
   run as well.
 - Gate 0 and the k = 29 results come from the `-b` kernels.
+
+### Gate 3 and side runs queued
+
+- **Gate 3 (plan amendment 1):**
+  - Rössler: `chandraguptsharma/mw-gate3-rossler`, running.
+  - Lorenz-96 and the direction-only side run: `duoshingaming/mw-gate3-l96-dir`, queued.
+- **Time-marching side run (plan amendment 2):** built, waiting for a free
+  Kaggle GPU slot. Every account is at its limit of 2 concurrent GPU
+  sessions.
