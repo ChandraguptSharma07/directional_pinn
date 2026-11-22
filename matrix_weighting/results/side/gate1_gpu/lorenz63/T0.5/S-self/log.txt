@@ -1,0 +1,20 @@
+it      0      1.5 s  median residual rms 8.253e+01  median grid error rms 1.355e+01
+Traceback (most recent call last):
+  File "/kaggle/working/mw/experiments/run_job.py", line 98, in <module>
+    main()
+    ~~~~^^
+  File "/kaggle/working/mw/experiments/run_job.py", line 87, in main
+    s = run(job, device=args.device)
+  File "/kaggle/working/mw/experiments/run_job.py", line 50, in run
+    res = train_batch(system, job["method"], x0, seeds, job["out_mean"], job["out_scale"], settings,
+                      ref_grid=ref_grid, ref_eval=ref_eval)
+  File "/kaggle/working/mw/mw/train.py", line 80, in train_batch
+    kind, W = wt.tangent_weight(method, x, system.jac, h)
+              ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/kaggle/working/mw/mw/weights.py", line 121, in tangent_weight
+    return "scalar", best_scalar(G)
+                     ~~~~~~~~~~~^^^
+  File "/kaggle/working/mw/mw/weights.py", line 87, in best_scalar
+    lam = torch.linalg.eigvalsh(A)[..., -1].clamp_min(0.0)
+          ~~~~~~~~~~~~~~~~~~~~~^^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 9.32 GiB. GPU 0 has a total capacity of 14.56 GiB of which 4.46 GiB is free. Including non-PyTorch memory, this process has 9.58 GiB memory in use. Process 29 has 270.00 MiB memory in use. Process 31 has 270.00 MiB memory in use. Of the allocated memory 102.73 MiB is allocated by PyTorch, and 9.33 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)

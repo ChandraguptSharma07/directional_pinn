@@ -166,3 +166,62 @@ mathematics is unchanged and the tests still pass (26/26). Jobs that finished
 before the fix are kept. Failed jobs are rerun with the fixed code on the
 same kind of GPU (kernel `hy1069/mw-rerun-1`). The nixxa runs use the CPU and
 were never affected.
+
+### First Kaggle results (exploratory side runs and part of Gate 2)
+
+**Status.** These finished first. No gate decision is drawn here. Gate 2 waits
+for k = 29, and Gate 1 is still running on nixxa.
+
+**GPU replicate of Gate 1 (side, T4).** Median log10 E_rms over 36 networks,
+with the success rate (E_max < 1 over the whole window):
+
+| T | `U` | `TUR` | `S-orc` | `M-orc` | `M-self` |
+|---|---|---|---|---|---|
+| 0.5 | −3.05 (36/36) | −3.01 (36/36) | −3.02 (36/36) | −2.93 (36/36) | −2.88 (36/36) |
+| 1 | 1.29 (7/36) | 1.29 (5/36) | 1.27 (9/36) | −2.36 (23/36) | −2.29 (27/36) |
+
+`S-self` is missing because of the out-of-memory failure; it is being rerun.
+
+**Gate 2 so far (Lorenz-part error, T = 1).** Success rates (E_max < 1),
+36 networks each:
+
+| method | k = 0 | k = 3 | k = 9 |
+|---|---|---|---|
+| `M-self` | 75% | 75% | 75% |
+| `S-self` | rerunning | 56% | 19% |
+| `M-orc` | 64% | 47% | 28% |
+| `U` | 19% | 19% | 8% |
+| `S-orc` | 25% | 14% | 11% |
+| `TUR` | 14% | 11% | 0% |
+
+The k = 29 runs are still queued.
+
+**Time profiles (from the training histories).**
+
+- **The matrix and scalar weights spread over time almost identically.**
+  Over Lorenz T = 1, the per-time weight tr W / n falls from about 1.7 at
+  t = 0 to 0.06–0.10 at t = T for both `M-orc` and `S-orc`. They differ only
+  in how each time's weight is split across directions. Yet only `M-orc`
+  escapes the failure plateau (median grid error 0.0044 against 18.4).
+- **`M-self` is not a hidden causal schedule.** Its time profile settles to
+  the oracle's within about 2,000 steps.
+- **`TUR` puts more weight late in the window, not early.** Its weight rises
+  from about 0.26 at t = 0 to 2.75 at t = T. Its growth proxy ⟨f(x), x⟩/‖x‖²
+  is often negative on Lorenz windows.
+
+**Mechanism check** (`experiments/mechanism.py`; oracle Gramian along the
+reference, so diagnostic only).
+
+- **T = 0.5, where every method succeeds:**
+  - Residual energy along the least harmful direction of G: 37–43% with the
+    matrix weights, against 17% (`U`) and 22% (`TUR`).
+  - Harm per unit residual: about 0.19 against 0.35.
+  - Final errors stay comparable (median E_rms 0.9e-3 to 1.3e-3).
+- **T = 1:**
+  - The successful matrix-weighted networks leave 60–73% of their residual
+    along the least harmful direction.
+  - The failed `U`, `TUR` and `S-orc` networks put about 60–70% along the
+    most harmful one.
+
+The matrix weight moves the residual into the directions that the dynamics
+erase, as the theory predicts.
