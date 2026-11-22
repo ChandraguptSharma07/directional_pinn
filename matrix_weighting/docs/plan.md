@@ -229,3 +229,45 @@ Side runs can suggest follow-ups. They cannot change a gate decision.
   PINN collocation points (arXiv 2604.01835).
 - Any change to this plan after training starts is recorded as a dated
   amendment, with its reason.
+
+## Amendment 1 (22 November 2026, evening): Gate 3, more systems
+
+*Written after the first side results (GPU replicate of Gate 1, part of
+Gate 2) but before any network of Gate 3 was trained. Gates 0–2 and their
+rules are unchanged.*
+
+**Why.** The question includes whether any gain holds for a *group* of
+systems, not only Lorenz-63. Gate 3 tests the same claim on two further
+chaotic systems, chosen before any of their runs:
+
+- **Rössler:** a = b = 0.2, c = 5.7. One weakly expanding direction (about
+  0.07), one neutral, one strongly contracting (about −5.4).
+- **Lorenz-96:** N = 8, F = 8. Several expanding directions.
+
+**Setup.**
+
+- Window lengths: Rössler T ∈ {5, 10}; Lorenz-96 T ∈ {1, 2}.
+- Initial conditions: 12 attractor states per system, frozen in
+  `results/gate3/initial_conditions_<system>.json` before training. Spin-up
+  100 from a fixed start, then 12 sorted uniform times in [0, 600], NumPy seed
+  2026112202.
+- Seeds 0, 1, 2. Training settings as in section 5.
+- Output scaling: midrange and half-range over a 600-unit reference
+  trajectory.
+- Platform: Kaggle GPU.
+
+**Methods.** `U`, `TUR`, `S-self`, `M-self`, plus one new exploratory weight:
+
+- `D-self`, direction only: W_i ∝ n G_i / tr G_i. Every time gets the same
+  total weight, so time emphasis is separated from direction.
+
+`D-orc` and `D-self` are also run on Lorenz T = 1 as a side run.
+
+**Decision (H4).** The rule is the H2 rule of section 8, applied per system:
+
+- **Supported** for a system: `M-self` beats each of `S-self`, `U` and `TUR`
+  at one or more of its window lengths, and is worse than none at any.
+- **Rejected:** `M-self` beats none of the three at any length.
+- **Partial:** any other outcome.
+
+`D-self` results are reported descriptively only.
