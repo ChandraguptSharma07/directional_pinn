@@ -1,0 +1,2 @@
+script: experiments/24_dial_reference.py
+out: /home/shin/Projects/directional_pinn/results/dial_study/reference
